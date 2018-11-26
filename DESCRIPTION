@@ -1,15 +1,21 @@
 Package: BTSPAS
-Version: 2015.0702
-Date: 2015-07-02
+Version: 2018.1201
+Date: 2018-12-01
 Title: Bayesian Time-Strat. Population Analysis
 Author: Carl J Schwarz <cschwarz@stat.sfu.ca> and
 	Simon J Bonner <simon.bonner@uky.edu>
 Maintainer: Carl J Schwarz <cschwarz@stat.sfu.ca>
-Note: See http://stackoverflow.com/questions/28351030/ggplotgrob-function-is-not-found-when-i-use-it-in-a-package-which-imports-ggplot on why ggplot2 must be in Depends field
-Note: See bottom of http://stackoverflow.com/questions/29062766/store-output-from-gridextragrid-arrange-into-an-object on why gridExtra must be depends field
-Depends: ggplot2, gridExtra
-Imports: actuar, coda, graphics, grDevices, plyr, rjags, R2OpenBUGS, splines, stats, utils
-Suggests: BRugs
+Imports: actuar, 
+         coda, 
+         ggplot2,
+         graphics, 
+         grDevices,
+         plyr, 
+         rjags, 
+         R2OpenBUGS, 
+         splines, 
+         stats, 
+         utils
 SystemRequirements: JAGS
 Description: Provides advanced Bayesian methods to estimate
 	     abundance and run-timing from temporally-stratified
@@ -19,5 +25,4 @@ Description: Provides advanced Bayesian methods to estimate
 	     uses JAGS to sample from the posterior distribution.
 License: GPL (>=2)
 URL: http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2
-
-
+RoxygenNote: 6.1.0

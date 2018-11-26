@@ -1,3 +1,4 @@
+# 2018-11-26 CJS Removed all references to OpenBugs
 # 2014-09-01 CJS conversion to JAGS
 #                - no model name
 #                - C(,20) -> T(,20)
@@ -14,6 +15,10 @@
 # 2009-12-07 CJS changed etaP to logitP
 # 2009-12-05 CJS added title to argument list
 # 2009-12-01 CJS added openbugs/winbugs directory to argument list
+
+#' @rdname TimeStratPetersenNonDiagError_fit
+#' 
+
 
 TimeStratPetersenNonDiagError <- function(title,
                                           prefix,
@@ -38,7 +43,6 @@ TimeStratPetersenNonDiagError <- function(title,
                                           tauP.beta=.001,
                                           debug=FALSE,
                                           debug2=FALSE,
-					  engine=c("jags","openbugs")[1],
                                           InitialSeed){
 
 set.seed(InitialSeed)  # set prior to initial value computations
@@ -146,24 +150,7 @@ model {
    ##### Fit the spline for the U's and specify hierarchial model for the logit(P)'s ######
    for(i in 1:Nstrata.cap){
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU[i] ~ dnorm(logUne[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU[i] ~ dnorm(logUne[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU[i] <- etaU[i] - logUne[i]
    }
    for(i in 1:Nfree.logitP){   # model the free capture rates using covariates
@@ -188,28 +175,9 @@ if(tolower(engine) %in% c("openbugs")) {
    }
 
    ## Run size - flat priors
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
    for(i in 1:n.b.flat){
       bU[b.flat[i]] ~ dnorm(0, 1E-6)
    }
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-   for(i in 1:n.b.flat){
-      bU[b.flat[i]] ~ dflat()
-   }
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
 
    ## Run size - priors on the difference
    for(i in 1:n.b.notflat){
@@ -261,24 +229,7 @@ if(tolower(engine) %in% c("openbugs")) {
    for(i in 1:Nstrata.rel){
       # Compute cell probabilities
       for(j in i:Nstrata.cap){
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         Pmarked[i,j] <- Theta[i,j] * p[j] + .0000001   # potential problem in Jags?
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        Pmarked[i,j] <- Theta[i,j] * p[j] 
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
       }
       Pmarked[i,Nstrata.cap+1] <- 1- sum(Pmarked[i,i:Nstrata.cap])
 
@@ -488,7 +439,6 @@ results <- run.MCMC(modelFile=model.file,
                         overRelax=FALSE,
                         initialSeed=InitialSeed,
                         working.directory=working.directory,
-			engine=engine,
                         debug=debug)
 
 return(results)

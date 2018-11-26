@@ -1,3 +1,4 @@
+# 2018-11-25 CJS Remove all references to OpenBugs
 # 2014-09-01 CJS converstion to JAGS
 #                - no model name
 #                - C(,20) -> T(,20)
@@ -12,6 +13,10 @@
 # 2010-04-25 CJS fixed problems of init.logitP=+infinity if n1=m2=k which crapped out the lm() call
 # 2010-03-11 Added fixed values of logitP[j] to be provided by user.
 # 2010-03-02 SJB Created file.
+
+#' @rdname TimeStratPetersenNonDiagError_fit
+#' 
+
 
 TimeStratPetersenNonDiagErrorNP <- function(title,
                                             prefix,
@@ -41,7 +46,6 @@ TimeStratPetersenNonDiagErrorNP <- function(title,
                                             tauP.beta=.001,
                                             debug=FALSE,
                                             debug2=FALSE,
-					    engine=c('jags','openbugs')[1],
                                             InitialSeed){
 
 set.seed(InitialSeed)  # set prior to initial value computations
@@ -152,24 +156,7 @@ model {
    for(i in 1:(Nstrata.cap)){
         ## Model for U's
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU[i] ~ dnorm(logUne[i], taueU)T(,20)              # add random error but keep from getting too large
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU[i] ~ dnorm(logUne[i], taueU)C(,20)              # add random error but keep from getting too large
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU[i] <- etaU[i] - logUne[i]
    }
 
@@ -211,28 +198,10 @@ if(tolower(engine) %in% c("openbugs")) {
    sdTT <- 1/sqrt(tauTT)
 
    ## Run size - flat priors
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
    for(i in 1:n.b.flat){
       bU[b.flat[i]] ~ dnorm(0, 1E-6)
    }
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-   for(i in 1:n.b.flat){
-      bU[b.flat[i]] ~ dflat()
-   }
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
+
    ## Run size - priors on the difference
    for(i in 1:n.b.notflat){
       xiU[b.notflat[i]] <- 2*bU[b.notflat[i]-1] - bU[b.notflat[i]-2]
@@ -427,7 +396,6 @@ results <- run.MCMC(modelFile=model.file,
                         overRelax=FALSE,
                         initialSeed=InitialSeed,
                         working.directory=working.directory,
-			engine=engine,
                         debug=debug)
 
 return(results)

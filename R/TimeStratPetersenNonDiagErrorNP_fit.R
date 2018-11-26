@@ -1,3 +1,4 @@
+## 2018-11-25 CJS Removed all references to OpenBugs
 ## 2015-06-10 CJS gof converted to ggplot()
 ## 2014-09-01 CJS conversion to jags
 ## 2012-08-30 CJS fixed errors with any() and all() with NAs in error checking
@@ -14,6 +15,9 @@
 ## 2010-03-12 CJS added n.chains etc to argument list; added optional call for debugging purposes
 ## 2010-03-03 SJB Created File
 
+#' @rdname TimeStratPetersenNonDiagError_fit
+#' 
+
 TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDENP-",
                          time, n1, m2, u2, sampfrac, jump.after=NULL,
                          bad.n1=c(), bad.m2=c(), bad.u2=c(),
@@ -29,8 +33,7 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
                          tauTT.alpha=.1,tauTT.beta=.1,
                          run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted
                          debug=FALSE, debug2=FALSE,
-                         engine=c('jags','openbugs')[1],
-                         InitialSeed=ceiling(runif(1,min=0, max=if(engine=="jags"){1000000}else{14}))) {
+                         InitialSeed=ceiling(runif(1,min=0,1000000))) {
   ## Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
   ## This is the classical stratified Petersen model where the recoveries can take place for this and multiple
   ## strata later. Transisions of marked fish are modelled non-parametrically.
@@ -407,7 +410,7 @@ sampfrac <- as.vector(sampfrac)
                          mean.muTT=mean.muTT, sd.muTT=sd.muTT,
                          tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
                          debug=debug, debug2=debug2, 
-			 engine=engine, InitialSeed=InitialSeed)
+			                   InitialSeed=InitialSeed)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenNonDiagErrorNP(title=title, prefix=prefix,
                          time=new.time, n1=new.n1, m2=new.m2, u2=new.u2,
@@ -420,8 +423,7 @@ sampfrac <- as.vector(sampfrac)
                          mean.muTT=mean.muTT, sd.muTT=sd.muTT,
                          tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
                          debug=debug, debug2=debug2,  
-			 engine=engine,
-			 InitialSeed=InitialSeed)
+                  			 InitialSeed=InitialSeed)
    }
 
   ## Now to create the various summary tables of the results
@@ -500,7 +502,7 @@ sampfrac <- as.vector(sampfrac)
                                          expit(results$sims.list$logitP),
                                          round(results$sims.list$U),
                                          results$sims.list$Theta,
-                                         Delta.max, engine)
+                                         Delta.max)
   gof <- PredictivePosteriorPlot.TSPNDE (discrep)
   ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""), 
        height=8, width=8, units="in", dpi=300 )

@@ -1,4 +1,6 @@
 
+#' @keywords internal
+
 PredictivePosterior.TSPDE <- function (n1, m2, u2, p, U) {
 #  Generate Predictive Posterior Plot (Bayesian p-value) given the data
 #  for a TimeStratified Petersen with Diagonal Elements and error

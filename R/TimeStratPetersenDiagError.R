@@ -1,4 +1,5 @@
-# 2014-09-01 CJS Converted to JAGS
+## 2018-11-26 CJS Removed all OpenBugs stuff
+## 2014-09-01 CJS Converted to JAGS
 ## 2013-12-31 CJS Tried adding u2copy to get back Matts fix for mixing
 ## 2013-09-22 SJB Changes to model for JAGS compatability:
 ##     -- Removed model name.
@@ -12,6 +13,9 @@
 # 2010-04-26 CJS fixed problem in computing logitPguess when m2=n1 and you get infinite logit value
 # 2009-12-05 CJS added title to argument list
 # 2009-12-01 CJS (added WinBugs/OpenBugs directory to the argument list
+
+#' @rdname TimeStratPetersenDiagError_fit
+#' 
 
 TimeStratPetersenDiagError <- function(
     title,
@@ -35,7 +39,6 @@ TimeStratPetersenDiagError <- function(
     tauP.alpha=.001, tauP.beta=.001,
     debug=FALSE,
     debug2=FALSE,
-    engine=c("jags","openbugs")[1],
     InitialSeed){
 
 set.seed(InitialSeed)  # set prior to initial value computations
@@ -46,8 +49,6 @@ set.seed(InitialSeed)  # set prior to initial value computations
 #
 #  Packages Required - must be installed BEFORE calling this functin
 #
-#    R2OpenBugs  - needed for the as.bugs.array() function
-#    BRugs       - only needed if using OpenBugs
 #    rjags       - only needed if using JAGS
 #    Coda
 #    actuar
@@ -135,24 +136,7 @@ model{
    ##### Fit the spline and specify hierarchial model for the logit(P)'s ######
    for(i in 1:Nstrata){
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU[i] ~ dnorm(logUne[i], taueU)T(,20)    # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU[i] ~ dnorm(logUne[i], taueU)C(,20)    # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU[i] <- etaU[i] - logUne[i]
         mu.logitP[i] <- inprod(logitP.cov[i,1:NlogitP.cov], beta.logitP[1:NlogitP.cov])
 
@@ -168,24 +152,7 @@ if(tolower(engine) %in% c("openbugs")) {
    ##### Hyperpriors #####
    ## Run size - flat priors
    for(i in 1:n.b.flat){
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
       bU[b.flat[i]] ~ dnorm(0.0,1.0E-6) 
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-      bU[b.flat[i]] ~ dflat()
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
    }
    ## Run size - priors on the difference
    for(i in 1:n.b.notflat){
@@ -374,7 +341,6 @@ results <- run.MCMC(modelFile=model.file,
                             overRelax=FALSE,
                             initialSeed=InitialSeed,
                             working.directory=working.directory,
-			    engine=engine,
                             debug=debug)
 return(results)
 }

@@ -15,6 +15,20 @@
 %   }
 %}
 
+\section{CHANGES IN VERSION 2018.1201}{
+  \subsection{USER-VISIBLE CHANGES}{
+    \itemize{
+      \item OpenBugs no longer supported.
+    }
+  }
+   \subsection{BUG FIX}{
+     \itemize{
+       \item  None.
+     }
+   }
+}
+
+
 \section{CHANGES IN VERSION 2015.0702}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{

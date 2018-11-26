@@ -11,6 +11,142 @@
 # 2009-12-05 CJS added title to argument list
 # 2009-12-01 CJS added openbugs/winbugs to argument list; some basic error checking
 
+
+
+#' Wrapper (*_fit) and function to call the Time Statified Petersen Estimator
+#' with Diagonal Entries and separating Wild from Hatchery Chinook function.
+#' 
+#' Takes the number of marked fish released, the number of recaptures, and the
+#' number of unmarked fish and uses Bayesian methods to fit a fit a spline
+#' through the population numbers and a hierarchical model for the trap
+#' efficiencies over time.  The output is written to files and an MCMC object
+#' is also created with samples from the posterior.
+#' 
+#' Normally use the *_fit to pass the data to the fitting function.
+#' 
+#' 
+#' @aliases TimeStratPetersenDiagErrorWHChinook_fit
+#' TimeStratPetersenDiagErrorWHChinook TimeStratPetersenDiagErrorWHChinook2_fit
+#' TimeStratPetersenDiagErrorWHChinook2
+#' @param title A character string used for a title on reports and graphs
+#' @param prefix A character string used as the prefix for created files. All
+#' created graph files are of the form prefix-xxxxx.pdf.
+#' @param time A numeric vector of time used to label the strata. For example,
+#' this could be julian week for data stratified at a weekly level.
+#' @param n1 A numeric vector of the number of marked fish released in each
+#' time stratum.
+#' @param m2 A numeric vector of the number of marked fish from n1 that are
+#' recaptured in each time stratum. All recaptures take place within the
+#' stratum of release. Use the \code{\link{TimeStratPetersenNonDiagError_fit}}
+#' function for cases where recaptures take place outside the stratum of
+#' release.
+#' @param u2.A A numeric vector of the number of unmarked fish with adipose
+#' clips captured in each stratum.
+#' @param u2.N A numeric vector of the number of unmarked fish with NO-adipose
+#' clips captured in each stratum.
+#' @param u2.A.YoY A numeric vector of the number of unmarked YoY fish with
+#' adipose clips captured in each stratum.
+#' @param u2.N.YoY A numeric vector of the number of unmarked YoY fish with
+#' adipose clips captured in each stratum.
+#' @param u2.A.1 A numeric vector of the number of unmarked Age1 fish with
+#' adipose clips captured in each stratum.
+#' @param u2.N.1 A numeric vector of the number of unmarked Age1 fish with
+#' adipose clips captured in each stratum.
+#' @param clip.frac.H A numeric value for the fraction of the hatchery fish
+#' that have the adipose fin clipped (between 0 and 1).
+#' @param clip.frac.H.YoY A numeric value for the fraction of the YoY hatchery
+#' fish that have the adipose fin clipped (between 0 and 1).
+#' @param clip.frac.H.1 A numeric value for the fraction of the Age1 hatchery
+#' fish that have the adipose fin clipped (between 0 and 1).
+#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' what fraction of the stratum was sampled. For example, if strata are
+#' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
+#' value of \code{sampfrac} for that stratum would be 3/7.
+#' @param hatch.after A numeric vector with elements belonging to \code{time}.
+#' At which point do hatchery fish arrive? They arrive in the immediate stratum
+#' AFTER these entries.
+#' @param hatch.after.YoY A numeric vector with elements belonging to
+#' \code{time}.  At which point do YoY hatchery fish arrive? They arrive in the
+#' immediate stratum AFTER these entries.
+#' @param bad.m2 A numeric vector with elements belonging to \code{time}.  In
+#' some cases, something goes wrong in the stratum, and the number of recovered
+#' fish should be ignored.  For example, poor handling is suspected to induce
+#' handling induced mortality in the marked fish and so only very few are
+#' recovered. The values of \code{m2} will be set to NA for these strata.
+#' @param bad.u2.N A numeric vector with elements belonging to \code{time}.  In
+#' some cases, something goes wrong in the stratum, and the number of unmarked
+#' fish with NO adipose fin clip should be ignored.
+#' @param bad.u2.N.YoY A numeric vector with elements belonging to \code{time}.
+#' In some cases, something goes wrong in the stratum, and the number of
+#' unmarked YoY with NO adipose fin clip should be ignored.
+#' @param bad.u2.A A numeric vector with elements belonging to \code{time}.  In
+#' some cases, something goes wrong in the stratum, and the number of unmarked
+#' fish with an adipose fin clip should be ignored.
+#' @param bad.u2.A.YoY A numeric vector with elements belonging to \code{time}.
+#' In some cases, something goes wrong in the stratum, and the number of
+#' unmarked YoY with an adipose fin clip should be ignored.
+#' @param bad.u2.N.1 A numeric vector with elements belonging to \code{time}.
+#' In some cases, something goes wrong in the stratum, and the number of
+#' unmarked Age1 with NO adipose fin clip should be ignored.
+#' @param bad.u2.A.1 A numeric vector with elements belonging to \code{time}.
+#' In some cases, something goes wrong in the stratum, and the number of
+#' unmarked Age1 with an adipose fin clip should be ignored.
+#' @param logitP.cov A numeric matrix for covariates to fit the
+#' logit(catchability). Default is a single intercept, i.e. all strata have the
+#' same mean logit(catchability).
+#' @param n.chains Number of parallel MCMC chains to fit.
+#' @param n.iter Total number of MCMC iterations in each chain.
+#' @param n.burnin Number of burn-in iterations.
+#' @param n.sims Number of simulated values to keeps for posterior
+#' distribution.
+#' @param tauU.alpha One of the parameters along with \code{tauU.beta} for the
+#' prior for the variance of the random noise for the smoothing spline.
+#' @param tauU.beta One of the parameters along with \code{tauU.alpha} for the
+#' prior for the variance of the random noise for the smoothing spline.
+#' @param taueU.alpha One of the parameters along with \code{taueU.beta} for
+#' the prior for the variance of noise around the spline.
+#' @param taueU.beta One of the parameters along with \code{taueU.alpha} for
+#' the prior for the variance of noise around the spline.
+#' @param mu_xiP One of the parameters for the prior for the mean of the
+#' logit(catchability) across strata
+#' @param tau_xiP One of the parameter for the prior for the mean of the
+#' logit(catchability) across strata
+#' @param tauP.alpha One of the parameters for the prior for the variance in
+#' logit(catchability) among strata
+#' @param tauP.beta One of the parameters for the prior for the variance in
+#' logit(catchability) among strata
+#' @param run.prob Numeric vector indicating percentiles of run timing should
+#' be computed.
+#' @param debug Logical flag indicating if a debugging run should be made. In
+#' the debugging run, the number of samples in the posterior is reduced
+#' considerably for a quick turn around.
+#' @param debug2 Logical flag indicated if additional debugging information is
+#' produced. Normally the functions will halt at \code{browser()} calls to
+#' allow the user to peek into the internal variables. Not useful except to
+#' package developers.
+#' @param engine Which MCMC sampler should be used. JAGS=default,
+#' OpenBugs=alternate. Case not relevant.
+#' @param InitialSeed Numeric value used to initialize the random numbers used
+#' in the MCMC iterations.
+#' @return An MCMC object with samples from the posterior distribution. A
+#' series of graphs and text file are also created in the working directory.
+#' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
+#' \email{cschwarz@@stat.sfu.ca}
+#' @references Refer to the Trinity River Restoration Project report by
+#' Schwarz, C.J. et al. (2009) available at
+#' \url{http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2}. Please
+#' contact \email{cschwarz@stat.sfu.ca} for more details. %% ~put references to
+#' the literature/web site here ~
+#' @keywords ~models ~smooth
+#' @examples
+#'  
+#' ##---- See the demo files for examples of how to use this package
+#' ##
+#' ##     demo("demo-TSPDE-WHchinook",     package='BTSPAS', ask=FALSE)  # the simplest usage
+#' ##     demo("demo-TSPDE-WHchinook2",    package='BTSPAS', ask=FALSE)  # the simplest usage
+#' ##
+#' 
+#' @export TimeStratPetersenDiagErrorWHChinook_fit
 TimeStratPetersenDiagErrorWHChinook_fit<- 
        function( title="TSPDE-WHChinook", prefix="TSPDE-WHChinook-", 
                  time, n1, m2, u2.A, u2.N, clip.frac.H, sampfrac, 

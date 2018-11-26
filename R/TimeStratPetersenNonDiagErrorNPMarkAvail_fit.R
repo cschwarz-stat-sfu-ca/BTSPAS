@@ -5,6 +5,9 @@
 ## 2011-02-21 CJS changed u2 to new.u2 in code for expanded.m2
 ## 2011-02-19 CJS First development
 
+#' @rdname TimeStratPetersenNonDiagError_fit
+#' 
+
 TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP", prefix="TSPNDENP-", 
                          time, n1, m2, u2, sampfrac, jump.after=NULL,
                          bad.n1=c(), bad.m2=c(), bad.u2=c(),

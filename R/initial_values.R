@@ -13,6 +13,8 @@
 ## Every model requires different initial values, though much of the
 ## code can be reused.
 
+#' @ keywords internal
+
 genInitsTTln <-
     function(n1,m2,u2){
         ## Generate initial parameters for log-normal travel time model

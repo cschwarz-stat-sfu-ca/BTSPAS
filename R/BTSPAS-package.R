@@ -1,0 +1,70 @@
+
+
+#' Internal functions not normally called by the user
+#' 
+#' These are internal functions not normally called by the user. (a) Compute
+#' the Predictive Posterior Distributions and make the Bayesian p-value plots.
+#' (b) Estimate the runtimings once the posterior distribution is found. (c)
+#' Compute simple Petersen estimates. (d) Generate initial values. (e)
+#' Miscellaneous functions.
+#' 
+#' 
+#' @aliases BTSPAS-internal genInitVals genInitValsChain genInitsTTln
+#' genInitsTTnp lnTheta plot_logitP PredictivePosterior.TSPDE
+#' PredictivePosterior.TSPDE.WHCH PredictivePosterior.TSPDE.WHCH2
+#' PredictivePosterior.TSPDE.WHSteel PredictivePosterior.TSPNDE
+#' PredictivePosterior.TSPNDENP PredictivePosteriorPlot.TSPDE
+#' PredictivePosteriorPlot.TSPDE.WHCH PredictivePosteriorPlot.TSPDE.WHCH2
+#' PredictivePosteriorPlot.TSPDE.WHSteel PredictivePosteriorPlot.TSPNDE
+#' PredictivePosterior.TSPNDENP RunTime run.openbugs run.jags run.MCMC
+#' simTSPNDE SimplePetersen TestIfPool visualize.muTT.prior make.muTT.prior zzz
+NULL
+
+
+
+
+
+#' Bayesian Time-Stratified Population Analysis
+#' 
+#' BTSPAS provides advanced Bayesian methods to estimate abundance and
+#' run-timing from temporally-stratified Petersen mark-recapture experiments.
+#' Methods include hierarchical modelling of the capture probabilities and
+#' spline smoothing of the daily run size. \cr \cr Full details are available
+#' at \url{http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2}
+#' 
+#' \tabular{ll}{ Package: \tab BTSPAS\cr Version: \tab 2014.09\cr Date: \tab
+#' 2014-09-01\cr Depends: \tab R2WinBUGS, coda, splines, actuar, plyr,
+#' ggplot2\cr License: \tab GPL (>=2)\cr URL: \tab http://www.r-project.org\cr
+#' Repository: \tab R-Forge\cr Repository/R-Forge/Project: \tab btspas\cr
+#' Repository/R-Forge/Revision: \tab 8\cr Date/Publication: \tab 2014-09-02
+#' 02:49:34\cr Packaged: \tab 2009-12-02 21:03:35 UTC; rforge\cr Built: \tab R
+#' 2.10.0; ; 2009-12-03 23:01:26 UTC; windows\cr }
+#' 
+#' Index: \cr
+#' 
+#' \link{TimeStratPetersenDiagError_fit} Wrapper to call the Time Statified
+#' Petersen Estimator with Diagonal Entries function.\cr
+#' \link{TimeStratPetersenDiagErrorWHChinook_fit} Wrapper to call the Time
+#' Statified Petersen Estimator with Diagonal Entries to separate wild and
+#' hatchery Chinook function.\cr
+#' \link{TimeStratPetersenDiagErrorWHChinook2_fit} Wrapper to call the Time
+#' Statified Petersen Estimator with Diagonal Entries to separate wild and
+#' hatchery Chinook function when age 1 fish residualize overwinter.\cr
+#' \link{TimeStratPetersenDiagErrorWHSteel_fit} Wrapper to call the Time
+#' Statified Petersen Estimator with Diagonal Entries to separate wild and
+#' hatchery Steelhead function. \cr \link{TimeStratPetersenNonDiagError_fit}
+#' Wrapper to call the Time Statified Petersen Estimator with NON Diagonal
+#' Entries. \cr
+#' 
+#' @name BTSPAS-package
+#' @aliases BTSPAS-package BTSPAS
+#' @docType package
+#' @author Carl J Schwarz \email{cschwarz@@stat.sfu.ca} and Simon J Bonner
+#' \email{s.bonner@@stat.ubc.ca}
+#' 
+#' Maintainer: Simon J Bonner \email{s.bonner@@stat.ubc.ca}
+#' @keywords package
+NULL
+
+
+
