@@ -1,3 +1,7 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
+
 # 2014-09-01 CJS Fixed bug when logitP.fixed is fixed in first position
 # 2014-09-01 CJS Needed to deal with different behaviour between OPENBugs and JAGS when the logitP parameters may be fixed.
 #    OpenBUGS does NOT include the fixed logits in the returned MCMC sampler; JAGS does.

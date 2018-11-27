@@ -10,14 +10,8 @@
 #' 
 #' 
 #' @aliases BTSPAS-internal genInitVals genInitValsChain genInitsTTln
-#' genInitsTTnp lnTheta plot_logitP PredictivePosterior.TSPDE
-#' PredictivePosterior.TSPDE.WHCH PredictivePosterior.TSPDE.WHCH2
-#' PredictivePosterior.TSPDE.WHSteel PredictivePosterior.TSPNDE
-#' PredictivePosterior.TSPNDENP PredictivePosteriorPlot.TSPDE
-#' PredictivePosteriorPlot.TSPDE.WHCH PredictivePosteriorPlot.TSPDE.WHCH2
-#' PredictivePosteriorPlot.TSPDE.WHSteel PredictivePosteriorPlot.TSPNDE
-#' PredictivePosterior.TSPNDENP RunTime run.openbugs run.jags run.MCMC
-#' simTSPNDE SimplePetersen TestIfPool visualize.muTT.prior make.muTT.prior zzz
+#' genInitsTTnp lnTheta plot_logitP  RunTime run.openbugs run.jags run.MCMC
+#' simTSPNDE SimplePetersen TestIfPool visualize.muTT.prior make.muTT.prior 
 NULL
 
 

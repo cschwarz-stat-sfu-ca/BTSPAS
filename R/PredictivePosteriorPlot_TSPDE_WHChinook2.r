@@ -1,3 +1,6 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
 # 2015-06-10 CJS Converted to ggplot()
 # 2014-09-01 CJS Change Inf to NA 
 # 2012-01-22 CJS Made X/Y axis limits the same so that Bayesian p-value prints properly

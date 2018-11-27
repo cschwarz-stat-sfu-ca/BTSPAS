@@ -7,6 +7,11 @@
 # 2009-12-01 CJS added openbugs/winbugs to arguments of all functions. No need for global variables
 #
 
+#' Message to display when package is loaded
+#' 
+#' @keywords internal
+#'
+
 .onAttach <- function(libname,pkgname){
 
   packageStartupMessage("***** BTSPAS: Bayesian Time Stratified Petersen Analysis System - Version 2015.0702 (2015-07-02) ***** \n\n",

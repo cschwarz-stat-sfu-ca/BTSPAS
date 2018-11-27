@@ -33,6 +33,8 @@
 #' } % end of dontrun
 #' 
 #' @export TimeToTargetRunSize
+#' 
+
 TimeToTargetRunSize <- function(U, time, targetU, file_prefix, ci_prob=.95){
 #
 #  Take the results from the MCMC runs and use it to estimate the

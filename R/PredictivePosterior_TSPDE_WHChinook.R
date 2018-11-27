@@ -1,3 +1,7 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
+
 PredictivePosterior.TSPDE.WHCH <- function (time, n1, m2, u2.A, u2.N, clip.frac.H, p, U.W, U.H, hatch.after) {
 # 2015-06-10 CJS Fixed bug. When I converted to JAGS, I had to add U.H for the time before hatch.after because
 #                JAGS does not monitor partial arrays properly. In the call, I had expanded the U.H matrix

@@ -1,3 +1,18 @@
+#' Gemerate Predictive Posterior Plots (Bayesian p-values) for number of models.
+#' 
+#' This is an internal function, not normally of use to users.
+
+
+#' @aliases PredictivePosterior_TSPDE_WHChinook 
+#' @aliases PredictivePosterior.TSPDE.WHCH2 
+#' @aliases PredictivePosterior.TSPDE.WHSteel
+#' @aliases PredictivePosterior.TSPNDE 
+#' @aliases PredictivePosterior.TSPNDENP
+#' @aliases PredictivePosteriorPlot.TSPDE 
+#' @aliases PredictivePosteriorPlot.TSPDE.WHCH 
+#' @aliases PredictivePosteriorPlot.TSPDE.WHCH2 
+#' @aliases PredictivePosteriorPlot.TSPDE.WHSteel 
+#' @aliases PredictivePosteriorPlot.TSPNDE 
 
 #' @keywords internal
 

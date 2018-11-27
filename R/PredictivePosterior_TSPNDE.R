@@ -1,3 +1,7 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
+
 # 2014-09-01 CJS Needed to deal with different behaviour between OPENBugs and JAGS when the logitP parameters may be fixed.
 #    OpenBUGS does NOT includ the fixed logits in the returned MCMC sampler; JAGS does.
 #    Consequently, the expansion of the the logitP from the samplers for the fixed logits only has to be done in OpenBugs and not JAGS

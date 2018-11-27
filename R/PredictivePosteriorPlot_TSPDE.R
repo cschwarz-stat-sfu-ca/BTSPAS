@@ -1,3 +1,7 @@
+
+#' @rdname PredictivePosterior.TSPDE
+
+
 # 2015-06-10 CJS converted to ggplot()
 # 2014-09-01 CJS change any Inf in desrep to NA
 # 2012-01-22 CJS made X/Y axis limits the same so that p-value prints properly

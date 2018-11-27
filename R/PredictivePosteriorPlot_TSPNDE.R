@@ -1,3 +1,6 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
 # 2015-06-10 CJS convert to ggplot()
 # 2014-09-01 CJS dealing with Inf and -Inf in the discrepancy measures
 # 2012-01-22 CJS made X/Y axis limits the same so p-value prints properly

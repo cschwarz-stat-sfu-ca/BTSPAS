@@ -1,3 +1,6 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
 # 2015-06-10 CJS Bug fix on selecting after hatch after
 
 PredictivePosterior.TSPDE.WHSteel <- function (time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1, p, U.W.YoY, U.W.1, U.H.1, hatch.after) {

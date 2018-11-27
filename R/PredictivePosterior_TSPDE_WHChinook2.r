@@ -1,3 +1,7 @@
+#' @rdname PredictivePosterior.TSPDE
+
+
+
 # 2015-06-10 CJS BUG fix in creating the GOF values. The selection was not done properly.
 #                d1.o.s was not computed properly either.
 # 2010-03-28 CJS initial creation of function for the second Wild-Hatchery Chinook problem of Eric Logan
