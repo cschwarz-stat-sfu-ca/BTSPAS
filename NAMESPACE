@@ -3,6 +3,8 @@
 export(TimeStratPetersenDiagErrorWHChinook_fit)
 export(TimeStratPetersenDiagErrorWHSteel_fit)
 export(TimeStratPetersenDiagError_fit)
+export(TimeStratPetersenNonDiagErrorNP)
+export(TimeStratPetersenNonDiagErrorNP_fit)
 export(TimeStratPetersenNonDiagError_fit)
 export(TimeToTargetRunSize)
 export(expit)

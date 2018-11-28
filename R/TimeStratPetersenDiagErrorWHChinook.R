@@ -25,7 +25,6 @@ TimeStratPetersenDiagErrorWHChinook <-
              tau_xiP=1/var(logit((m2+.5)/(n1+1)), na.rm=TRUE),
              tauP.alpha=.001, tauP.beta=.001,
              debug=FALSE, debug2=FALSE, 
-	     engine=c('jags',"openbugs")[1],
              InitialSeed){
 
 set.seed(InitialSeed)  # set prior to initial value computations
@@ -130,47 +129,13 @@ model {
    ##### Fit the spline for wildfish - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W[i] <- inprod(SplineDesign.W[i,1:n.bU.W],bU.W[1:n.bU.W])  # spline design matrix * spline coeff
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.W[i] ~ dnorm(logUne.W[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.W[i] ~ dnorm(logUne.W[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.W[i] <- etaU.W[i] - logUne.W[i]
    }
    ##### Fit the spline for hatchery fish - these fish only enter AFTER hatch.after ######
    for(i in (hatch.after+1):Nstrata){
         logUne.H[i] <- inprod(SplineDesign.H[i,1:n.bU.H],bU.H[1:n.bU.H])  # spline design matrix * spline coeff
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.H[i] ~ dnorm(logUne.H[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.H[i] ~ dnorm(logUne.H[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.H[i] <- etaU.H[i] - logUne.H[i]
    }
 
@@ -198,34 +163,13 @@ if(tolower(engine) %in% c("openbugs")) {
 
    ##### Hyperpriors #####
    ## Run size - wild and hatchery fish - flat priors
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
    for(i in 1:n.b.flat.W){
       bU.W[b.flat.W[i]] ~ dnorm(0, 1E-6)
    }
    for(i in 1:n.b.flat.H){
       bU.H[b.flat.H[i]] ~ dnorm(0, 1E-6)
    }
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-   for(i in 1:n.b.flat.W){
-      bU.W[b.flat.W[i]] ~ dflat()
-   }
-   for(i in 1:n.b.flat.H){
-      bU.H[b.flat.H[i]] ~ dflat()
-   }
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
+
    ## Run size - priors on the difference for wild and hatchery fish
    for(i in 1:n.b.notflat.W){
       xiU.W[b.notflat.W[i]] <- 2*bU.W[b.notflat.W[i]-1] - bU.W[b.notflat.W[i]-2]
@@ -423,8 +367,7 @@ if(tolower(engine) %in% c("openbugs")) {
                               overRelax=FALSE,
                               initialSeed=InitialSeed,
                               working.directory=working.directory,
-			      engine=engine,
                               debug=debug)
-
+ 
       return(results)
   }

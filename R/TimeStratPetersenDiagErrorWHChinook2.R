@@ -1,3 +1,4 @@
+# 2018-11-25 CJS removed all openbugs references
 # 2013-12-31 CJS conversion to JAGS
 #                - no model name
 #                - C(,20) -> T(,20)
@@ -33,7 +34,6 @@ TimeStratPetersenDiagErrorWHChinook2 <-
                 tau_xiP=1/var(logit((m2+.5)/(n1+1)), na.rm=TRUE), 
                 tauP.alpha=.001, tauP.beta=.001, 
                 debug=FALSE, debug2=FALSE,
-		engine=c('jags','openbugs')[1],
                 InitialSeed){
 
 set.seed(InitialSeed)  # set prior to initial value computations
@@ -166,93 +166,25 @@ model {
    ##### Fit the spline for YoY wildfish - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.YoY[i] <- inprod(SplineDesign.W.YoY[i,1:n.bU.W.YoY],bU.W.YoY[1:n.bU.W.YoY])  # spline design matrix * spline coeff 
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.W.YoY  [i] <- etaU.W.YoY[i] - logUne.W.YoY[i]
    }
    ##### Fit the spline for YoY hatchery fish - these fish only enter AFTER hatch.after.YoY ######
    for(i in (hatch.after.YoY+1):Nstrata){
         logUne.H.YoY[i] <- inprod(SplineDesign.H.YoY[i,1:n.bU.H.YoY],bU.H.YoY[1:n.bU.H.YoY])  # spline design matrix * spline coeff 
-  ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.H.YoY[i] ~ dnorm(logUne.H.YoY[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.H.YoY[i] ~ dnorm(logUne.H.YoY[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.H.YoY  [i] <- etaU.H.YoY[i] - logUne.H.YoY[i]
    }
    ##### Fit the spline for Age1 wildfish - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.1[i] <- inprod(SplineDesign.W.1[i,1:n.bU.W.1],bU.W.1[1:n.bU.W.1])  # spline design matrix * spline coeff 
-     ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.W.1  [i] <- etaU.W.1[i] - logUne.W.1[i]
    }
    ##### Fit the spline for Age1 hatchery fish - this covers the entire experiment because the have residualized from last year
    for(i in 1:Nstrata){
         logUne.H.1[i] <- inprod(SplineDesign.H.1[i,1:n.bU.H.1],bU.H.1[1:n.bU.H.1])  # spline design matrix * spline coeff 
-     ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
-      etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-      etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
+        etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,20)              # add random error
         eU.H.1  [i] <- etaU.H.1[i] - logUne.H.1[i]
    }
 
@@ -264,11 +196,6 @@ if(tolower(engine) %in% c("openbugs")) {
         logitP[i] ~ dnorm(mu.logitP[i],tauP)
    }
 
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
    ##### Hyperpriors #####
    ## Run size - wild and hatchery fish - flat priors
    for(i in 1:n.b.flat.W.YoY){
@@ -283,31 +210,6 @@ if(tolower(engine)=="jags") {
    for(i in 1:n.b.flat.H.1){
       bU.H.1[b.flat.H.1[i]] ~ dnorm(0, 1E-6)
    }
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-   ##### Hyperpriors #####
-   ## Run size - wild and hatchery fish - flat priors
-   for(i in 1:n.b.flat.W.YoY){
-      bU.W.YoY[b.flat.W.YoY[i]] ~ dflat()
-   }
-   for(i in 1:n.b.flat.H.YoY){
-      bU.H.YoY[b.flat.H.YoY[i]] ~ dflat()
-   }
-   for(i in 1:n.b.flat.W.1){
-      bU.W.1[b.flat.W.1[i]] ~ dflat()
-   }
-   for(i in 1:n.b.flat.H.1){
-      bU.H.1[b.flat.H.1[i]] ~ dflat()
-   }
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
 
    ## Run size - priors on the difference for YoY wild and hatchery fish
    for(i in 1:n.b.notflat.W.YoY){
@@ -638,7 +540,6 @@ results <- run.MCMC(modelFile=model.file,
                         overRelax=FALSE,
                         initialSeed=InitialSeed,
                         working.directory=working.directory,
-			engine=engine,
                         debug=debug)
 
 return(results)

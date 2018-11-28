@@ -15,7 +15,7 @@
 # 2010-03-02 SJB Created file.
 
 #' @rdname TimeStratPetersenNonDiagError_fit
-#' 
+#' @export
 
 
 TimeStratPetersenNonDiagErrorNP <- function(title,

@@ -1,3 +1,4 @@
+#3 2018-11-27 CJS Added explicit library refrences
 ## 2018-11-25 CJS Removed all references to OpenBugs
 ## 2015-06-10 CJS gof converted to ggplot()
 ## 2014-09-01 CJS conversion to jags
@@ -16,7 +17,7 @@
 ## 2010-03-03 SJB Created File
 
 #' @rdname TimeStratPetersenNonDiagError_fit
-#' 
+#' @export 
 
 TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDENP-",
                          time, n1, m2, u2, sampfrac, jump.after=NULL,
@@ -38,8 +39,19 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
   ## This is the classical stratified Petersen model where the recoveries can take place for this and multiple
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
+  
+  library(actuar)
+  library(coda) 
+  library(ggplot2) 
+  library(plyr)
+  library(rjags) 
+  library(R2OpenBUGS)  # just need the as.bugs.array() function
+  library(splines) 
+  library(stats) 
+  library(utils)
+  
 
-  version <- '2015-07-01'
+  version <- '2018-12-01'
   options(width=200)
 
   ## Input parameters are

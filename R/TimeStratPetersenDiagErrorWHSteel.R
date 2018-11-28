@@ -1,3 +1,4 @@
+# 2018-11-27 CJS removed openBugs
 # 2014-09-01 CJS conversion to JAGS
 #                - no model name
 #                - C(,20) -> T(,20)
@@ -29,7 +30,6 @@ TimeStratPetersenDiagErrorWHSteel <-
            tau_xiP=1/var( logit((m2+.5)/(n1+1)),na.rm=TRUE),
            tauP.alpha=.001, tauP.beta=.001,
            debug=FALSE, debug2=FALSE,
-	   engine=c('jags','openbugs')[1], 
            InitialSeed){
 
 set.seed(InitialSeed)  # set prior to initial value computations
@@ -137,70 +137,19 @@ model {
    ##### Fit the spline for W.YoY - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.YoY[i] <- inprod(SplineDesign.W.YoY[i,1:n.bU.W.YoY],bU.W.YoY[1:n.bU.W.YoY])  # spline design matrix * spline coeff
-", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)T(,20)          # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)C(,20)          # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.W.YoY[i] <- etaU.W.YoY[i] - logUne.W.YoY[i]
    }
    ##### Fit the spline for W.1 -   this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.1[i] <- inprod(SplineDesign.W.1[i,1:n.bU.W.1],bU.W.1[1:n.bU.W.1])  # spline design matrix * spline coeff
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.W.1[i] <- etaU.W.1[i] - logUne.W.1[i]
    }
    ##### Fit the spline for hatchery fish - these fish only enter AFTER hatch.after ######
    for(i in (hatch.after+1):Nstrata){
         logUne.H.1[i] <- inprod(SplineDesign.H.1[i,1:n.bU.H.1],bU.H.1[1:n.bU.H.1])  # spline design matrix * spline coeff
-   ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
         etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-        etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)C(,20)              # add random error
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
         eU.H.1[i] <- etaU.H.1[i] - logUne.H.1[i]
    }
 
@@ -233,11 +182,6 @@ if(tolower(engine) %in% c("openbugs")) {
 
    ##### Hyperpriors #####
    ## Run size - wild and hatchery fish - flat priors
-      ", fill=TRUE)
-sink()  # Temporary end of saving bugs program
-if(tolower(engine)=="jags") {
-   sink("model.txt", append=TRUE)
-   cat("
    for(i in 1:n.b.flat.W.YoY){
       bU.W.YoY[b.flat.W.YoY[i]] ~ dnorm(0, 1E-6)
    }
@@ -247,26 +191,7 @@ if(tolower(engine)=="jags") {
    for(i in 1:n.b.flat.H.1){
       bU.H.1[b.flat.H.1[i]] ~ dnorm(0, 1E-6)
    }
-   ",fill=TRUE)
-   sink()
-}
-if(tolower(engine) %in% c("openbugs")) {
-   sink("model.txt", append=TRUE)
-   cat("
-   for(i in 1:n.b.flat.W.YoY){
-      bU.W.YoY[b.flat.W.YoY[i]] ~ dflat()
-   }
-   for(i in 1:n.b.flat.W.1){
-      bU.W.1[b.flat.W.1[i]] ~ dflat()
-   }
-   for(i in 1:n.b.flat.H.1){
-      bU.H.1[b.flat.H.1[i]] ~ dflat()
-   }
-   ",fill=TRUE)
-   sink()
-}
-   sink("model.txt", append=TRUE)
-   cat("
+
    ## Run size - priors on the difference for wild and hatchery fish
    for(i in 1:n.b.notflat.W.YoY){
       xiU.W.YoY[b.notflat.W.YoY[i]] <- 2*bU.W.YoY[b.notflat.W.YoY[i]-1] - bU.W.YoY[b.notflat.W.YoY[i]-2]
@@ -533,7 +458,6 @@ results <- run.MCMC(modelFile=model.file,
                         overRelax=FALSE,
                         initialSeed=InitialSeed,
                         working.directory=working.directory,
-			engine=engine,
                         debug=debug)
 
 return(results)
