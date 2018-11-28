@@ -40,16 +40,16 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  library(actuar)
-  library(coda) 
-  library(ggplot2) 
-  library(gridExtra)
-  library(plyr)
-  library(rjags) 
-  library(R2OpenBUGS)  # just need the as.bugs.array() function
-  library(splines) 
-  library(stats) 
-  library(utils)
+#  library(actuar)
+#  library(coda) 
+#  library(ggplot2) 
+#  library(gridExtra)
+#  library(plyr)
+#  library(rjags) 
+#  library(R2OpenBUGS)  # just need the as.bugs.array() function
+#  library(splines) 
+#  library(stats) 
+#  library(utils)
   
 
   version <- '2018-12-01'

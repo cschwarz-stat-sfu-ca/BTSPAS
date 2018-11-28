@@ -6,6 +6,8 @@
 \title{Logit and anti-logit function.}
 \usage{
 logit(p)
+
+expit(theta)
 }
 \arguments{
 \item{p}{probability between 0 and 1.}

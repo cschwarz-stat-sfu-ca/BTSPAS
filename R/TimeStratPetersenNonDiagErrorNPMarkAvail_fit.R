@@ -1,5 +1,6 @@
 ## Yet to do - add bayesian p-value plots/ add p-values to results
 
+## 2018-11-28 CJS remove reference to OpenBugs
 ## 2014-09-01 CJS conversion to jags
 ## 2012-08-30 CJS fixed problem in any() and all() in error checking with NAs
 ## 2011-02-21 CJS changed u2 to new.u2 in code for expanded.m2
@@ -22,8 +23,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP", prefi
                          Delta.max=NULL,tauTT.alpha=.1,tauTT.beta=.1,
                          run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                          debug=FALSE, debug2=FALSE,
-                         engine=c('jags','openbugs')[1],
-                         InitialSeed=ceiling(runif(1,min=0, max=if(engine=="jags"){1000000}else{14}))) {
+                         InitialSeed=ceiling(runif(1,min=0, max=1000000))) {
   ## Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
   ## and fall back after tagging. This is based on the Skeena River study, where only 40/66 (60%) acoustically tagged fish
   ## were observed above the canyon spot and hence 40% of tagged fish never migrated forward of their tagging release spot.
@@ -382,7 +382,7 @@ sampfrac <- as.vector(sampfrac)
                          tauU.alpha=tauU.alpha, tauU.beta=tauU.beta,
                          taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
                          Delta.max=Delta.max,tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
-                         debug=debug, debug2=debug2, engine=engine, InitialSeed=InitialSeed)
+                         debug=debug, debug2=debug2, InitialSeed=InitialSeed)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenNonDiagErrorNPMarkAvail(title=title, prefix=prefix, 
                          time=new.time, n1=new.n1, m2=new.m2, u2=new.u2,
@@ -393,7 +393,7 @@ sampfrac <- as.vector(sampfrac)
                          tauU.alpha=tauU.alpha, tauU.beta=tauU.beta,
                          taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
                          Delta.max=Delta.max,tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
-                         debug=debug, debug2=debug2,engine=engine, InitialSeed=InitialSeed)
+                         debug=debug, debug2=debug2, InitialSeed=InitialSeed)
    } 
   
   ## Now to create the various summary tables of the results

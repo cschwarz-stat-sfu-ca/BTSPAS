@@ -1,5 +1,5 @@
 #' @rdname PredictivePosterior.TSPDE
-
+#' @import stats 
 
 # 2018-11-27 CJS Removed openbugs stuff
 # 2014-09-01 CJS Fixed bug when logitP.fixed is fixed in first position

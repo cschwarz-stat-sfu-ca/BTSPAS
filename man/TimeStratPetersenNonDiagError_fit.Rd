@@ -40,8 +40,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail(title, prefix, time, n1, m2, u2,
   tauU.alpha = 1, tauU.beta = 0.05, taueU.alpha = 1,
   taueU.beta = 0.05, Delta.max, tauTT.alpha = 0.1, tauTT.beta = 0.1,
   mu_xiP = -2, tau_xiP = 0.6666, tauP.alpha = 0.001,
-  tauP.beta = 0.001, debug = FALSE, debug2 = FALSE,
-  engine = c("jags", "openbugs")[1], InitialSeed)
+  tauP.beta = 0.001, debug = FALSE, debug2 = FALSE, InitialSeed)
 
 TimeStratPetersenNonDiagErrorNPMarkAvail_fit(title = "TSPNDENP",
   prefix = "TSPNDENP-", time, n1, m2, u2, sampfrac, jump.after = NULL,
@@ -54,8 +53,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit(title = "TSPNDENP",
   tau_xiP = 0.6666, tauP.alpha = 0.001, tauP.beta = 0.001,
   Delta.max = NULL, tauTT.alpha = 0.1, tauTT.beta = 0.1,
   run.prob = seq(0, 1, 0.1), debug = FALSE, debug2 = FALSE,
-  engine = c("jags", "openbugs")[1], InitialSeed = ceiling(runif(1, min
-  = 0, max = if (engine == "jags") {     1e+06 } else {     14 })))
+  InitialSeed = ceiling(runif(1, min = 0, max = 1e+06)))
 
 TimeStratPetersenNonDiagErrorNP_fit(title = "TSPNDENP",
   prefix = "TSPNDENP-", time, n1, m2, u2, sampfrac, jump.after = NULL,
@@ -185,9 +183,6 @@ marked_availability = beta(ma.p.alpha, ma.p.beta)}
 
 \item{ma.p.beta}{One of the parameters for the prior for the
 marked_availability = beta(ma.p.alpha, ma.p.beta)}
-
-\item{engine}{Which MCMC sampler to use. JAGS=default, OpenBugs=alternate.
-Case not important.}
 
 \item{sampfrac}{A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are

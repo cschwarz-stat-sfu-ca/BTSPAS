@@ -154,8 +154,6 @@
 #' produced. Normally the functions will halt at \code{browser()} calls to
 #' allow the user to peek into the internal variables. Not useful except to
 #' package developers.
-#' @param engine Which MCMC sampler to use. JAGS=default, OpenBugs=alternate.
-#' Case not important.
 #' @param InitialSeed Numeric value used to initialize the random numbers used
 #' in the MCMC iterations.
 #' @return An MCMC object with samples from the posterior distribution. A

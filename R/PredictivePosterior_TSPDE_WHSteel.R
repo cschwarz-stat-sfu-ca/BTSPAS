@@ -1,4 +1,5 @@
 #' @rdname PredictivePosterior.TSPDE
+#' @import stats plyr
 
 
 # 2015-06-10 CJS Bug fix on selecting after hatch after

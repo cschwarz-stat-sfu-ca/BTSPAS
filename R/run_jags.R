@@ -4,6 +4,8 @@
 ## 2013-12-30 CJS changed program argument in as.bugs.array to JAGS
 ## 2013-09-22 sjb Created file. Copied from run_openbugs.R
 
+#' @import rjags R2OpenBUGS utils
+
 run.jags <-
     function(modelFile,
              dataFile,

@@ -5,18 +5,20 @@ Title: Bayesian Time-Strat. Population Analysis
 Author: Carl J Schwarz <cschwarz@stat.sfu.ca> and
 	Simon J Bonner <simon.bonner@uky.edu>
 Maintainer: Carl J Schwarz <cschwarz@stat.sfu.ca>
-Imports: actuar, 
-         coda, 
-         ggplot2,
-         graphics, 
-         grDevices,
-         gridExtra,
-         plyr, 
-         rjags, 
-         R2OpenBUGS, 
-         splines, 
-         stats, 
-         utils
+Depends:
+Imports: 
+    actuar, 
+    coda, 
+    ggplot2,
+    graphics, 
+    grDevices,
+    gridExtra,
+    plyr, 
+    rjags, 
+    R2OpenBUGS, 
+    splines, 
+    stats, 
+    utils
 SystemRequirements: JAGS
 Description: Provides advanced Bayesian methods to estimate
 	     abundance and run-timing from temporally-stratified

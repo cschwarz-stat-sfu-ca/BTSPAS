@@ -13,7 +13,8 @@
 ## Every model requires different initial values, though much of the
 ## code can be reused.
 
-#' @ keywords internal
+#' @keywords internal
+#' @inheritParams TimeStratPetersenNonDiagErrorNP_fit
 
 genInitsTTln <-
     function(n1,m2,u2){
@@ -44,6 +45,7 @@ genInitsTTln <-
                     tauSd=init.tauSd,
                     etasdLogTT=init.etasdLogTT))
     }
+
 
 genInitsTTnp <-
     function(n1,m2,u2,Delta.max){

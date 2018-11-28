@@ -10,7 +10,7 @@
 #' 
 #' 
 #' @aliases BTSPAS-internal genInitVals genInitValsChain genInitsTTln
-#' genInitsTTnp lnTheta plot_logitP  RunTime run.openbugs run.jags run.MCMC
+#' genInitsTTnp lnTheta plot_logitP RunTime run.jags run.MCMC
 #' simTSPNDE SimplePetersen TestIfPool visualize.muTT.prior make.muTT.prior 
 NULL
 

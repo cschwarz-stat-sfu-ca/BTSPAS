@@ -1,3 +1,4 @@
+# 2018-11-28 CJS removed reference of OpenBugs
 # 2015-06-10 CJS converted gof plots to ggplot(). Bug fix.
 # 2014-09-01 CJS converstion to JAGS
 # 2012-08-30 CJS fixed problem with missing values in any() and all()
@@ -23,8 +24,7 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
                  tauP.alpha=.001, tauP.beta=.001,
                  run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                  debug=FALSE, debug2=FALSE, 
-		 engine=c('jags','openbugs')[1],
-                 InitialSeed=ceiling(runif(1,min=0, max=if(engine=="jags"){1000000}else{14}))) {
+                 InitialSeed=ceiling(runif(1,min=0,1000000))) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the YoY and Age1 wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
@@ -489,7 +489,7 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to low values for debugging only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug,  engine=engine, InitialSeed=InitialSeed)
+            debug=debug, InitialSeed=InitialSeed)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagErrorWHChinook2(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, 
@@ -499,7 +499,7 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta, 
-	    engine=engine, InitialSeed=InitialSeed)
+	          InitialSeed=InitialSeed)
    }
 
 # Now to create the various summary tables of the results

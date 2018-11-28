@@ -17,9 +17,8 @@ TimeStratPetersenDiagErrorWHChinook_fit(title = "TSPDE-WHChinook",
   mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
   tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
   tauP.alpha = 0.001, tauP.beta = 0.001, run.prob = seq(0, 1, 0.1),
-  debug = FALSE, debug2 = FALSE, engine = c("jags", "openbugs")[1],
-  InitialSeed = ceiling(runif(1, min = 0, max = if (engine == "jags") {  
-    1e+06 } else {     14 })))
+  debug = FALSE, debug2 = FALSE, InitialSeed = ceiling(runif(1, min =
+  0, max = 1e+06)))
 }
 \arguments{
 \item{title}{A character string used for a title on reports and graphs}
@@ -119,9 +118,6 @@ considerably for a quick turn around.}
 produced. Normally the functions will halt at \code{browser()} calls to
 allow the user to peek into the internal variables. Not useful except to
 package developers.}
-
-\item{engine}{Which MCMC sampler should be used. JAGS=default,
-OpenBugs=alternate. Case not relevant.}
 
 \item{InitialSeed}{Numeric value used to initialize the random numbers used
 in the MCMC iterations.}

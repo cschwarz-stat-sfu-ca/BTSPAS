@@ -22,6 +22,9 @@ logit <- function(p){
     log(p/(1-p))
 }
 
+
+
+#' @rdname logit 
 expit <- function(theta){
 # anti logit function
    1/(1+exp(-theta))

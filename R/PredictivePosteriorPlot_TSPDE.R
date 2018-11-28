@@ -1,5 +1,6 @@
 
 #' @rdname PredictivePosterior.TSPDE
+#' @import ggplot2 gridExtra 
 
 
 # 2015-06-10 CJS converted to ggplot()

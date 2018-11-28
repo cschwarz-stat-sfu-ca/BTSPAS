@@ -125,9 +125,6 @@ stratum.  The values of \code{u2} will be set to NA for these strata.}
 
 \item{run.prob}{Numeric vector indicating percentiles of run timing should
 be computed.}
-
-\item{engine}{Which MCMC sampler should be used. Default is "JAGS". Also
-available is "OpenBugs" or "Winbugs". Case not relevant.}
 }
 \value{
 An MCMC object with samples from the posterior distribution. A

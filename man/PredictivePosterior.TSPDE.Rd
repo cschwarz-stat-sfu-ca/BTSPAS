@@ -41,11 +41,10 @@ PredictivePosterior.TSPDE.WHCH2(time, n1, m2, u2.A.YoY, u2.N.YoY, u2.A.1,
 PredictivePosterior.TSPDE.WHSteel(time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1,
   p, U.W.YoY, U.W.1, U.H.1, hatch.after)
 
-PredictivePosterior.TSPNDE(n1, m2, u2, logitP.fixed, p, U, mu, sigma,
-  engine)
+PredictivePosterior.TSPNDE(n1, m2, u2, logitP.fixed, p, U, mu, sigma)
 
 PredictivePosterior.TSPNDENP(n1, m2.expanded, u2, logitP.fixed, p, U,
-  Theta, Delta.max, engine)
+  Theta, Delta.max)
 }
 \description{
 This is an internal function, not normally of use to users.

@@ -15,7 +15,7 @@
 # 2009-12-01 CJS (added WinBugs/OpenBugs directory to the argument list
 
 #' @rdname TimeStratPetersenDiagError_fit
-#' 
+#' @import graphics grDevices splines
 
 TimeStratPetersenDiagError <- function(
     title,

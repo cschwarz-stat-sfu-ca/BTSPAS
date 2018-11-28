@@ -1,3 +1,4 @@
+# 2018-11-27 CJS Remove refrence to OpenBugs
 # 2015-06-10 CJS Fixed error in Bayesian p-value plots. Converted them to ggplot
 # 2014-09-01 CJS converted to JAGS
 # 2012-08-30 CJS fixed problem in any() and all() in error checking with NAs
@@ -124,8 +125,6 @@
 #' produced. Normally the functions will halt at \code{browser()} calls to
 #' allow the user to peek into the internal variables. Not useful except to
 #' package developers.
-#' @param engine Which MCMC sampler should be used. JAGS=default,
-#' OpenBugs=alternate. Case not relevant.
 #' @param InitialSeed Numeric value used to initialize the random numbers used
 #' in the MCMC iterations.
 #' @return An MCMC object with samples from the posterior distribution. A
@@ -160,8 +159,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
                  tauP.alpha=.001, tauP.beta=.001,
                  run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                  debug=FALSE, debug2=FALSE,
-		 engine=c('jags',"openbugs")[1],
-                 InitialSeed=ceiling(runif(1,min=0, max=if(engine=="jags"){1000000}else{14}))) {
+                 InitialSeed=ceiling(runif(1,min=0, max=1000000))) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
@@ -586,7 +584,7 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to low values for debugging only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, engine=engine, InitialSeed=InitialSeed)
+            debug=debug,InitialSeed=InitialSeed)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagErrorWHChinook(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2.A=new.u2.A, u2.N=new.u2.N, 
@@ -594,7 +592,7 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            engine=engine, InitialSeed=InitialSeed)
+            InitialSeed=InitialSeed)
    }
 
 # Now to create the various summary tables of the results

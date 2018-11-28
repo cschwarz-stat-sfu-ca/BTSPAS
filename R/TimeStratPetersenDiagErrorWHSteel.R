@@ -18,6 +18,10 @@
 # 2009-12-05 CJS added title to argument list
 # 2009-12-01 CJS added openbugs/winbugs directory to argument list
 
+#' @rdname TimeStratPetersenDiagErrorWHSteel_fit
+#' 
+
+
 TimeStratPetersenDiagErrorWHSteel <-
   function(title, prefix,
            time, n1, m2,

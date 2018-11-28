@@ -2,11 +2,9 @@
 \alias{BTSPAS-internal}
 \alias{genInitVals}
 \alias{genInitValsChain}
-\alias{genInitsTTln}
 \alias{genInitsTTnp}
 \alias{lnTheta}
 \alias{plot_logitP}
-\alias{RunTime}
 \alias{run.openbugs}
 \alias{run.jags}
 \alias{run.MCMC}

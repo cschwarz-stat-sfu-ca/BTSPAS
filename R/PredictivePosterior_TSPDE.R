@@ -13,6 +13,7 @@
 #' @aliases PredictivePosteriorPlot.TSPDE.WHCH2 
 #' @aliases PredictivePosteriorPlot.TSPDE.WHSteel 
 #' @aliases PredictivePosteriorPlot.TSPNDE 
+#' @import stats plyr
 
 #' @keywords internal
 

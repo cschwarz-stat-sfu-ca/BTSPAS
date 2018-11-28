@@ -1,3 +1,4 @@
+# 2018-11-28 CJS remove reference to OpenBugs
 # 2015-06-10 CJS convert gof plot to ggplot. Bug fix
 # 2014-09-01 CJS conversion to jags
 # 2012-08-30 CJS fixed problem with NAs in any() and all() in error checking
@@ -24,8 +25,7 @@
 #' function.
 #' 
 #' 
-#' @aliases TimeStratPetersenDiagErrorWHSteel_fit
-#' TimeStratPetersenDiagErrorWHSteel
+#' @aliases TimeStratPetersenDiagErrorWHSteel_fit TimeStratPetersenDiagErrorWHSteel
 #' @param title A character string used for a title on reports and graphs
 #' @param prefix A character string used as the prefix for created files. All
 #' created graph files are of the form prefix-xxxxx.pdf.
@@ -98,8 +98,6 @@
 #' produced. Normally the functions will halt at \code{browser()} calls to
 #' allow the user to peek into the internal variables. Not useful except to
 #' package developers.
-#' @param engine Which MCMC sampler should be used. JAGS=default,
-#' alternate=OpenBugs. Case is not important.
 #' @param InitialSeed Numeric value used to initialize the random numbers used
 #' in the MCMC iterations.
 #' @return An MCMC object with samples from the posterior distribution. A
@@ -133,8 +131,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
            tauP.alpha=.001, tauP.beta=.001,
            run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
            debug=FALSE, debug2=FALSE,
-           engine=c('jags',"openbugs")[1], 
-           InitialSeed=ceiling(runif(1,min=0, max=if(engine=="jags"){1000000}else{14}))) {
+           InitialSeed=ceiling(runif(1,min=0, 1000000))) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish for STEELHEAD releases
 # The steelhead are nice because 100% of hatchery fish are adipose fin clipped and no wild fish are adipose fin clipped
@@ -538,7 +535,7 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,   # set to low value for debugging only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, debug2=debug2,  engine=engine, InitialSeed=InitialSeed)
+            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagErrorWHSteel(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2.W.YoY=new.u2.W.YoY, u2.W.1=new.u2.W.1, u2.H.1=new.u2.H.1, 
@@ -546,7 +543,7 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims, 
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, debug2=debug2, engine=engine, InitialSeed=InitialSeed)
+            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
   }
 
 # Now to create the various summary tables of the results

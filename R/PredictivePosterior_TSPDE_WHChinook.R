@@ -1,4 +1,5 @@
 #' @rdname PredictivePosterior.TSPDE
+#' @import stats plyr
 
 
 
