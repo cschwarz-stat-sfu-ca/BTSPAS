@@ -43,6 +43,7 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
   library(actuar)
   library(coda) 
   library(ggplot2) 
+  library(gridExtra)
   library(plyr)
   library(rjags) 
   library(R2OpenBUGS)  # just need the as.bugs.array() function
@@ -537,9 +538,9 @@ sampfrac <- as.vector(sampfrac)
 
   sink(results.filename, append=TRUE)
 
-  ## Global summary of results
+   ## Global summary of results
   cat("\n\n*** Summary of MCMC results *** \n\n")
-  print(results, digits.summary=3)
+  print(results, digits.summary=3)#, max=.Machine$integer.max)
 
   cat("\n\n*** Alternate DIC computation based on p_D = var(deviance)/2 \n")
   results.row.names <- rownames(results$summary)
