@@ -28,4 +28,4 @@ Description: Provides advanced Bayesian methods to estimate
 	     uses JAGS to sample from the posterior distribution.
 License: GPL (>=2)
 URL: http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

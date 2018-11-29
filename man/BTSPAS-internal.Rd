@@ -9,8 +9,6 @@
 \alias{run.jags}
 \alias{run.MCMC}
 \alias{simTSPNDE}
-\alias{SimplePetersen}
-\alias{TestIfPool}
 \alias{visualize.muTT.prior}  % visualize what a prior for muTT looks like
 \alias{make.muTT.prior}       % convert a prior for muTT to the internal form needed
 

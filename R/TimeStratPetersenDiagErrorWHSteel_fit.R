@@ -1,3 +1,4 @@
+# 2018-11-29 CJS fixed issue with printing of large results got cutoff
 # 2018-11-28 CJS remove reference to OpenBugs
 # 2015-06-10 CJS convert gof plot to ggplot. Bug fix
 # 2014-09-01 CJS conversion to jags
@@ -708,8 +709,14 @@ cat("*** See help(modelSetRN) for details. ***\n")
 
 # Global summary of results
 cat("\n\n*** Summary of MCMC results *** \n\n")
-print(results, digits.summary=3)
-
+  save.max.print <- getOption("max.print")
+  options(max.print=.Machine$integer.max)
+  
+  print(results, digits.summary=3)#, max=.Machine$integer.max)
+  
+  options(max.print=save.max.print)
+  
+  
 # Give an alternate computation of DIC based on the variance of the deviance
 # Refer to http://www.mrc-bsu.cam.ac.uk/bugs/winbugs/DIC-slides.pdf for derivation and why
 # this alternate method may be superior to that automatically computed by WinBugs/OpenBugs

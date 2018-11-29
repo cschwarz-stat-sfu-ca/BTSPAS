@@ -4,6 +4,7 @@
 #       add logitP.fixed and logitP.fixed.values to parameters
 #    - bayesian predictive posterior plots (the Bayesian p-values)
 
+# 2018-11-28 CJS Fixed problem of large printing being cutoff in results
 # 2018-11-25 CJS Removed all references to OpenBugs
 # 2014-09-01 CJS converstion to jags
 # 2012-08-30 CJS fixed NAs problem in any() and all() in error checking
@@ -156,6 +157,8 @@
 #' package developers.
 #' @param InitialSeed Numeric value used to initialize the random numbers used
 #' in the MCMC iterations.
+#' @param save.output.to.files. Should the plots and text output be save to the files
+#' in addition to being stored in the MCMC object? 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
 #' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
@@ -193,7 +196,8 @@ TimeStratPetersenNonDiagError_fit <-
            tauP.beta=.001,
            run.prob=seq(0,1,.1), # what percentiles of run timing are wanted
            debug=FALSE, debug2=FALSE,
-           InitialSeed=ceiling(runif(1,min=0,1000000))) {
+           InitialSeed=ceiling(runif(1,min=0,1000000)),
+           save.output.to.files=TRUE) {
 # Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
@@ -634,8 +638,14 @@ sink(results.filename, append=TRUE)
 
 # Global summary of results
 cat("\n\n*** Summary of MCMC results *** \n\n")
-print(results, digits.summary=3)
-
+  save.max.print <- getOption("max.print")
+  options(max.print=.Machine$integer.max)
+  
+  print(results, digits.summary=3)#, max=.Machine$integer.max)
+  
+  options(max.print=save.max.print)
+  
+  
 cat("\n\n*** Alternate DIC computation based on p_D = var(deviance)/2 \n")
 results.row.names <- rownames(results$summary)
 deviance.row.index<- grep("deviance", results.row.names)

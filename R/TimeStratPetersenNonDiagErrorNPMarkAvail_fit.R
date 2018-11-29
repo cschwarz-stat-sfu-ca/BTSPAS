@@ -1,5 +1,6 @@
 ## Yet to do - add bayesian p-value plots/ add p-values to results
 
+## 2018-11-29 CJS Fixed problem of printing large results
 ## 2018-11-28 CJS remove reference to OpenBugs
 ## 2014-09-01 CJS conversion to jags
 ## 2012-08-30 CJS fixed problem in any() and all() in error checking with NAs
@@ -487,7 +488,14 @@ sampfrac <- as.vector(sampfrac)
   
   ## Global summary of results
   cat("\n\n*** Summary of MCMC results *** \n\n")
-  print(results, digits.summary=3)
+  
+  save.max.print <- getOption("max.print")
+  options(max.print=.Machine$integer.max)
+  
+  print(results, digits.summary=3)#, max=.Machine$integer.max)
+  
+  options(max.print=save.max.print)  
+  
   
   cat("\n\n*** Alternate DIC computation based on p_D = var(deviance)/2 \n")
   results.row.names <- rownames(results$summary)

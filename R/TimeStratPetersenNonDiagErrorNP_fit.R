@@ -1,4 +1,5 @@
-#3 2018-11-27 CJS Added explicit library refrences
+## 2018-11-28 CJS Fixed problem of printing results getting cutoff if too large
+## 2018-11-27 CJS Added explicit library refrences
 ## 2018-11-25 CJS Removed all references to OpenBugs
 ## 2015-06-10 CJS gof converted to ggplot()
 ## 2014-09-01 CJS conversion to jags
@@ -34,7 +35,8 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
                          tauTT.alpha=.1,tauTT.beta=.1,
                          run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted
                          debug=FALSE, debug2=FALSE,
-                         InitialSeed=ceiling(runif(1,min=0,1000000))) {
+                         InitialSeed=ceiling(runif(1,min=0,1000000)),
+                         save.output.to.files=TRUE) {
   ## Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
   ## This is the classical stratified Petersen model where the recoveries can take place for this and multiple
   ## strata later. Transisions of marked fish are modelled non-parametrically.
@@ -345,7 +347,7 @@ sampfrac <- as.vector(sampfrac)
   cat("\n\n")
 
   ## The NP analysis does not need the expanded m2 array, but this is
-  ## needed late on. So, we'd better compute it here. The last column
+  ## needed later on. So, we'd better compute it here. The last column
   ## of this matrix will be the number of individuals from each
   ## stratum that are not recaptured.
   ##
@@ -540,8 +542,11 @@ sampfrac <- as.vector(sampfrac)
 
    ## Global summary of results
   cat("\n\n*** Summary of MCMC results *** \n\n")
+  save.max.print <- getOption("max.print")
+  options(max.print=.Machine$integer.max)
   print(results, digits.summary=3)#, max=.Machine$integer.max)
-
+  options(max.print=save.max.print)
+  
   cat("\n\n*** Alternate DIC computation based on p_D = var(deviance)/2 \n")
   results.row.names <- rownames(results$summary)
   deviance.row.index<- grep("deviance", results.row.names)
