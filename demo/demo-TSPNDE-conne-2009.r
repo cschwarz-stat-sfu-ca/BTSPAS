@@ -137,7 +137,6 @@ demo.cr.2009.as.tspnde <- TimeStratPetersenNonDiagError_fit(
                   bad.u2=     demo.bad.u2,
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
-		  #engine="openbugs",   # use the openbugs engine
                   debug=TRUE)
 
 # Rename files that were created.

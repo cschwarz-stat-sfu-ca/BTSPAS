@@ -65,7 +65,8 @@ TimeStratPetersenNonDiagErrorNP_fit(title = "TSPNDENP",
   = TRUE)), tau_xiP = 0.6666, tauP.alpha = 0.001, tauP.beta = 0.001,
   Delta.max = NULL, prior.muTT = NULL, tauTT.alpha = 0.1,
   tauTT.beta = 0.1, run.prob = seq(0, 1, 0.1), debug = FALSE,
-  debug2 = FALSE, InitialSeed = ceiling(runif(1, min = 0, 1e+06)))
+  debug2 = FALSE, InitialSeed = ceiling(runif(1, min = 0, 1e+06)),
+  save.output.to.files = TRUE)
 
 TimeStratPetersenNonDiagError_fit(title = "TSPNDE", prefix = "TSPNDE-",
   time, n1, m2, u2, sampfrac, jump.after = NULL, bad.n1 = c(),
@@ -76,7 +77,8 @@ TimeStratPetersenNonDiagError_fit(title = "TSPNDE", prefix = "TSPNDE-",
   mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
   tau_xiP = 0.6666, tauP.alpha = 0.001, tauP.beta = 0.001,
   run.prob = seq(0, 1, 0.1), debug = FALSE, debug2 = FALSE,
-  InitialSeed = ceiling(runif(1, min = 0, 1e+06)))
+  InitialSeed = ceiling(runif(1, min = 0, 1e+06)),
+  save.output.to.files = TRUE)
 }
 \arguments{
 \item{title}{A character string used for a title on reports and graphs}
@@ -225,6 +227,9 @@ be computed.}
 \item{prior.muTT}{Information on prior movement. For example c(1,4,3,2)
 would have a prior of .1, .4, .3, and .2. A prior of c(10,40,30,20) would
 have same values but stronger information.}
+
+\item{save.output.to.files.}{Should the plots and text output be save to the files
+in addition to being stored in the MCMC object?}
 }
 \value{
 An MCMC object with samples from the posterior distribution. A

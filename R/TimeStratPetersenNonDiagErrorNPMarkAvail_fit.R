@@ -267,11 +267,6 @@ sampfrac <- as.vector(sampfrac)
   new.sampfrac <- sampfrac
   new.logitP.cov <- logitP.cov
   
-  ## If n1=m2=0, then set n1 to 1, and set m2<-NA as winbugs cannot deal with n1=0 and m2=0
-  new.m2[new.n1==0,] <- NA
-  new.n1[new.n1==0 ] <- 1
-
-   
   
 #################### This needs more thought ####################
   ## Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
@@ -318,7 +313,10 @@ sampfrac <- as.vector(sampfrac)
   }
   
   cat("*** Expanded m2 array ***\n\n")
+  save.max.print <- getOption("max.print")
+  options(max.print=.Machine$integer.max)
   print(expanded.m2)
+  options(max.print=save.max.print)
 
   # assign the logitP fixed values etc.
   new.logitP.fixed <- rep(NA, length(new.u2))

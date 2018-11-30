@@ -132,9 +132,9 @@ sampfrac <- as.vector(sampfrac)
          length(u2)," ",length(sampfrac)," ",length(time),"\n")
     return()}
 
-    if(length(logitP.cov) %% length(u2) != 0){
+  if(length(logitP.cov) %% length(u2) != 0){
       cat("***** ERROR ***** Dimension of covariate vector doesn't match length of u2. They are:",
-        length(u2)," ",length(logitP.cov)," ",dim(logitP.cov),"\n")
+         length(u2)," ",length(logitP.cov)," ",dim(logitP.cov),"\n")
       return()}
 
   ##  2. Check that rowsum of m2<= n1
@@ -181,6 +181,11 @@ sampfrac <- as.vector(sampfrac)
     cat("***** ERROR ***** Prior muTT must have same length as columns of m2. You entered \n prior.muTT:",prior.muTT,"\n")
     return()}
 
+  #7 check that the length of u2 
+  if(length(u2) < length(n1) | length(u2) > (length(n1)+ ncol(m2)-1)){
+    cat("***** ERROR ***** Length(u2) must between length(n1) and length(n1)+ncol(m2) \n")
+    return()
+  }
 
 
   ## Define maximum travel time if not supplied by user
@@ -207,10 +212,6 @@ sampfrac <- as.vector(sampfrac)
 
   cat("\n\n", title, "Results \n\n")
 
-  ## length(sampfrac) =length(u2)
-  ## m2(i,+) < n1(i)
-  ## 0 < sampfrac < 1
-
   cat("*** Raw data *** (padded to match length of u2) \n")
   jump.indicator <- rep('   ', length(u2))
   jump.indicator[time %in% jump.after]<- '***'
@@ -232,7 +233,7 @@ sampfrac <- as.vector(sampfrac)
   if(length(logitP.fixed)==0) cat("none - NO fixed values")
 
   ## Obtain the Pooled Petersen estimator prior to fixup of bad.n1, bad.m2, and bad.u2 values
-  cat("\n\n*** Pooled Petersen Estimate prior to fixing bad n1, m2, or u2 values  CHECK - CHECK - CHECK - CHECK ***\n\n")
+  cat("\n\n*** Pooled Petersen Estimate prior to fixing bad n1, m2, or u2 values\n\n")
   temp.n1 <- n1
   temp.m2 <- m2
   temp.u2 <- u2
@@ -248,59 +249,23 @@ sampfrac <- as.vector(sampfrac)
   cat("The following strata were excluded:",
       if(length(time[!select])>0){time[!select]} else {" NONE"}, "\n")
 
-  ##temp.n1 <- n1[select]
-  ##temp.m2 <- m2[select]
-  ##temp.u2 <- u2[select]
-
   cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
   pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
   cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
 
 
-################ This needs more thoughs ##################
-  ## Obtain Petersen estimator for each stratum prior to removing bad m2 values
-  ##cat("*** Stratified Petersen Estimator for each stratum PRIOR to removing bad m2 values ***\n\n")
-  ##temp.n1 <- n1
-  ##temp.m2 <- m2
-  ##temp.u2 <- u2
-  ##sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-  ##temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
-  ##colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
-  ##print(temp)
-  ##cat("\n")
-  ##cat("Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-  ##   "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
-
-
-  ## Obtain Petersen estimator for each stratum after removing bad m2 values
-  ##cat("*** Stratified Petersen Estimator for each stratum AFTER removing bad m2 values ***\n\n")
-  ##temp.n1 <- n1
-  ##temp.m2 <- m2
-  ##temp.m2[index.bad.m2] <- NA
-  ##temp.u2 <- u2
-  ##sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-  ##temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
-  ##colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
-  ##print(temp)
-  ##cat("\n")
-  ##cat("Est U(total) ", format(round(sum(sp$est)),big.mark=","),
-  ##    "  (SE ", format(round(sqrt(sum(sp$se^2))), big.mark=","), ")\n\n\n")
-
-
-
-
 ############## This needs more thought ##########################
   ## Test if pooling can be done
-  ##cat("*** Test if pooled Petersen is allowable. [Check if marked fractions are equal] ***\n\n")
-  ##select <- (n1>0) & (!is.na(n1)) & (!is.na(temp.m2))
-  ##temp.n1 <- n1[select]
-  ##temp.m2 <- m2[select]
-  ##test <- TestIfPool( temp.n1, temp.m2)
-  ##cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
-  ##temp <- cbind(time[select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
-  ##colnames(temp) <- c('time','n1-m2','m2','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
-  ##print(temp)
-  ##cat("\n Be cautious of using this test in cases of small expected values. \n\n")
+  cat("*** Test if pooled Petersen is allowable. [Check if fraction captured equal] ***\n\n")
+  select <- (n1>0) & (!is.na(n1)) & (!is.na(apply(m2,1,sum)))
+  temp.n1 <- n1[select]
+  temp.m2 <- m2[select,]
+  test <- TestIfPool( temp.n1, apply(temp.m2,1,sum))
+  cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
+  temp <- cbind(time[select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
+  colnames(temp) <- c('time','n1-m2*','m2*','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
+  print(temp)
+  cat("\n Be cautious of using this test in cases of small expected values. \n\n")
 
 
   ## Adjust the data for the explicity bad values or other problems
@@ -310,11 +275,6 @@ sampfrac <- as.vector(sampfrac)
   new.u2   <- u2
   new.sampfrac <- sampfrac
   new.logitP.cov <- logitP.cov
-
-  ## If n1=m2=0, then set n1 to 1, and set m2<-NA as winbugs cannot deal with n1=0 and m2=0
-  new.m2[new.n1==0,] <- NA
-  new.n1[new.n1==0 ] <- 1
-
 
 
 #################### This needs more thought ####################
@@ -352,16 +312,44 @@ sampfrac <- as.vector(sampfrac)
   ## stratum that are not recaptured.
   ##
 
-  expanded.m2 <- matrix(0, nrow=length(new.n1), ncol=length(new.u2)+1)
+  #browser()
+  expanded.m2 <- matrix(0, nrow=length(new.n1), ncol=length(new.n1)+ncol(m2)+1)
   for(i in 1:length(new.n1)){
-    expanded.m2[i,1:length(new.u2)] <- c(rep(0,i-1),new.m2[i,],rep(0,length(new.u2)))[1:length(new.u2)]
-    expanded.m2[i,length(new.u2)+1] <- new.n1[i] - sum(new.m2[i,])
+    expanded.m2[i,1:(ncol(expanded.m2)-1)] <- c(rep(0,i-1),new.m2[i,],rep(0,ncol(expanded.m2)))[1:(ncol(expanded.m2)-1)]
+    expanded.m2[i,ncol(expanded.m2)] <- new.n1[i] - sum(new.m2[i,])
+  }
+  
+  cat("*** Expanded m2 array with column sum and u2 ***\n\n")
+  save.max.print <- getOption("max.print")
+  options(max.print=.Machine$integer.max)
+ 
+  temp <- rbind(expanded.m2, apply(expanded.m2,2,sum, na.rm=TRUE))
+  rownames(temp)[nrow(temp)] <- 'Column totals'
+  temp <- rbind(temp, c(u2, rep(NA, ncol(expanded.m2)-length(u2)) ))
+  rownames(temp)[nrow(temp)] <- "Untagged (u2)"
+  temp <- rbind(temp, c(new.u2, rep(NA, ncol(expanded.m2)-length(new.u2)) ))
+  rownames(temp)[nrow(temp)] <- "Untagged - after fixups"
+  
+  new.logitP.fixed <- rep(NA, length(new.u2))
+  new.logitP.fixed[match(logitP.fixed, time)] <- logitP.fixed.values
+  
+  temp <- rbind(temp, c(new.logitP.fixed, rep(NA, ncol(expanded.m2)-length(new.u2)) ))
+  rownames(temp)[nrow(temp)] <- "Logit P fixed"
+  rownames(temp)[1:length(n1)] <- 1:length(n1)
+  print(temp)
+  options(max.print=save.max.print)
+  sink()
+  
+  # some further checking on u2. Make sure that every columns where there are recoveries has a u2
+  # browser()
+  if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
+    cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")
+    return()
   }
 
-  cat("*** Expanded m2 array ***\n\n")
-  print(expanded.m2)
+  sink(results.filename, append=TRUE)
 
-  # assign the logitP fixed values etc.
+  # assign the logitP fixed values etc (replicates what was done above, but convenient to put here)
   new.logitP.fixed <- rep(NA, length(new.u2))
   new.logitP.fixed[match(logitP.fixed, time)] <- logitP.fixed.values
 

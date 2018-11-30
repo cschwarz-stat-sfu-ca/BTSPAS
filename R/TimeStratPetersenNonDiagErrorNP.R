@@ -168,6 +168,10 @@ model {
 
         logitP[free.logitP.index[i]] <- log(u2copy[free.logitP.index[i]] + 1) - etaU[free.logitP.index[i]] + epsilon[free.logitP.index[i]]
    }
+   # define the last epsilon (including the extra needed for m2)
+   for(i in Extra.strata.cap){
+      epsilon[ Nstrata.cap + i] <- 0  # forces definition of epsilon1 ...epsilon[Nstrata.cap -> Extra.strata.cap]
+   }
 
    ##### Priors and hyperpriors #####
    ## Transition probabilities -- continuation ratio model

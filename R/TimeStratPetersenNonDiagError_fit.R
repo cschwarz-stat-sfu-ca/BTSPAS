@@ -67,7 +67,7 @@
 #' case.
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum.  These will be expanded by the capture efficiency to estimate the
-#' population size in each stratum.
+#' population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1
 #' @param sampfrac A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
@@ -409,10 +409,6 @@ new.u2   <- u2
 new.sampfrac <- sampfrac
 new.logitP.cov <- logitP.cov
 
-# If n1=m2=0, then set n1 to 1, and set m2<-NA as winbugs cannot deal with n1=0 and m2=0
-new.m2[new.n1==0,] <- NA
-new.n1[new.n1==0 ] <- 1
-
 ########## This needs more thought ##########
 # Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
 # of unmarked fish that were captured. It is not necessary to adjust the n1 and m2 values
@@ -454,7 +450,11 @@ for(i in 1:length(new.n1)){
 }
 
 cat("*** Expanded m2 array ***\n\n")
+save.max.print <- getOption("max.print")
+options(max.print=.Machine$integer.max)
 print(expanded.m2)
+options(max.print=save.max.print)
+
 
 # assign the logitP fixed values etc.
 new.logitP.fixed <- rep(NA, length(new.u2))

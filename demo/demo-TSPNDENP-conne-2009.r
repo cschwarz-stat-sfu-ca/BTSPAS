@@ -140,7 +140,6 @@ demo.cr.2009.as.tspndenp <- TimeStratPetersenNonDiagErrorNP_fit(
                   bad.u2=     demo.bad.u2,
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
-		              #engine="openbugs",
                   n.iter=5000, n.burnin=1000, n.sims=300,
                   debug=FALSE
                   )
