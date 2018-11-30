@@ -1,3 +1,4 @@
+## 2018-11-30 CJS Fixed problem of epsilon not being right length
 ## 2018-11-28 CJS Fixed problem of printing results getting cutoff if too large
 ## 2018-11-27 CJS Added explicit library refrences
 ## 2018-11-25 CJS Removed all references to OpenBugs
@@ -254,8 +255,7 @@ sampfrac <- as.vector(sampfrac)
   cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
 
 
-############## This needs more thought ##########################
-  ## Test if pooling can be done
+    ## Test if pooling can be done
   cat("*** Test if pooled Petersen is allowable. [Check if fraction captured equal] ***\n\n")
   select <- (n1>0) & (!is.na(n1)) & (!is.na(apply(m2,1,sum)))
   temp.n1 <- n1[select]
@@ -289,7 +289,10 @@ sampfrac <- as.vector(sampfrac)
   ## Adjust for strata where sampling fraction=0. On these strata
   ## u2 is set to NA so that there is NO information on U2 for this stratum
   new.u2[new.sampfrac<.001 & new.sampfrac >0] <- NA
+#################### This needs more thought ####################
 
+  
+  
   ## Set the bad values to missing
   new.n1[time[1:length(n1)] %in% bad.n1]  <- NA
   new.m2[time[1:length(n1)] %in% bad.m2,] <- NA
