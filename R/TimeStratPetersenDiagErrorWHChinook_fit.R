@@ -1,3 +1,4 @@
+# 2018-12-01 CJS changed posterior plot to ggplot
 # 2018-11-30 CJS changed acf to ggplot
 # 2018-11-28 CJS fixed issued with printing of results getting cut off
 # 2018-11-27 CJS Remove refrence to OpenBugs
@@ -696,18 +697,12 @@ results$plots$acf.Utot.plot <- acf.Utot.plot
 
 
 # Look at the shape of the posterior distribution
-pdf(file=paste(prefix,"-UtotW-posterior.pdf",sep=""))
-plot( x=density(as.vector(results$sims.array[,,"Utot.W"])), 
-    main=paste(title,'\nPosterior density plot of U-total.W'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot.W",c("2.5%","97.5%")])  # add vertical reference lines
-dev.off()
-pdf(file=paste(prefix,"-UtotH-posterior.pdf",sep=""))
-plot( x=density(as.vector(results$sims.array[,,"Utot.H"])), 
-    main=paste(title,'\nPosterior density plot of U-total.H'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot.H",c("2.5%","97.5%")])  # add vertical reference lines
-dev.off()
+mcmc.sample1<- data.frame(parm="Utot.W", sample=results$sims.matrix[,"Utot.W"], stringsAsFactors=FALSE)
+mcmc.sample2<- data.frame(parm="Utot.H", sample=results$sims.matrix[,"Utot.H"], stringsAsFactors=FALSE)
+mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2)
+post.Utot.plot <- plot_posterior(mcmc.sample)
+if(save.output.to.files)ggsave(plot=post.Utot.plot, filename=paste(prefix,"-Utot-posterior.pdf",sep=""), height=4, width=6, units="in")
+results$plots$post.Utot.plot <- post.Utot.plot
 
 
 #save the Bayesian predictive distribution (Bayesian p-value plots)

@@ -4,6 +4,7 @@
 #       add logitP.fixed and logitP.fixed.values to parameters
 #    - bayesian predictive posterior plots (the Bayesian p-values)
 
+# 2018-12-01 CJS Converted acf, posterior plots to ggplot2
 # 2018-11-28 CJS Fixed problem of large printing being cutoff in results
 # 2018-11-25 CJS Removed all references to OpenBugs
 # 2014-09-01 CJS converstion to jags
@@ -562,21 +563,16 @@ acf.Utot.plot <- plot_acf(mcmc.sample)
 if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
 results$plots$acf.Utot.plot <- acf.Utot.plot
 
+# plot the posterior plots
+mcmc.sample1 <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
+mcmc.sample2 <- data.frame(parm="Ntot", sample=results$sims.matrix[,"Ntot"], stringsAsFactors=FALSE)
+mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2)
+post.UNtot.plot <- plot_posterior(mcmc.sample)
+post.UNtot.plot
+if(save.output.to.files)ggsave(plot=post.UNtot.plot, filename=paste(prefix,"-UNtot-posterior.pdf",sep=""),
+                               height=ifelse(length(unique(mcmc.sample$parm))<=2,4,6), width=6, units="in")
+results$plots$post.UNtot.plot <- post.UNtot.plot
 
-# Look at the shape of the posterior distribution
-pdf(file=paste(prefix,"-Ntot-posterior.pdf",sep=""))
-plot( x=density(as.vector(results$sims.array[,,"Ntot"])),
-    main=paste(title,'\nPosterior density plot of N-total'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Ntot",c("2.5%","97.5%")])  # add vertical reference lines
-dev.off()
-
-pdf(file=paste(prefix,"-Utot-posterior.pdf",sep=""))
-plot( x=density(as.vector(results$sims.array[,,"Utot"])),
-    main=paste(title,'\nPosterior density plot of U-total'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot",c("2.5%","97.5%")])  # add vertical reference lines
-dev.off()
 
 # plot the mean log(travel times) (the muLogTT) vs release stratum number
 pdf(file=paste(prefix,"-muLogTT.pdf",sep=""))

@@ -1,3 +1,4 @@
+## 2018-12-01 CJS created posterior plots using ggplot
 ## 2018-11-30 CJS created acf plot using ggplot
 ## 2018-11-30 CJS Fixed problem of epsilon not being right length
 ## 2018-11-28 CJS Fixed problem of printing results getting cutoff if too large
@@ -491,19 +492,15 @@ sampfrac <- as.vector(sampfrac)
   results$plots$acf.Utot.plot <- acf.Utot.plot
 
   ## Look at the shape of the posterior distribution
-  pdf(file=paste(prefix,"-Ntot-posterior.pdf",sep=""))
-  plot( x=density(as.vector(results$sims.array[,,"Ntot"])),
-       main=paste(title,'\nPosterior density plot of N-total'),
-       sub ="Vertical lines mark 2.5th and 97.5th percentile")
-  abline(v=results$summary["Ntot",c("2.5%","97.5%")])  ## add vertical reference lines
-  dev.off()
+  mcmc.sample1 <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
+  mcmc.sample2 <- data.frame(parm="Ntot", sample=results$sims.matrix[,"Ntot"], stringsAsFactors=FALSE)
+  mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2)
+  post.UNtot.plot <- plot_posterior(mcmc.sample)
+  post.UNtot.plot
+  if(save.output.to.files)ggsave(plot=post.UNtot.plot, filename=paste(prefix,"-UNtot-posterior.pdf",sep=""),
+                               height=ifelse(length(unique(mcmc.sample$parm))<=2,4,6), width=6, units="in")
+  results$plots$post.UNtot.plot <- post.UNtot.plot
 
-  pdf(file=paste(prefix,"-Utot-posterior.pdf",sep=""))
-  plot( x=density(as.vector(results$sims.array[,,"Utot"])),
-       main=paste(title,'\nPosterior density plot of U-total'),
-       sub ="Vertical lines mark 2.5th and 97.5th percentile")
-  abline(v=results$summary["Utot",c("2.5%","97.5%")])  ## add vertical reference lines
-  dev.off()
 
   #browser()
   ## Bayesian P-values

@@ -1,3 +1,4 @@
+# 2018-12-01 CJS converted posterior plot to ggplot
 # 2018-11-30 CJS converted acf plot to ggplot
 # 2018-11-29 CJS fixed problem where print got cut off in large problems
 # 2018-11-28 CJS removed reference of OpenBugs
@@ -655,39 +656,17 @@ results$plots$acf.Utot.plot <- acf.Utot.plot
 
 
 # Look at the shape of the posterior distribution
-# This is plotted as a split screen with 4 cells
-pdf(file=paste(prefix,"-Utot-posterior.pdf",sep=""))
-split.screen(c(2,2))
-screen(1)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-plot( x=density(as.vector(results$sims.array[,,"Utot.W.YoY"])), 
-    main=paste(title,'\nPosterior of U-total.W.YoY'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot.W.YoY",c("2.5%","97.5%")])  # add vertical reference lines
-screen(2)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-plot( x=density(as.vector(results$sims.array[,,"Utot.H.YoY"])), 
-    main=paste(title,'\nPosterior of U-total.H.YoY'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot.H.YoY",c("2.5%","97.5%")])  # add vertical reference lines
-screen(3)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-plot( x=density(as.vector(results$sims.array[,,"Utot.W.1"])), 
-    main=paste(title,'\nPosterior of U-total.W.1'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot.W.1",c("2.5%","97.5%")])  # add vertical reference lines
-screen(4)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-plot( x=density(as.vector(results$sims.array[,,"Utot.H.1"])), 
-    main=paste(title,'\nPosterior of U-total.H.1'),
-    sub ="Vertical lines mark 2.5th and 97.5th percentile")
-abline(v=results$summary["Utot.H.1",c("2.5%","97.5%")])  # add vertical reference lines
-close.screen(all.screens=TRUE)
-dev.off()
+mcmc.sample1<- data.frame(parm="Utot.W.YoY", sample=results$sims.matrix[,"Utot.W.YoY"], stringsAsFactors=FALSE)
+mcmc.sample2<- data.frame(parm="Utot.H.YoY", sample=results$sims.matrix[,"Utot.H.YoY"], stringsAsFactors=FALSE)
+mcmc.sample3<- data.frame(parm="Utot.W.1",   sample=results$sims.matrix[,"Utot.W.1"],   stringsAsFactors=FALSE)
+mcmc.sample4<- data.frame(parm="Utot.H.1",   sample=results$sims.matrix[,"Utot.H.1"],   stringsAsFactors=FALSE)
+mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2, mcmc.sample3, mcmc.sample4)
+post.Utot.plot <- plot_posterior(mcmc.sample, ncol=2)
+post.Utot.plot
+if(save.output.to.files)ggsave(plot=post.Utot.plot, filename=paste(prefix,"-Utot-posterior.pdf",sep=""),
+                               height=ifelse(length(unique(mcmc.sample$parm))<=2,4,6), width=6, units="in")
+results$plots$post.Utot.plot <- post.Utot.plot
+
 
 
 # make the Bayesian predictive distribution (Bayesian p-value plots)

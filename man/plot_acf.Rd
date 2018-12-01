@@ -4,10 +4,12 @@
 \alias{plot_acf}
 \title{Create an acf plot of a parameter}
 \usage{
-plot_acf(mcmc.sample)
+plot_acf(mcmc.sample, ncol = 2)
 }
 \arguments{
-\item{mcmc.sample}{Data frame with 2 columns. parm, and sample. A separate ACF plot is generated for each parameter using facet_wrap}
+\item{mcmc.sample}{Data frame with 2 columns. parm, and sample. A separate ACF plot is generated for each parameter using facet_wrap.}
+
+\item{ncol}{Number of columns in the plot.}
 }
 \value{
 acf plot(s) as an ggplot2 object

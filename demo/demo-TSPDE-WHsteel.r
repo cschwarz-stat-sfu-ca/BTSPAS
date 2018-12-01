@@ -37,10 +37,10 @@
 
 # Create a directory to store the results Test and then create the
 # directory
-if(file.access("demo-demo-TSPDE-WHsteel")!=0){
-  dir.create("demo-demo-TSPDE-WHsteel", showWarnings=TRUE)
+if(file.access("demo-TSPDE-WHsteel")!=0){
+  dir.create("demo-TSPDE-WHsteel", showWarnings=TRUE)
 }
-setwd("demo-demo-TSPDE-WHsteel")
+setwd("demo-TSPDE-WHsteel")
 
 ## Load BTSPAS library
 library(BTSPAS)

@@ -1,5 +1,6 @@
 ## Yet to do - add bayesian p-value plots/ add p-values to results
 
+## 2018-12-01 CJS converted acf, posterior plots to ggplot
 ## 2018-11-30 CJS Fixed problem of epsilon not being right length
 ## 2018-11-29 CJS Fixed problem of printing large results
 ## 2018-11-28 CJS remove reference to OpenBugs
@@ -441,6 +442,7 @@ sampfrac <- as.vector(sampfrac)
   plot_logU(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, results=results)
   dev.off()
   
+  ## acf plot
   logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, logitP.cov=new.logitP.cov, results=results) 
   if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
   results$plots$logitP.plot <- logitP.plot
@@ -450,22 +452,17 @@ sampfrac <- as.vector(sampfrac)
   acf.Utot.plot <- plot_acf(mcmc.sample)
   if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
   results$plots$acf.Utot.plot <- acf.Utot.plot
+  
+  ## Look at the shape of the posterior distribution  browser()
+  mcmc.sample1 <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
+  mcmc.sample2 <- data.frame(parm="Ntot", sample=results$sims.matrix[,"Ntot"], stringsAsFactors=FALSE)
+  mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2)
+  post.UNtot.plot <- plot_posterior(mcmc.sample)
+  post.UNtot.plot
+  if(save.output.to.files)ggsave(plot=post.UNtot.plot, filename=paste(prefix,"-UNtot-posterior.pdf",sep=""),
+                               height=ifelse(length(unique(mcmc.sample$parm))<=2,4,6), width=6, units="in")
+  results$plots$post.UNtot.plot <- post.UNtot.plot
 
-  ## Look at the shape of the posterior distribution
-  pdf(file=paste(prefix,"-Ntot-posterior.pdf",sep=""))
-  plot( x=density(as.vector(results$sims.array[,,"Ntot"])), 
-       main=paste(title,'\nPosterior density plot of N-total'),
-       sub ="Vertical lines mark 2.5th and 97.5th percentile")
-  abline(v=results$summary["Ntot",c("2.5%","97.5%")])  ## add vertical reference lines
-  dev.off()
-  
-  pdf(file=paste(prefix,"-Utot-posterior.pdf",sep=""))
-  plot( x=density(as.vector(results$sims.array[,,"Utot"])), 
-       main=paste(title,'\nPosterior density plot of U-total'),
-       sub ="Vertical lines mark 2.5th and 97.5th percentile")
-  abline(v=results$summary["Utot",c("2.5%","97.5%")])  ## add vertical reference lines
-  dev.off()
-  
   ## Bayesian P-values
   ## Not yet implemented
 

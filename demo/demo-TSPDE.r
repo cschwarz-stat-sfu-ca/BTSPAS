@@ -117,7 +117,6 @@ demo.jc.2003.ch.tspde <- TimeStratPetersenDiagError_fit(
                   bad.n1=demo.bad.n1,
                   bad.m2=demo.bad.m2,
                   bad.u2=demo.bad.u2,
-		              #engine="openbugs",  # how to run openbugs
                   InitialSeed=890110,
                   debug=TRUE  # this generates only 10,000 iterations of the MCMC chain for checking.
                   )

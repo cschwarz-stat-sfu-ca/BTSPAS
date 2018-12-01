@@ -135,7 +135,6 @@ demo.cr.1987.as.tspnde <- TimeStratPetersenNonDiagError_fit(
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
                   bad.u2=     demo.bad.u2,
-                  #engine="openbugs", # how to specify openbugs engine
                   debug=TRUE
                   )
 
