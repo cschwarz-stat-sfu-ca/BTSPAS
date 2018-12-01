@@ -53,7 +53,8 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit(title = "TSPNDENP",
   tau_xiP = 0.6666, tauP.alpha = 0.001, tauP.beta = 0.001,
   Delta.max = NULL, tauTT.alpha = 0.1, tauTT.beta = 0.1,
   run.prob = seq(0, 1, 0.1), debug = FALSE, debug2 = FALSE,
-  InitialSeed = ceiling(runif(1, min = 0, max = 1e+06)))
+  InitialSeed = ceiling(runif(1, min = 0, max = 1e+06)),
+  save.output.to.files = TRUE)
 
 TimeStratPetersenNonDiagErrorNP_fit(title = "TSPNDENP",
   prefix = "TSPNDENP-", time, n1, m2, u2, sampfrac, jump.after = NULL,
@@ -103,7 +104,7 @@ case.}
 
 \item{u2}{A numeric vector of the number of unmarked fish captured in each
 stratum.  These will be expanded by the capture efficiency to estimate the
-population size in each stratum.}
+population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1}
 
 \item{jump.after}{A numeric vector with elements belonging to \code{time}.
 In some cases, the spline fitting the population numbers should be allowed
@@ -224,12 +225,12 @@ example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\%.}
 \item{run.prob}{Numeric vector indicating percentiles of run timing should
 be computed.}
 
+\item{save.output.to.files}{Should the plots and text output be save to the files
+in addition to being stored in the MCMC object?}
+
 \item{prior.muTT}{Information on prior movement. For example c(1,4,3,2)
 would have a prior of .1, .4, .3, and .2. A prior of c(10,40,30,20) would
 have same values but stronger information.}
-
-\item{save.output.to.files.}{Should the plots and text output be save to the files
-in addition to being stored in the MCMC object?}
 }
 \value{
 An MCMC object with samples from the posterior distribution. A

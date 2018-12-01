@@ -9,7 +9,7 @@
 ## 2011-02-19 CJS First development
 
 #' @rdname TimeStratPetersenNonDiagError_fit
-#' 
+#' @export TimeStratPetersenNonDiagErrorNPMarkAvail_fit
 
 TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP", prefix="TSPNDENP-", 
                          time, n1, m2, u2, sampfrac, jump.after=NULL,
@@ -25,7 +25,8 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP", prefi
                          Delta.max=NULL,tauTT.alpha=.1,tauTT.beta=.1,
                          run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                          debug=FALSE, debug2=FALSE,
-                         InitialSeed=ceiling(runif(1,min=0, max=1000000))) {
+                         InitialSeed=ceiling(runif(1,min=0, max=1000000)),
+                         save.output.to.files=TRUE) {
   ## Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
   ## and fall back after tagging. This is based on the Skeena River study, where only 40/66 (60%) acoustically tagged fish
   ## were observed above the canyon spot and hence 40% of tagged fish never migrated forward of their tagging release spot.
@@ -149,8 +150,7 @@ sampfrac <- as.vector(sampfrac)
   }
 
   ## Define maximum travel time if not supplied by user
-  if(is.null(Delta.max))
-    Delta.max <- ncol(m2)-1
+  if(is.null(Delta.max)) Delta.max <- ncol(m2)-1
  
   ## Define output filename
   results.filename <- paste(prefix,"-results.txt",sep="")   
@@ -312,9 +312,11 @@ sampfrac <- as.vector(sampfrac)
   
   # some further checking on u2. Make sure that every columns where there are recoveries has a u2
   # browser()
-  if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
-    cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")
-    return()
+  if( (length(u2)+1) <= (ncol(temp)-1)) {
+     if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
+       cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")
+       return()
+     }
   }
 
   sink(results.filename, append=TRUE)
@@ -440,14 +442,15 @@ sampfrac <- as.vector(sampfrac)
   dev.off()
   
   logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, logitP.cov=new.logitP.cov, results=results) 
-  ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
+  if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
   results$plots$logitP.plot <- logitP.plot
   
-  ## Look at autocorrelation function for Ntot
-  pdf(file=paste(prefix,"-Utot-acf.pdf",sep=""))
-  acf(results$sims.matrix[,"Utot"], main=paste(title,"\nAutocorrelation function for U total"))
-  dev.off()
-  
+  ## Look at autocorrelation function for Utot
+  mcmc.sample <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
+  acf.Utot.plot <- plot_acf(mcmc.sample)
+  if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
+  results$plots$acf.Utot.plot <- acf.Utot.plot
+
   ## Look at the shape of the posterior distribution
   pdf(file=paste(prefix,"-Ntot-posterior.pdf",sep=""))
   plot( x=density(as.vector(results$sims.array[,,"Ntot"])), 

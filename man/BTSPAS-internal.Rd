@@ -4,8 +4,6 @@
 \alias{genInitValsChain}
 \alias{genInitsTTnp}
 \alias{lnTheta}
-\alias{plot_logitP}
-\alias{run.openbugs}
 \alias{run.jags}
 \alias{run.MCMC}
 \alias{simTSPNDE}

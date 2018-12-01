@@ -1,3 +1,4 @@
+# 2018-11-30 CJS converted acf to ggplot# 
 # 2018-11-29 CJS fixed issue with printing of large results got cutoff
 # 2018-11-28 CJS remove reference to OpenBugs
 # 2015-06-10 CJS convert gof plot to ggplot. Bug fix
@@ -101,6 +102,9 @@
 #' package developers.
 #' @param InitialSeed Numeric value used to initialize the random numbers used
 #' in the MCMC iterations.
+#' @param save.output.to.files Should the plots and text output be save to the files
+#' in addition to being stored in the MCMC object?  
+#' 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
 #' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
@@ -132,7 +136,8 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
            tauP.alpha=.001, tauP.beta=.001,
            run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
            debug=FALSE, debug2=FALSE,
-           InitialSeed=ceiling(runif(1,min=0, 1000000))) {
+           InitialSeed=ceiling(runif(1,min=0, 1000000)),
+           save.output.to.files=TRUE) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish for STEELHEAD releases
 # The steelhead are nice because 100% of hatchery fish are adipose fin clipped and no wild fish are adipose fin clipped
@@ -639,20 +644,19 @@ dev.off()
 
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, 
                u2=new.u2.W.YoY+new.u2.W.1+new.u2.H.1, logitP.cov=new.logitP.cov, results=results)
-ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
+if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
 results$plots$logitP.plot <- logitP.plot
 
 
 # Look at autocorrelation function for Utot.W.YoY and Utot.W.1, U.tot.H.1
-pdf(file=paste(prefix,"-Utot.W.YoY-acf.pdf",sep=""))
-acf(results$sims.matrix[,"Utot.W.YoY"], main=paste(title,"\nAutocorrelation function for U total.W.YoY"))
-dev.off()
-pdf(file=paste(prefix,"-Utot.W.1-acf.pdf",sep=""))
-acf(results$sims.matrix[,"Utot.W.1"], main=paste(title,"\nAutocorrelation function for U total.W.1"))
-dev.off()
-pdf(file=paste(prefix,"-Utot.H.1-acf.pdf",sep=""))
-acf(results$sims.matrix[,"Utot.H.1"], main=paste(title,"\nAutocorrelation function for U total.H.1"))
-dev.off()
+mcmc.sample1<- data.frame(parm="Utot.W.YoY", sample=results$sims.matrix[,"Utot.W.YoY"], stringsAsFactors=FALSE)
+mcmc.sample2<- data.frame(parm="Utot.W.1",   sample=results$sims.matrix[,"Utot.W.1"], stringsAsFactors=FALSE)
+mcmc.sample3<- data.frame(parm="Utot.H.1",   sample=results$sims.matrix[,"Utot.H.1"], stringsAsFactors=FALSE)
+mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2, mcmc.sample3)
+acf.Utot.plot <- plot_acf(mcmc.sample)
+if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
+results$plots$acf.Utot.plot <- acf.Utot.plot
+
 
 # Look at the shape of the posterior distribution
 pdf(file=paste(prefix,"-Utot.W.YoY-posterior.pdf",sep=""))
@@ -683,8 +687,8 @@ discrep <-PredictivePosterior.TSPDE.WHSteel (time, new.n1, new.m2, new.u2.W.YoY,
           round(results$sims.list$U.W.1), 
           round(pmax(results$sims.list$U.H.1,0)), hatch.after) #don't forget that hatchery fish is 0 until hatch.after
 gof <- PredictivePosteriorPlot.TSPDE.WHSteel(discrep)
-ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""), 
-       height=8, width=8, units="in", dpi=300 )
+if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),   height=8, width=8, units="in", dpi=300 )
+results$plots$gof <- gof
 
 
 varnames <- names(results$sims.array[1,1,])  # extract the names of the variables 

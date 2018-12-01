@@ -26,7 +26,7 @@ TimeStratPetersenDiagErrorWHSteel_fit(title = "TSPDE-WHSteel",
   = TRUE)), tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
   tauP.alpha = 0.001, tauP.beta = 0.001, run.prob = seq(0, 1, 0.1),
   debug = FALSE, debug2 = FALSE, InitialSeed = ceiling(runif(1, min =
-  0, 1e+06)))
+  0, 1e+06)), save.output.to.files = TRUE)
 }
 \arguments{
 \item{title}{A character string used for a title on reports and graphs}
@@ -133,6 +133,9 @@ hatchery unmarked (but adipose fin clipped) age 1+ fish should be ignored.}
 
 \item{run.prob}{Numeric vector indicating percentiles of run timing should
 be computed.}
+
+\item{save.output.to.files}{Should the plots and text output be save to the files
+in addition to being stored in the MCMC object?}
 }
 \value{
 An MCMC object with samples from the posterior distribution. A

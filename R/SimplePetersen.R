@@ -20,7 +20,7 @@
 #' SimplePetersen(c(200,400), c(10,20), c(300,600))
 #'
 #' 
-#' @export SimplePetersen 
+#' @export SimplePetersen TestIfPool
 #' 
 #' 
 

@@ -8,7 +8,7 @@
 # 2011-02-28 CJS First version
 
 #' @rdname TimeStratPetersenNonDiagError_fit
-#' 
+#' @export TimeStratPetersenNonDiagErrorNPMarkAvail
 
 TimeStratPetersenNonDiagErrorNPMarkAvail <- function(title,
                                                      prefix,

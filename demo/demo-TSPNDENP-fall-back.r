@@ -92,7 +92,6 @@ FB.results <- TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
                   logitP.fixed=FB.logitP.fixed,
                   logitP.fixed.values=FB.logitP.fixed.values,
                   marked_available_n=66, marked_available_x=40,  # 40/66 fish did NOT fall back
-	                #engine="openbugs",
                   debug=TRUE)
  
 # estimate the time to target runsize and produce the plot

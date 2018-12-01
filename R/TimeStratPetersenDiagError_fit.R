@@ -1,3 +1,4 @@
+# 2018-11-30 CJS Convert acf plot to gplot
 # 2018-11-28 CJS Fixed problem where printing results got cutoff
 # 2018-11-25 CJS Removed all OpenBugs stuff
 # 2015-06-10 CJS Change gof plot to ggplot()
@@ -103,6 +104,10 @@
 #' package developers.
 #' @param InitialSeed Numeric value used to initialize the random numbers used
 #' in the MCMC iterations.
+#' @param save.output.to.files Should the plots and text output be save to the files
+#' in addition to being stored in the MCMC object? 
+
+#' 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
 #' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
@@ -137,7 +142,8 @@ TimeStratPetersenDiagError_fit <-
            tauP.alpha=.001, tauP.beta=.001,
            run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
            debug=FALSE, debug2=FALSE,
-           InitialSeed=ceiling(runif(1,min=0, max=1000000))) {
+           InitialSeed=ceiling(runif(1,min=0, max=1000000)),
+           save.output.to.files=TRUE) {
     
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
@@ -476,14 +482,17 @@ pdf(file=paste(prefix,"-logU.pdf",sep=""))
 plot_logU(title=title, time=new.time, n1=new.n1, m2=new.m2, u2=new.u2, results=results)
 dev.off()
 
+# plot logit(P) over time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, u2=new.u2, logitP.cov=new.logitP.cov, results=results)
-ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
+if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
 results$plots$logitP.plot <- logitP.plot
 
-# Look at autocorrelation function for Ntot
-pdf(file=paste(prefix,"-Utot-acf.pdf",sep=""))
-acf(results$sims.matrix[,"Utot"], main=paste(title,"\nAutocorrelation function for U total"))
-dev.off()
+# Look at autocorrelation function for Utot
+mcmc.sample <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
+acf.Utot.plot <- plot_acf(mcmc.sample)
+if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), h=4, w=6, units="in")
+results$plots$acf.Utot.plot <- acf.Utot.plot
+
 
 # Look at the shape of the posterior distribution
 pdf(file=paste(prefix,"-Ntot-posterior.pdf",sep=""))
@@ -506,8 +515,8 @@ discrep <-PredictivePosterior.TSPDE (new.n1, new.m2, new.u2,
 				     expit(results$sims.list$logitP),
 				     round(results$sims.list$U))
 gof <- PredictivePosteriorPlot.TSPDE (discrep)  # get the bayesian p-values
-ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""), 
-       height=8, width=8, units="in", dpi=300 )
+if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),   height=8, width=8, units="in", dpi=300 )
+results$plots$gof <- gof
 
 # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
 varnames <- names(results$sims.array[1,1,])  # extract the names of the variables 

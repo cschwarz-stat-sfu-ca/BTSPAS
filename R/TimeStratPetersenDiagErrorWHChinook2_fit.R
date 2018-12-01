@@ -1,3 +1,4 @@
+# 2018-11-30 CJS converted acf plot to ggplot
 # 2018-11-29 CJS fixed problem where print got cut off in large problems
 # 2018-11-28 CJS removed reference of OpenBugs
 # 2015-06-10 CJS converted gof plots to ggplot(). Bug fix.
@@ -9,6 +10,25 @@
 # 2010-08-06 CJS added creation of traceplots
 # 2010-08-03 CJS added version/date to final object
 # 2010-03-29 CJS Inital version of code
+
+#' @rdname TimeStratPetersenDiagErrorWHChinook_fit
+#' @export TimeStratPetersenDiagErrorWHChinook2_fit
+#' @param u2.A.YoY,u2.N.YoY Number of YoY unmarked fish with/without adipose fin clips
+#'               All YoY wild fish have NO adipose fin clips; however, hatchery fish are a mixture
+#'               of fish with adipose fin clips (a known percentage are marked) unmarked fish.
+#'               So u2.A.YoY MUST be hatchery fish.
+#'                  u2.N.YoY is a mixture of wild and hatchery fish.
+#' @param u2.A.1,u2.N.1 Number of Age1 unmarked fish with/with out adipose fin clips
+#'               All Age1 wild fish have NO adipose fin clips; however, hatchery fish are a mixture
+#'               of fish with adipose fin clips (a known percentage are marked) unmarked fish.
+#'               So u2.A.1 MUST be hatchery fish.
+#'                  u2.N.1 is a mixture of wild and hatchery fish.
+#' @param clip.frac.H.YoY,clip.frac.H.1 Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?
+#' @param bad.u2.A.YoY,bad.u2.N.YoY List of julian weeks where the value of u2.A.YoY/u2.N.YoY is suspect. 
+#'               These are set to NA prior to the fit.
+#' @param bad.u2.A.1,bad.u2.N.1   List of julian weeks where the value of u2.A.1/u2.N.1 is suspect. 
+#'               These are set to NA prior to the fit.
+#' @param hatch.after.YoY Julian week AFTER which hatchery fish are released 
 
 TimeStratPetersenDiagErrorWHChinook2_fit<- 
        function( title="TSPDE-WHChinook2", prefix="TSPDE-WHChinook2-", 
@@ -25,7 +45,8 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
                  tauP.alpha=.001, tauP.beta=.001,
                  run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                  debug=FALSE, debug2=FALSE, 
-                 InitialSeed=ceiling(runif(1,min=0,1000000))) {
+                 InitialSeed=ceiling(runif(1,min=0,1000000)),
+                 save.output.to.files=TRUE) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the YoY and Age1 wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
@@ -618,32 +639,20 @@ dev.off()
 
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, 
              	    u2=u2.A.YoY+u2.N.YoY+u2.A.1+u2.N.1,   logitP.cov=new.logitP.cov, results=results)
-ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
+if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
 results$plots$logitP.plot <- logitP.plot
 
 
 # Look at autocorrelation function for Utot.W.YoY, Utot.H.YoY, Utota.W.1, Utot.H.1
-# This is plotted as a split screen with 4 cells
-pdf(file=paste(prefix,"-Utot-acf.pdf",sep=""))
-split.screen(c(2,2))
-screen(1)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-acf(results$sims.matrix[,"Utot.W.YoY"], main=paste(title,"\nACF U total.W.YoY"))
-screen(2)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-acf(results$sims.matrix[,"Utot.H.YoY"], main=paste(title,"\nACF U total.H.YoY"))
-screen(3)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-acf(results$sims.matrix[,"Utot.W.1"], main=paste(title,"\nACF U total.W.1"))
-screen(4)
-par(cex=.5)
-par(mai=c(.40,.40,.40,.40))
-acf(results$sims.matrix[,"Utot.H.1"], main=paste(title,"\nACF function for U total.H.1"))
-close.screen(all.screens=TRUE)
-dev.off()
+mcmc.sample1<- data.frame(parm="Utot.W.YoY", sample=results$sims.matrix[,"Utot.W.YoY"], stringsAsFactors=FALSE)
+mcmc.sample2<- data.frame(parm="Utot.H.YoY", sample=results$sims.matrix[,"Utot.H.YoY"], stringsAsFactors=FALSE)
+mcmc.sample3<- data.frame(parm="Utot.W.1",   sample=results$sims.matrix[,"Utot.W.1"], stringsAsFactors=FALSE)
+mcmc.sample4<- data.frame(parm="Utot.H.1",   sample=results$sims.matrix[,"Utot.H.1"], stringsAsFactors=FALSE)
+mcmc.sample <- rbind(mcmc.sample1, mcmc.sample2, mcmc.sample3, mcmc.sample4)
+acf.Utot.plot <- plot_acf(mcmc.sample)
+if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
+results$plots$acf.Utot.plot <- acf.Utot.plot
+
 
 # Look at the shape of the posterior distribution
 # This is plotted as a split screen with 4 cells
@@ -693,8 +702,10 @@ discrep <-PredictivePosterior.TSPDE.WHCH2 (time, new.n1, new.m2,   # get the dis
           round(results$sims.list$U.H.1), 
           hatch.after.YoY) #don't forget that hatchery fish is 0 until hatch.after
 gof <- PredictivePosteriorPlot.TSPDE.WHCH2 (discrep)
-ggsave(gof[[1]], filename=paste(prefix,"-GOF.pdf",sep=""), 
-       height=8, width=8, units="in", dpi=300 ) 
+if(save.output.to.files)ggsave(gof[[1]], filename=paste(prefix,"-GOF.pdf",sep=""), 
+       height=8, width=8, units="in", dpi=300 )
+results$plots$gof <- gof
+
 
 varnames <- names(results$sims.array[1,1,])  # extract the names of the variables 
 # First do the trace plots of logitP

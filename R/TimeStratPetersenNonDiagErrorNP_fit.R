@@ -1,3 +1,4 @@
+## 2018-11-30 CJS created acf plot using ggplot
 ## 2018-11-30 CJS Fixed problem of epsilon not being right length
 ## 2018-11-28 CJS Fixed problem of printing results getting cutoff if too large
 ## 2018-11-27 CJS Added explicit library refrences
@@ -345,9 +346,11 @@ sampfrac <- as.vector(sampfrac)
   
   # some further checking on u2. Make sure that every columns where there are recoveries has a u2
   # browser()
-  if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
-    cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")
-    return()
+  if( (length(u2)+1) <= (ncol(temp)-1)) {
+     if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
+       cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")
+       return()
+     }
   }
 
   sink(results.filename, append=TRUE)
@@ -478,13 +481,14 @@ sampfrac <- as.vector(sampfrac)
   dev.off()
 
   logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, logitP.cov=new.logitP.cov, results=results)
-  ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
+  if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
   results$plots$logitP.plot <- logitP.plot
 
   ## Look at autocorrelation function for Ntot
-  pdf(file=paste(prefix,"-Utot-acf.pdf",sep=""))
-  acf(results$sims.matrix[,"Utot"], main=paste(title,"\nAutocorrelation function for U total"))
-  dev.off()
+  mcmc.sample <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
+  acf.Utot.plot <- plot_acf(mcmc.sample)
+  if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
+  results$plots$acf.Utot.plot <- acf.Utot.plot
 
   ## Look at the shape of the posterior distribution
   pdf(file=paste(prefix,"-Ntot-posterior.pdf",sep=""))
@@ -510,8 +514,8 @@ sampfrac <- as.vector(sampfrac)
                                          results$sims.list$Theta,
                                          Delta.max)
   gof <- PredictivePosteriorPlot.TSPNDE (discrep)
-  ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""), 
-       height=8, width=8, units="in", dpi=300 )
+  if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),  height=8, width=8, units="in", dpi=300 )
+  results$plots$gof <- gof
 
    varnames <- names(results$sims.array[1,1,])  # extract the names of the variables
    # First do the trace plots of logitP
