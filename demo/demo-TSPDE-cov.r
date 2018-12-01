@@ -132,7 +132,6 @@ demo.jc.2003.ch.tspde.flow <- TimeStratPetersenDiagError_fit(
                   sampfrac=demo.sampfrac,
                   jump.after=demo.jump.after,
                   bad.m2=demo.bad.m2,
-		  #engine="openbugs",  # how to call openbugs
                   debug=TRUE  # this generates only 10,000 iterations of the MCMC chain for checking.
                   )
 

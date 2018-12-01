@@ -48,20 +48,19 @@
 #' clips captured in each stratum.
 #' @param u2.N A numeric vector of the number of unmarked fish with NO-adipose
 #' clips captured in each stratum.
-#' @param u2.A.YoY A numeric vector of the number of unmarked YoY fish with
-#' adipose clips captured in each stratum.
-#' @param u2.N.YoY A numeric vector of the number of unmarked YoY fish with
-#' adipose clips captured in each stratum.
-#' @param u2.A.1 A numeric vector of the number of unmarked Age1 fish with
-#' adipose clips captured in each stratum.
-#' @param u2.N.1 A numeric vector of the number of unmarked Age1 fish with
-#' adipose clips captured in each stratum.
+#' @param u2.A.YoY,u2.N.YoY Number of YoY unmarked fish with/without adipose fin clips
+#'               All YoY wild fish have NO adipose fin clips; however, hatchery fish are a mixture
+#'               of fish with adipose fin clips (a known percentage are marked) and unmarked fish.
+#'               So u2.A.YoY MUST be hatchery fish.
+#'                  u2.N.YoY is a mixture of wild and hatchery fish.
+#' @param u2.A.1,u2.N.1 Number of Age1 unmarked fish with/with out adipose fin clips
+#'               All Age1 wild fish have NO adipose fin clips; however, hatchery fish are a mixture
+#'               of fish with adipose fin clips (a known percentage are marked) and unmarked fish.
+#'               So u2.A.1 MUST be hatchery fish.
+#'                  u2.N.1 is a mixture of wild and hatchery fish.
+#' @param clip.frac.H.YoY,clip.frac.H.1 Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)
 #' @param clip.frac.H A numeric value for the fraction of the hatchery fish
 #' that have the adipose fin clipped (between 0 and 1).
-#' @param clip.frac.H.YoY A numeric value for the fraction of the YoY hatchery
-#' fish that have the adipose fin clipped (between 0 and 1).
-#' @param clip.frac.H.1 A numeric value for the fraction of the Age1 hatchery
-#' fish that have the adipose fin clipped (between 0 and 1).
 #' @param sampfrac A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
@@ -80,21 +79,13 @@
 #' @param bad.u2.N A numeric vector with elements belonging to \code{time}.  In
 #' some cases, something goes wrong in the stratum, and the number of unmarked
 #' fish with NO adipose fin clip should be ignored.
-#' @param bad.u2.N.YoY A numeric vector with elements belonging to \code{time}.
-#' In some cases, something goes wrong in the stratum, and the number of
-#' unmarked YoY with NO adipose fin clip should be ignored.
+#' @param bad.u2.A.YoY,bad.u2.N.YoY List of julian weeks where the value of u2.A.YoY/u2.N.YoY is suspect. 
+#'               These are set to NA prior to the fit.
 #' @param bad.u2.A A numeric vector with elements belonging to \code{time}.  In
 #' some cases, something goes wrong in the stratum, and the number of unmarked
 #' fish with an adipose fin clip should be ignored.
-#' @param bad.u2.A.YoY A numeric vector with elements belonging to \code{time}.
-#' In some cases, something goes wrong in the stratum, and the number of
-#' unmarked YoY with an adipose fin clip should be ignored.
-#' @param bad.u2.N.1 A numeric vector with elements belonging to \code{time}.
-#' In some cases, something goes wrong in the stratum, and the number of
-#' unmarked Age1 with NO adipose fin clip should be ignored.
-#' @param bad.u2.A.1 A numeric vector with elements belonging to \code{time}.
-#' In some cases, something goes wrong in the stratum, and the number of
-#' unmarked Age1 with an adipose fin clip should be ignored.
+#' @param bad.u2.A.1,bad.u2.N.1   List of julian weeks where the value of u2.A.1/u2.N.1 is suspect. 
+#'               These are set to NA prior to the fit.
 #' @param logitP.cov A numeric matrix for covariates to fit the
 #' logit(catchability). Default is a single intercept, i.e. all strata have the
 #' same mean logit(catchability).
@@ -152,6 +143,7 @@
 #' ##
 #' 
 #' @export TimeStratPetersenDiagErrorWHChinook_fit
+
 TimeStratPetersenDiagErrorWHChinook_fit<- 
        function( title="TSPDE-WHChinook", prefix="TSPDE-WHChinook-", 
                  time, n1, m2, u2.A, u2.N, clip.frac.H, sampfrac, 

@@ -491,7 +491,7 @@ results$plots$logitP.plot <- logitP.plot
 # Look at autocorrelation function for Utot
 mcmc.sample <- data.frame(parm="Utot", sample=results$sims.matrix[,"Utot"], stringsAsFactors=FALSE)
 acf.Utot.plot <- plot_acf(mcmc.sample)
-if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), h=4, w=6, units="in")
+if(save.output.to.files)ggsave(plot=acf.Utot.plot, filename=paste(prefix,"-Utot-acf.pdf",sep=""), height=4, width=6, units="in")
 results$plots$acf.Utot.plot <- acf.Utot.plot
 
 

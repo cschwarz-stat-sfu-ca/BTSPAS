@@ -55,33 +55,26 @@ release.}
 
 \item{u2.A.YoY, u2.N.YoY}{Number of YoY unmarked fish with/without adipose fin clips
 All YoY wild fish have NO adipose fin clips; however, hatchery fish are a mixture
-of fish with adipose fin clips (a known percentage are marked) unmarked fish.
+of fish with adipose fin clips (a known percentage are marked) and unmarked fish.
 So u2.A.YoY MUST be hatchery fish.
    u2.N.YoY is a mixture of wild and hatchery fish.}
 
-\item{u2.N.YoY}{A numeric vector of the number of unmarked YoY fish with
-adipose clips captured in each stratum.}
-
 \item{u2.A.1, u2.N.1}{Number of Age1 unmarked fish with/with out adipose fin clips
 All Age1 wild fish have NO adipose fin clips; however, hatchery fish are a mixture
-of fish with adipose fin clips (a known percentage are marked) unmarked fish.
+of fish with adipose fin clips (a known percentage are marked) and unmarked fish.
 So u2.A.1 MUST be hatchery fish.
    u2.N.1 is a mixture of wild and hatchery fish.}
 
-\item{u2.N.1}{A numeric vector of the number of unmarked Age1 fish with
-adipose clips captured in each stratum.}
-
-\item{clip.frac.H.YoY, clip.frac.H.1}{Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?}
-
-\item{clip.frac.H.1}{A numeric value for the fraction of the Age1 hatchery
-fish that have the adipose fin clipped (between 0 and 1).}
+\item{clip.frac.H.YoY, clip.frac.H.1}{Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)}
 
 \item{sampfrac}{A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}
 
-\item{hatch.after.YoY}{Julian week AFTER which hatchery fish are released}
+\item{hatch.after.YoY}{A numeric vector with elements belonging to
+\code{time}.  At which point do YoY hatchery fish arrive? They arrive in the
+immediate stratum AFTER these entries.}
 
 \item{bad.m2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of recovered
@@ -92,16 +85,8 @@ recovered. The values of \code{m2} will be set to NA for these strata.}
 \item{bad.u2.A.YoY, bad.u2.N.YoY}{List of julian weeks where the value of u2.A.YoY/u2.N.YoY is suspect. 
 These are set to NA prior to the fit.}
 
-\item{bad.u2.N.YoY}{A numeric vector with elements belonging to \code{time}.
-In some cases, something goes wrong in the stratum, and the number of
-unmarked YoY with NO adipose fin clip should be ignored.}
-
 \item{bad.u2.A.1, bad.u2.N.1}{List of julian weeks where the value of u2.A.1/u2.N.1 is suspect. 
 These are set to NA prior to the fit.}
-
-\item{bad.u2.N.1}{A numeric vector with elements belonging to \code{time}.
-In some cases, something goes wrong in the stratum, and the number of
-unmarked Age1 with NO adipose fin clip should be ignored.}
 
 \item{logitP.cov}{A numeric matrix for covariates to fit the
 logit(catchability). Default is a single intercept, i.e. all strata have the
@@ -178,27 +163,6 @@ fish with an adipose fin clip should be ignored.}
 \item{bad.u2.N}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of unmarked
 fish with NO adipose fin clip should be ignored.}
-
-\item{u2.A.YoY}{A numeric vector of the number of unmarked YoY fish with
-adipose clips captured in each stratum.}
-
-\item{u2.A.1}{A numeric vector of the number of unmarked Age1 fish with
-adipose clips captured in each stratum.}
-
-\item{clip.frac.H.YoY}{A numeric value for the fraction of the YoY hatchery
-fish that have the adipose fin clipped (between 0 and 1).}
-
-\item{hatch.after.YoY}{A numeric vector with elements belonging to
-\code{time}.  At which point do YoY hatchery fish arrive? They arrive in the
-immediate stratum AFTER these entries.}
-
-\item{bad.u2.A.YoY}{A numeric vector with elements belonging to \code{time}.
-In some cases, something goes wrong in the stratum, and the number of
-unmarked YoY with an adipose fin clip should be ignored.}
-
-\item{bad.u2.A.1}{A numeric vector with elements belonging to \code{time}.
-In some cases, something goes wrong in the stratum, and the number of
-unmarked Age1 with an adipose fin clip should be ignored.}
 }
 \value{
 An MCMC object with samples from the posterior distribution. A

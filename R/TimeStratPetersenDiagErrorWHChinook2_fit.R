@@ -14,22 +14,6 @@
 
 #' @rdname TimeStratPetersenDiagErrorWHChinook_fit
 #' @export TimeStratPetersenDiagErrorWHChinook2_fit
-#' @param u2.A.YoY,u2.N.YoY Number of YoY unmarked fish with/without adipose fin clips
-#'               All YoY wild fish have NO adipose fin clips; however, hatchery fish are a mixture
-#'               of fish with adipose fin clips (a known percentage are marked) unmarked fish.
-#'               So u2.A.YoY MUST be hatchery fish.
-#'                  u2.N.YoY is a mixture of wild and hatchery fish.
-#' @param u2.A.1,u2.N.1 Number of Age1 unmarked fish with/with out adipose fin clips
-#'               All Age1 wild fish have NO adipose fin clips; however, hatchery fish are a mixture
-#'               of fish with adipose fin clips (a known percentage are marked) unmarked fish.
-#'               So u2.A.1 MUST be hatchery fish.
-#'                  u2.N.1 is a mixture of wild and hatchery fish.
-#' @param clip.frac.H.YoY,clip.frac.H.1 Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?
-#' @param bad.u2.A.YoY,bad.u2.N.YoY List of julian weeks where the value of u2.A.YoY/u2.N.YoY is suspect. 
-#'               These are set to NA prior to the fit.
-#' @param bad.u2.A.1,bad.u2.N.1   List of julian weeks where the value of u2.A.1/u2.N.1 is suspect. 
-#'               These are set to NA prior to the fit.
-#' @param hatch.after.YoY Julian week AFTER which hatchery fish are released 
 
 TimeStratPetersenDiagErrorWHChinook2_fit<- 
        function( title="TSPDE-WHChinook2", prefix="TSPDE-WHChinook2-", 
