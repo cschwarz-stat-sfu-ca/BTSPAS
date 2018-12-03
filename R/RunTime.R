@@ -22,7 +22,10 @@
 #' the literature/web site here ~
 #
 #' @export RunTime
-#' @import actuar
+# The actuar pacakge cm() function conflicts with another package.
+# The following excludes is
+# See https://stackoverflow.com/questions/51899220/import-all-the-functions-of-a-package-except-one-when-building-a-package
+#' @rawNamespace import(actuar, except = cm) 
 
 RunTime <- function(time, U, prob=seq(0,1,.1)) {
   timing <- c(min(time):(1+max(time)))
@@ -30,6 +33,7 @@ RunTime <- function(time, U, prob=seq(0,1,.1)) {
   #browser()
   for( i in 1:nrow(U)) {  # go through each sample from the posterior    
     U.sample <- U[i,]
+    # this is the quantile function from the actuar package for grouped data
     quant <- quantile(grouped.data(Group=timing, Frequency=U.sample), prob=prob)
     q.U <- rbind(q.U, quant)
   }

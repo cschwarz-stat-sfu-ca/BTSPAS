@@ -9,6 +9,7 @@ Depends:
 Imports: 
     actuar, 
     coda, 
+    data.table,
     ggplot2,
     ggforce,
     graphics, 

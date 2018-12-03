@@ -23,7 +23,7 @@
 \usage{
 PredictivePosteriorPlot.TSPDE(discrep)
 
-PredictivePosteriorPlot.TSPDE.WHCH2(discrep)
+PredictivePosteriorPlot.TSPDE.WHCH2(discrep, ncol = 2, nrow = 2)
 
 PredictivePosteriorPlot.TSPDE.WHSteel(discrep)
 

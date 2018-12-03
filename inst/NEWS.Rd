@@ -19,6 +19,8 @@
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
       \item OpenBugs no longer supported.
+      \item All plots converted to ggplot format and stored in the plots object in the final result. An argument is available in the 
+      fitting routines to stop saving output to files. 
     }
   }
    \subsection{BUG FIX}{

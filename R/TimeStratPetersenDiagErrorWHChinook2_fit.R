@@ -665,9 +665,13 @@ discrep <-PredictivePosterior.TSPDE.WHCH2 (time, new.n1, new.m2,   # get the dis
           round(results$sims.list$U.W.1), 
           round(results$sims.list$U.H.1), 
           hatch.after.YoY) #don't forget that hatchery fish is 0 until hatch.after
+#browser()
 gof <- PredictivePosteriorPlot.TSPDE.WHCH2 (discrep)
-#if(save.output.to.files)ggsave(gof[[1]], filename=paste(prefix,"-GOF.pdf",sep=""), 
-#       height=8, width=8, units="in")
+if(save.output.to.files){
+  pdf(file=paste(prefix,"-GOF.pdf",sep=""))
+    l_ply(gof, function(x){plot(x)})
+  dev.off()
+}
 results$plots$gof <- gof
 
 
