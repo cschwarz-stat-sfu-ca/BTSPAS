@@ -4,8 +4,6 @@
 \name{TimeStratPetersenDiagErrorWHChinook2_fit}
 \alias{TimeStratPetersenDiagErrorWHChinook2_fit}
 \alias{TimeStratPetersenDiagErrorWHChinook_fit}
-\alias{TimeStratPetersenDiagErrorWHChinook}
-\alias{TimeStratPetersenDiagErrorWHChinook2}
 \title{Wrapper (*_fit) and function to call the Time Statified Petersen Estimator
 with Diagonal Entries and separating Wild from Hatchery Chinook function.}
 \usage{

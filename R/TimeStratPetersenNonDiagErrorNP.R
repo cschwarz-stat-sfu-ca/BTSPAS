@@ -14,8 +14,7 @@
 # 2010-03-11 Added fixed values of logitP[j] to be provided by user.
 # 2010-03-02 SJB Created file.
 
-#' @rdname TimeStratPetersenNonDiagError_fit
-#' @export
+#' @keywords internal
 
 
 TimeStratPetersenNonDiagErrorNP <- function(title,

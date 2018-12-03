@@ -7,8 +7,7 @@
 # 2011-05-15 CJS Limited etaU to max of 20
 # 2011-02-28 CJS First version
 
-#' @rdname TimeStratPetersenNonDiagError_fit
-#' @export TimeStratPetersenNonDiagErrorNPMarkAvail
+#' @keywords internal
 
 TimeStratPetersenNonDiagErrorNPMarkAvail <- function(title,
                                                      prefix,

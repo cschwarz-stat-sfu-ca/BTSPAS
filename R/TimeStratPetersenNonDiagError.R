@@ -16,8 +16,7 @@
 # 2009-12-05 CJS added title to argument list
 # 2009-12-01 CJS added openbugs/winbugs directory to argument list
 
-#' @rdname TimeStratPetersenNonDiagError_fit
-#' 
+#' @keywords internal
 
 
 TimeStratPetersenNonDiagError <- function(title,

@@ -2,6 +2,7 @@
 # 2013-12-30 CJS - function to switch between the three samplers as needed. 
 #                  This way we wont't have to modify much code (hopefully)
 
+#' @keywords internal
 run.MCMC <-
     function(modelFile,
              dataFile,

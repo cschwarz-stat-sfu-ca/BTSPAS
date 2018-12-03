@@ -1,3 +1,4 @@
+# 2018-12-02 CJS converted trace plots to ggplot
 # 2018-12-01 CJS converted posterior plot to ggplot
 # 2018-11-30 CJS converted acf plot to ggplot
 # 2018-11-29 CJS fixed problem where print got cut off in large problems
@@ -665,25 +666,33 @@ discrep <-PredictivePosterior.TSPDE.WHCH2 (time, new.n1, new.m2,   # get the dis
           round(results$sims.list$U.H.1), 
           hatch.after.YoY) #don't forget that hatchery fish is 0 until hatch.after
 gof <- PredictivePosteriorPlot.TSPDE.WHCH2 (discrep)
-if(save.output.to.files)ggsave(gof[[1]], filename=paste(prefix,"-GOF.pdf",sep=""), 
-       height=8, width=8, units="in", dpi=300 )
+#if(save.output.to.files)ggsave(gof[[1]], filename=paste(prefix,"-GOF.pdf",sep=""), 
+#       height=8, width=8, units="in")
 results$plots$gof <- gof
 
 
+# create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
+# the plot_trace will return a list of plots (one for each page as needed)
 varnames <- names(results$sims.array[1,1,])  # extract the names of the variables 
-# First do the trace plots of logitP
-pdf(file=paste(prefix,"-trace-logitP.pdf",sep=""))
-parm.names <- varnames[grep("^logitP", varnames)]
-trace_plot(title=title, results=results, 
-    parms_to_plot=parm.names, panels=c(3,2))
-dev.off()
 
-# now for the traceplots of logU (etaU of the various flavour), Utot, and Ntot
-pdf(file=paste(prefix,"-trace-logU.pdf",sep=""))
-parm.names <- varnames[c(grep("Utot",varnames), grep("^etaU", varnames))]
-trace_plot(title=title, results=results, 
-    parms_to_plot=parm.names, panels=c(3,2))
-dev.off()
+# Trace plots of logitP
+trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[grep("^logitP", varnames)])
+if(save.output.to.files){
+   pdf(file=paste(prefix,"-trace-logitP.pdf",sep=""))
+   l_ply(trace.plot, function(x){plot(x)})
+   dev.off()
+}
+results$plot$trace.logitP.plot <- trace.plot
+
+# now for the traceplots of logU (etaU), Utot, and Ntot
+trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
+if(save.output.to.files){
+   pdf(file=paste(prefix,"-trace-logU.pdf",sep=""))
+   l_ply(trace.plot, function(x){plot(x)})
+   dev.off()
+}
+results$plot$trace.logU.plot <- trace.plot
+
 
 
 

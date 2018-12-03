@@ -1,9 +1,7 @@
 # TO DO
-#    - update documentation files
-#       list of -> vector of
-#       add logitP.fixed and logitP.fixed.values to parameters
 #    - bayesian predictive posterior plots (the Bayesian p-values)
 
+# 2018-12-02 CJS converted trace plots to ggplot2
 # 2018-12-01 CJS Converted acf, posterior plots to ggplot2
 # 2018-11-28 CJS Fixed problem of large printing being cutoff in results
 # 2018-11-25 CJS Removed all references to OpenBugs
@@ -47,10 +45,6 @@
 #' mark availability because of fall back, immediate tagging mortality, etc.
 #' 
 #' 
-#' @aliases TimeStratPetersenNonDiagError_fit TimeStratPetersenNonDiagError
-#' TimeStratPetersenNonDiagErrorNP_fit TimeStratPetersenNonDiagErrorNP
-#' TimeStratPetersenNonDiagErrorNPMarkAvail_fit
-#' TimeStratPetersenNonDiagErrorNPMarkAvail
 #' @param title A character string used for a title on reports and graphs
 #' @param prefix A character string used as the prefix for created files. All
 #' created graph files are of the form prefix-xxxxx.pdf.
@@ -104,23 +98,11 @@
 #' when certain strata have a 0 capture rate and the fixed value is set to -10
 #' which on the logit scale gives p[i] essentially 0. Don't specify values such
 #' as -50 because numerical problems could occur in WinBugs/OpenBugs.
-#' @param marked_available_n Information, usually from prior studies, on the
-#' fraction of marks that will be available. The *_n and *_x are used to create
-#' a "binomial" distribution for information on the marked availability. For
-#' example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\%.
-#' @param marked_available_x See marked_available_n
 #' @param n.chains Number of parallel MCMC chains to fit.
 #' @param n.iter Total number of MCMC iterations in each chain.
 #' @param n.burnin Number of burn-in iterations.
 #' @param n.sims Number of simulated values to keeps for posterior
 #' distribution.
-#' @param prior.muTT Information on prior movement. For example c(1,4,3,2)
-#' would have a prior of .1, .4, .3, and .2. A prior of c(10,40,30,20) would
-#' have same values but stronger information.
-#' @param mean.muTT The values of prior.muTT are converted into the mean of
-#' muTT using the make.muTT.prior function.
-#' @param sd.muTT The values of prior.muTT are converted into the sd of muTT
-#' using the make.muTT.prior function.
 #' @param tauU.alpha One of the parameters along with \code{tauU.beta} for the
 #' prior for the variance of the random noise for the smoothing spline.
 #' @param tauU.beta One of the parameters along with \code{tauU.alpha} for the
@@ -129,18 +111,8 @@
 #' the prior for the variance of noise around the spline.
 #' @param taueU.beta One of the parameters along with \code{taueU.alpha} for
 #' the prior for the variance of noise around the spline.
-#' @param Delta.max Maximum transition time for marked fish, i.e. all fish
-#' assumed to have moved by Delta.max unit of time
-#' @param tauTT.alpha One of the parameters along with \code{tauTT.beta} for
-#' the prior on 1/var of logit continuation ratio for travel times
-#' @param tauTT.beta One of the parameters along with \code{tauTT.alpha} for
-#' the prior on 1/var of logit continuation ratio for travel times
 #' @param mu_xiP One of the parameters for the prior for the mean of the
 #' logit(catchability) across strata
-#' @param ma.p.alpha One of the parameters for the prior for the
-#' marked_availability = beta(ma.p.alpha, ma.p.beta)
-#' @param ma.p.beta One of the parameters for the prior for the
-#' marked_availability = beta(ma.p.alpha, ma.p.beta)
 #' @param tau_xiP One of the parameter for the prior for the mean of the
 #' logit(catchability) across strata
 #' @param tauP.alpha One of the parameters for the prior for the variance in
@@ -617,22 +589,28 @@ gof <- PredictivePosteriorPlot.TSPNDE (discrep)
 if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),  height=12, width=8, units="in", dpi=300 )
 results$plots$gof <- gof
 
+# create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
+# the plot_trace will return a list of plots (one for each page as needed)
+varnames <- names(results$sims.array[1,1,])  # extract the names of the variables 
 
-
-varnames <- names(results$sims.array[1,1,])  # extract the names of the variables
-# First do the trace plots of logitP
-pdf(file=paste(prefix,"-trace-logitP.pdf",sep=""))
-parm.names <- varnames[grep("^logitP", varnames)]
-trace_plot(title=title, results=results,
-    parms_to_plot=parm.names, panels=c(3,2))
-dev.off()
+# Trace plots of logitP
+trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[grep("^logitP", varnames)])
+if(save.output.to.files){
+   pdf(file=paste(prefix,"-trace-logitP.pdf",sep=""))
+   l_ply(trace.plot, function(x){plot(x)})
+   dev.off()
+}
+results$plot$trace.logitP.plot <- trace.plot
 
 # now for the traceplots of logU (etaU), Utot, and Ntot
-pdf(file=paste(prefix,"-trace-logU.pdf",sep=""))
-parm.names <- varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))]
-trace_plot(title=title, results=results,
-    parms_to_plot=parm.names, panels=c(3,2))
-dev.off()
+trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
+if(save.output.to.files){
+   pdf(file=paste(prefix,"-trace-logU.pdf",sep=""))
+   l_ply(trace.plot, function(x){plot(x)})
+   dev.off()
+}
+results$plot$trace.logU.plot <- trace.plot
+
 
 sink(results.filename, append=TRUE)
 

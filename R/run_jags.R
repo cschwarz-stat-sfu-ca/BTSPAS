@@ -5,6 +5,8 @@
 ## 2013-09-22 sjb Created file. Copied from run_openbugs.R
 
 #' @import rjags R2OpenBUGS utils
+#' @keywords internal
+#' 
 
 run.jags <-
     function(modelFile,

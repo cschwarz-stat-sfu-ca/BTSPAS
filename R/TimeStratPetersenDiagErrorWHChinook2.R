@@ -15,6 +15,8 @@
 # 2010-04-26 CJS fixed problem where init.logitP failed when n1=m2 (logit=infinite) and lm() failed.
 # 2010-03-29 CJS Created first release
 
+#' @keywords internal
+
 # This DIFFERS from the TimeStratPetersenDiagErrorWHChinook routine in the following ways.
 #   YoY chinook are separated from age 1 chinook
 #   The wild YoY chinook are present in the stream with NO AD clips until the hatchery fish arrive 

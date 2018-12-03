@@ -15,6 +15,8 @@
 # 2009-12-05 CJS added title to argument list
 # 2009-12-01 CJS Added open/win bugs path names to argument list
 
+#' @keywords internal
+
 TimeStratPetersenDiagErrorWHChinook <-
     function(title, prefix, time, n1, m2, u2.A, u2.N,
              hatch.after=NULL, clip.frac.H=.25,
