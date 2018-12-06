@@ -512,117 +512,78 @@ if (debug)
 
 # Now to create the various summary tables of the results
 
-#browser()
-# A plot of the observered log(U) on the log scale, and the final mean log(U)
-plot_logU <- function(title, time, n1, m2, u2.A.YoY, u2.N.YoY, u2.A.1, u2.N.1, clip.frac.H.YoY, clip.frac.H.1,
-             hatch.after.YoY, results){
-#  Plot the observed and fitted logU values along with posterior limits
-#  n1, m2, u2.A.YoY, u2.N.YoY, u2.A.1, u2.N.1 are the raw data
-#  results is the summary table from WinBugs
+# A plot of the initial and fitted values for YoY, Age 1, and Hatchery chinook
+ # In the diagonal case, time, n1, m2, u2 are the same length
+  Nstrata <- length(n1)
 
-   Nstrata <- length(n1)
-
-# get rough guesses as to the number of hatchery and wildfish in the sample.
-   u2.H.YoY <- u2.A.YoY/clip.frac.H.YoY  # only a portion of the YoY hatchery fish are clipped
-   u2.W.YoY <- pmax(u2.N.YoY - u2.H.YoY*(1-clip.frac.H.YoY),0) # subtract the questimated number of hatchery fish
-   u2.H.YoY[is.na(u2.H.YoY)] <- 1  # in case of missing values
-   u2.W.YoY[is.na(u2.W.YoY)] <- 1  # in case of missing values
-   # Estimate number of Age1 wild and hatchery fish based on clip rate
-   u2.H.1   <- u2.A.1/clip.frac.H.1  # only a portion of the AGE1 hatchery fish are clipped
-   u2.W.1   <- pmax(u2.N.1 - u2.H.1*(1-clip.frac.H.1),0) # subtract the questimated number of hatchery fish
-   u2.H.1[is.na(u2.H.1)] <- 1  # in case of missing values
-   u2.W.1[is.na(u2.W.1)] <- 1  # in case of missing values
-
-   avg.P <- sum(m2,na.rm=TRUE)/sum(n1, na.rM=TRUE)
-   Uguess.W.YoY <- pmax((u2.W.YoY+1)*(n1+2)/(m2+1), u2.W.YoY/avg.P, na.rm=TRUE)  # try and keep Uguess larger than observed values
-   Uguess.H.YoY <- pmax((u2.H.YoY+1)*(n1+2)/(m2+1), u2.H.YoY/avg.P, na.rm=TRUE)
-   Uguess.H.YoY[1:hatch.after.YoY] <- 0   # no YoY hatchery fish prior to release from hatchery
-   Uguess.W.1   <- pmax((u2.W.1+1)*(n1+2)/(m2+1), u2.W.1/avg.P, na.rm=TRUE)  # try and keep Uguess larger than observed values
-   Uguess.H.1   <- pmax((u2.H.1+1)*(n1+2)/(m2+1), u2.H.1/avg.P, na.rm=TRUE)
-
-
-   min_logU <- min( log(c(Uguess.W.YoY,Uguess.H.YoY,Uguess.W.1,Uguess.H.1)+1), na.rm=TRUE)
-   max_logU <- max( log(c(Uguess.W.YoY,Uguess.H.YoY,Uguess.W.1,Uguess.H.1)+1), na.rm=TRUE)
-
-   # which rows contain the etaU.W[xx] and etaU.H[xx] ?
-   results.row.names <- rownames(results$summary)
-   etaU.row.index.W.YoY <- grep("etaU.W.YoY", results.row.names)
-   etaU.row.index.H.YoY <- grep("etaU.H.YoY", results.row.names)
-   etaU.row.index.W.1   <- grep("etaU.W.1"  , results.row.names)
-   etaU.row.index.H.1   <- grep("etaU.H.1"  , results.row.names)
-   etaU.W.YoY  <- results$summary[etaU.row.index.W.YoY,]
-   etaU.H.YoY  <- results$summary[etaU.row.index.H.YoY,]
-   etaU.W.1    <- results$summary[etaU.row.index.W.1,]
-   etaU.H.1    <- results$summary[etaU.row.index.H.1,]
+  plot.df   <- data.frame(time =new.time)
  
-   min_logU <- min( c(min_logU, etaU.W.YoY[,"mean"], etaU.H.YoY[,"mean"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.1  [,"mean"], etaU.H.1  [,"mean"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.YoY[,"mean"], etaU.H.YoY[,"mean"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.1  [,"mean"], etaU.H.1  [,"mean"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.YoY[,"2.5%"], etaU.H.YoY[,"2.5%"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.1  [,"2.5%"], etaU.H.1  [,"2.5%"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.YoY[,"2.5%"], etaU.H.YoY[,"2.5%"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.1  [,"2.5%"], etaU.H.1  [,"2.5%"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.YoY[,"97.5%"],etaU.H.YoY[,"97.5%"]),na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.1  [,"97.5%"],etaU.H.1  [,"97.5%"]),na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.YoY[,"97.5%"],etaU.H.YoY[,"97.5%"]),na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.1  [,"97.5%"],etaU.H.1  [,"97.5%"]),na.rm=TRUE)
-   min_logU <- max(min_logU, -1)  # no point in plotting values less than 1 for abundance
+  # adjust the u2 for the clipping fractions
+  plot.df$n1       <- new.n1
+  plot.df$m2       <- new.m2
+  plot.df$u2.H.YoY <- new.u2.A.YoY/clip.frac.H.YoY  # only a portion of the hatchery fish are clipped
 
-   #browser()
-   # the wild fish are estimated for ALL strata
-   # the hatchery fish are estimated ONLY for those weeks after hatch.after
-   time.W <- time
-   time.H <- time>hatch.after.YoY
-   # plot the raw log(U) values
-   plot(time.W, log(Uguess.W.YoY), type="p", pch="w", 
-        main=paste(title,"\nFitted spline curve to raw U.W[i] U.H[i] with 95% credible intervals"),
-        sub='Fitted/Smoothed/Raw values plotted for W(solid) and H(dash)',
-        ylab='log(U[i])',
-        xlab='Time Index', ylim=c(min_logU,max_logU))  # initial points on log scale.
-   points(time[time.H], log(Uguess.H.YoY[time.H]), pch="h")
-   points(time.W,       log(Uguess.W.1)                    , pch="W")
-   points(time[time.H], log(Uguess.H.1  [time.H])          , pch="H")
+  plot.df$u2.N.YoY <- new.u2.N.YoY
+  plot.df$u2.H.1   <- new.u2.A.1  /clip.frac.H.1  # only a portion of the hatchery fish are clipped
+  plot.df$u2.N.1   <- new.u2.N.1
+  
+  # estimate how many wild fish are present given that only a fraction of hatchery fish are marked
+  plot.df$u2.W.1   <- pmax(plot.df$u2.N.1   - plot.df$u2.H.1  *(1-clip.frac.H.1)  ,0) # subtract the guestimated number of hatchery fish
+  plot.df$u2.W.YoY <- pmax(plot.df$u2.N.YoY - plot.df$u2.H.YoY*(1-clip.frac.H.YoY),0) # subtract the questimated number of hatchery fish
 
-   # plot the mean of the etaU
-   # Notice that for the hatchery fish, we only plot after the fish shart to arrive
-   points(time.W,          etaU.W.YoY[,"mean"],       type="p", pch=19)  # fitted values for wild fish
-   points(time[time.H]+.1, etaU.H.YoY[time.H,"mean"], type="p", pch=22)  # fitted values for hatchery fish
-   points(time.W-.1,       etaU.H.1  [,"mean"],       type="p", pch=19)  # fitted values for hatchery fish
-   points(time.W-.2,       etaU.W.1  [,"mean"],       type="p", pch=22)  # fitted values for hatchery fish
-   lines(time.W,           etaU.W.YoY[,"mean"])       # add smoothed spline through points
-   lines(time[time.H]+.1,  etaU.H.YoY[time.H,"mean"] , lty=2)
-   lines(time.W-.1,        etaU.H.1  [,"mean"])  # add smoothed spline through points
-   lines(time.W-.2,        etaU.W.1  [,"mean"], lty=2)
-   # plot the 2.5 -> 97.5 posterior values
-   segments(time.W,          etaU.W.YoY[      ,"2.5%"], time.W,          etaU.W.YoY[      ,"97.5%"])
-   segments(time[time.H]+.1, etaU.H.YoY[time.H,"2.5%"], time[time.H]+.1, etaU.H.YoY[time.H,"97.5%"], lty=2)
-   segments(time.W-.1,       etaU.W.1  [      ,"2.5%"], time.W-.1,       etaU.W.1  [      ,"97.5%"])
-   segments(time[time.H]-.2, etaU.W.1  [time.H,"2.5%"], time[time.H]-.2, etaU.H.1  [time.H,"97.5%"], lty=2)
+  plot.df$u2.H.YoY[is.na(plot.df$u2.H.YoY)] <- 1  # in case of missing values
+  plot.df$u2.W.YoY[is.na(plot.df$u2.W.YoY)] <- 1  # in case of missing values
+  plot.df$u2.H.1  [is.na(plot.df$u2.H.1)  ] <- 1  # in case of missing values
+  plot.df$u2.W.1  [is.na(plot.df$u2.W.1)]   <- 1  # in case of missing values
 
-   # plot the spline curve before the error term is added.
-   # extract the bU coefficients
-   logUne.row.index.W.YoY <- grep("logUne.W.YoY", results.row.names)
-   logUne.row.index.H.YoY <- grep("logUne.H.YoY", results.row.names)
-   logUne.row.index.W.1   <- grep("logUne.W.1"  , results.row.names)
-   logUne.row.index.H.1   <- grep("logUne.H.1"  , results.row.names)
-   logUne.W.YoY<- results$summary[logUne.row.index.W.YoY,"mean"]
-   logUne.H.YoY<- results$summary[logUne.row.index.H.YoY,"mean"]
-   logUne.W.1  <- results$summary[logUne.row.index.W.1  ,"mean"]
-   logUne.H.1  <- results$summary[logUne.row.index.H.1  ,"mean"]
-   lines(time.W,       logUne.W.YoY,         lty=1)  # plot the curve
-   lines(time[time.H], logUne.H.YoY[time.H], lty=2)  # plot the curve # too busy to plot the spline points as well
-   lines(time.W, logUne.W.1                , lty=1)  # plot the curve
-   lines(time[time.H], logUne.H.1  [time.H], lty=2)  # plot the curve # too busy to plot the spline points as well
+  get.est <- function(est.name, plot.df, hatch.after.YoY, results){
+      # get the inital estimates, and extract from the results data structure and put into a data frame
+      est.df <- data.frame(group=est.name, time=plot.df$time)
+      avgP <- sum(plot.df$m2,na.rm=TRUE)/sum(plot.df$n1, na.rM=TRUE)
+      #browser()
+      # initial guess
+      est.df$logUguess <- log(1+pmax( (plot.df[, paste("u2.",est.name,sep="")]+1)*(plot.df$n1+2)/(plot.df$m2+1), 
+                                       plot.df[, paste("u2.",est.name,sep="")]/avgP, na.rm=TRUE))
+      # extract estimates from results
+      results.row.names <- rownames(results$summary)
+      est.row.index    <- grep(paste("etaU.",est.name, sep=""), results.row.names)
+      etaU <- results$summary[est.row.index,]
+      est.df$logU    =etaU[,"mean"]
+      est.df$logUlcl =etaU[,"2.5%"]
+      est.df$logUucl =etaU[,"97.5%"]
+      # extract the spline
+      logUne.row.index <- grep(paste("logUne.",est.name,sep=""), results.row.names)
+      est.df$spline    <- results$summary[logUne.row.index,"mean"]
 
-}
+      if(est.name=="H.YoY"){
+         est.df$logUguess[1:(hatch.after.YoY-min(plot.df$time)+1)]<- NA
+         est.df$logU     [1:(hatch.after.YoY-min(plot.df$time)+1)]<- NA
+         est.df$logUlcl  [1:(hatch.after.YoY-min(plot.df$time)+1)]<- NA
+         est.df$logUucl  [1:(hatch.after.YoY-min(plot.df$time)+1)]<- NA
+         est.df$spline   [1:(hatch.after.YoY-min(plot.df$time)+1)]<- NA
+      }
+      est.df
+  }
+  plot.data <-rbind( get.est("H.YoY",plot.df, hatch.after.YoY, results),
+                     get.est("H.1"  ,plot.df, hatch.after.YoY, results),
+                     get.est("W.YoY",plot.df, hatch.after.YoY, results),
+                     get.est("W.1"  ,plot.df, hatch.after.YoY, results))
+  fit.plot <- ggplot(data=plot.data, aes_(x=~time, color=~group))+
+     ggtitle(title, subtitle="Fitted spline curve with 95% credible intervals")+
+     geom_point(aes_(y=~logUguess), shape=16, position=position_dodge(width=.2))+  # guesses for population
+     geom_point(aes_(y=~logU), shape=19, position=position_dodge(width=.2))+
+     geom_line (aes_(y=~logU), position=position_dodge(width=.2))+
+     geom_errorbar(aes_(ymin=~logUlcl, ymax=~logUucl), width=.1, position=position_dodge(width=.2))+
+     geom_line(aes_(y=~spline),linetype="dashed", position=position_dodge(width=.2)) + 
+     xlab("Time Index\nFitted/Smoothed/Raw values plotted for W(black) and H(blue)")+ylab("log(U[i])")+
+     theme(legend.justification = c(0, 0), legend.position = c(0, 0))+
+     scale_color_discrete(name="Group")
 
-pdf(file=paste(prefix,"-logU.pdf",sep=""))
-plot_logU(title=title, time=new.time, n1=new.n1, m2=new.m2, 
-          u2.A.YoY=new.u2.A.YoY, u2.N.YoY=new.u2.N.YoY, u2.A.1=new.u2.A.1, u2.N.1=new.u2.N.1, 
-          clip.frac.H.YoY, clip.frac.H.1, hatch.after.YoY=hatch.after.YoY, results=results)
-dev.off()
+if(save.output.to.files)ggsave(plot=fit.plot, filename=paste(prefix,"-fit.pdf",sep=""), height=6, width=10, units="in")
+results$plots$fit.plot <- fit.plot
 
+
+# plot logit P vs time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, 
              	    u2=u2.A.YoY+u2.N.YoY+u2.A.1+u2.N.1,   logitP.cov=new.logitP.cov, results=results)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")

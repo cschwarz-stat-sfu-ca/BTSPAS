@@ -1,3 +1,4 @@
+# 2018-12-05 CJS converted final spline plot gggplot
 # 2018-12-02 CJS converted trace plots to ggplot
 # 2018-12-01 CJS changed posterior plot to ggplot
 # 2018-11-30 CJS changed acf to ggplot
@@ -18,7 +19,7 @@
 
 
 
-#' Wrapper (*_fit) and function to call the Time Statified Petersen Estimator
+#' Wrapper (*_fit) to fit the Time Statified Petersen Estimator
 #' with Diagonal Entries and separating Wild from Hatchery Chinook function.
 #' 
 #' Takes the number of marked fish released, the number of recaptures, and the
@@ -30,7 +31,7 @@
 #' Normally use the *_fit to pass the data to the fitting function.
 #' 
 #' 
-#' @aliases TimeStratPetersenDiagErrorWHChinook_fit TimeStratPetersenDiagErrorWHChinook2_fit
+#' @aliases TimeStratPetersenDiagErrorWHChinook_fit TimeStratPetersenDiagErrorWHChinook2_fit TimeStratPetersenDiagErrorWHChinook TimeStratPetersenDiagErrorWHChinook2
 #' 
 #' @param title A character string used for a title on reports and graphs
 #' @param prefix A character string used as the prefix for created files. All
@@ -601,83 +602,74 @@ if (debug2) {
    browser()
 }
 
-# A plot of the observered log(U) on the log scale, and the final mean log(U)
-plot_logU <- function(title, time, n1, m2, u2.A, u2.N, clip.frac.H, results){
-#  Plot the observed and fitted logU values along with posterior limits
-#  n1, m2, u2.A, u2.N are the raw data
-#  results is the summary table from WinBugs
+  # A plot of the observered log(U) on the log scale, and the final mean log(U)
+  # A plot of the observered log(U) on the log scale, and the final mean log(U)
+  # Create the data frame needed for ggplot. 
+  # In the diagonal case, time, n1, m2, u2 are the same length
+  Nstrata <- length(n1)
+  plot.df   <- data.frame(time =new.time)
+  
+  # adjust the u2 for the clipping fractions
+  plot.df$n1   <- new.n1
+  plot.df$m2   <- new.m2
+  plot.df$u2.H <- new.u2.A/clip.frac.H  # only a portion of the hatchery fish are clipped
+  plot.df$u2.N <- new.u2.N
+  plot.df$u2.W <- pmax(plot.df$u2.N - plot.df$u2.H*(1-clip.frac.H),0) # subtract the guestimated number of hatchery fish
+  plot.df$u2.H[is.na(plot.df$u2.H)] <- 1  # in case of missing values
+  plot.df$u2.W[is.na(plot.df$u2.W)] <- 1  # in case of missing values
 
-   Nstrata <- length(n1)
+  avg.P <- sum(plot.df$m2,na.rm=TRUE)/sum(plot.df$n1, na.rM=TRUE)
+  plot.df$logUguess.W <- log(pmax((plot.df$u2.W+1)*(plot.df$n1+2)/(plot.df$m2+1), plot.df$u2.W/avg.P, na.rm=TRUE) ) # try and keep Uguess larger than observed values
+  plot.df$logUguess.H <- log(pmax((plot.df$u2.H+1)*(plot.df$n1+2)/(plot.df$m2+1), plot.df$u2.H/avg.P, na.rm=TRUE) )
+  plot.df$logUguess.H[1:(hatch.after-min(time))] <- NA   # no hatchery fish prior to release from hatchery
+  
+# extract the fitted U values for W (wild) and H (hatchery)
+  results.row.names <- rownames(results$summary)
+  etaU.W.row.index    <- grep("etaU.W", results.row.names)
+  etaU.W <- results$summary[etaU.W.row.index,]
+  plot.df$logU.W =etaU.W[,"mean"]
+  plot.df$lcl.W  =etaU.W[,"2.5%"]
+  plot.df$ucl.W  =etaU.W[,"97.5%"]
+  
+  etaU.H.row.index    <- grep("etaU.H", results.row.names)
+  etaU.H <- results$summary[etaU.H.row.index,]
+  plot.df$logU.H =etaU.H[,"mean"]
+  plot.df$lcl.H  =etaU.H[,"2.5%"]
+  plot.df$ucl.H  =etaU.H[,"97.5%"]
+  plot.df$logU.H [1:(hatch.after - min(time)+1)] <- NA # no hatchery fish until release at hatch.after
+  plot.df$lcl.H  [1:(hatch.after - min(time)+1)] <- NA
+  plot.df$ucl.H  [1:(hatch.after - min(time)+1)] <- NA
 
-   u2.H <- u2.A/clip.frac.H  # only a portion of the hatchery fish are clipped
-   u2.W <- pmax(u2.N - u2.H*(1-clip.frac.H),0) # subtract the guestimated number of hatchery fish
-   u2.H[is.na(u2.H)] <- 1  # in case of missing values
-   u2.W[is.na(u2.W)] <- 1  # in case of missing values
+# extract the spline values for W (wild) and H (hatchery) fish
+  logUne.W.row.index <- grep("logUne.W", results.row.names)
+  plot.df$spline.W  <- results$summary[logUne.W.row.index,"mean"]
+  logUne.H.row.index <- grep("logUne.H", results.row.names)
+  plot.df$spline.H  <- results$summary[logUne.H.row.index,"mean"]
+  plot.df$spline.H [1:(hatch.after - min(time)+1)] <- NA # no hatchery fish until release at hatch.after
 
-   avg.P <- sum(m2,na.rm=TRUE)/sum(n1, na.rM=TRUE)
-   Uguess.W <- pmax((u2.W+1)*(n1+2)/(m2+1), u2.W/avg.P, na.rm=TRUE)  # try and keep Uguess larger than observed values
-   Uguess.H <- pmax((u2.H+1)*(n1+2)/(m2+1), u2.H/avg.P, na.rm=TRUE)
-   Uguess.H[1:(hatch.after-min(time))] <- 0   # no hatchery fish prior to release from hatchery
-
-   min_logU <- min( log(c(Uguess.W,Uguess.H)+1), na.rm=TRUE)
-   max_logU <- max( log(c(Uguess.W,Uguess.H)),   na.rm=TRUE)
-
-   # which rows contain the etaU.W[xx] and etaU.H[xx] ?
-   results.row.names <- rownames(results$summary)
-   etaU.row.index.W    <- grep("etaU.W", results.row.names)
-   etaU.W<- results$summary[etaU.row.index.W,]
-   etaU.row.index.H    <- grep("etaU.H", results.row.names)
-   etaU.H<- results$summary[etaU.row.index.H,]
+fit.plot <- ggplot(data=plot.df, aes_(x=~new.time))+
+   ggtitle(title, subtitle="Fitted spline curve to raw U.W[i] U.H[i] with 95% credible intervals")+
+   geom_point(aes_(y=~logUguess.W), color="red",  shape="w")+  # guesses for wild file
+   geom_point(aes_(y=~logUguess.H), color="green", shape="h")+  # guesses for hatchery fish
+   xlab("Time Index\nFitted/Smoothed/Raw values plotted for W(black) and H(blue)")+ylab("log(U[i])")+
+   geom_point(aes_(y=~logU.W), color="black", shape=19)+
+   geom_line (aes_(y=~logU.W), color="black")+
+   geom_errorbar(aes_(ymin=~lcl.W, ymax=~ucl.W), width=.1)+
+   geom_line(aes_(y=~spline.W),linetype="dashed") +  
+   geom_point(aes_(y=~logU.H), color="blue", shape=19)+
+   geom_line (aes_(y=~logU.H), color="blue")+
+   geom_errorbar(aes_(ymin=~lcl.H, ymax=~ucl.H), width=.1, color="blue")+
+   geom_line(aes_(y=~spline.H),linetype="dashed",color="blue")+
+   ylim(c(-2,NA))
  
-   min_logU <- min( c(min_logU, etaU.W[,"mean"], etaU.H[,"mean"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W[,"mean"], etaU.H[,"mean"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W[,"2.5%"], etaU.H[,"2.5%"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W[,"2.5%"], etaU.H[,"2.5%"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W[,"97.5%"],etaU.H[,"97.5%"]),na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W[,"97.5%"],etaU.H[,"97.5%"]),na.rm=TRUE)
-   min_logU <- max(min_logU, -1)  # no point in plotting values less than 1 for abundance
+if(save.output.to.files)ggsave(plot=fit.plot, filename=paste(prefix,"-fit.pdf",sep=""), height=6, width=10, units="in")
+results$plots$fit.plot <- fit.plot
 
-   #browser()
-   # the wild fish are estimated for ALL strata
-   # the hatchery fish are estimated ONLY for those weeks after hatch.after
-   time.W <- time
-   time.H <- time>hatch.after
-   # plot the raw log(U) values
-   plot(time.W, log(Uguess.W), type="p", pch="w", 
-        main=paste(title,"\nFitted spline curve to raw U.W[i] U.H[i] with 95% credible intervals"),
-        sub='Fitted/Smoothed/Raw values plotted for W(solid) and H(dash)',
-        ylab='log(U[i])',
-        xlab='Time Index', ylim=c(min_logU,max_logU))  # initial points on log scale.
-   points(time[time.H], log(Uguess.H[time.H]), pch="h")
-   # plot the mean of the etaU
-   points(time.W, etaU.W[,"mean"], type="p", pch=19)  # fitted values for wild fish
-   points(time[time.H]+.1, etaU.H[time.H,"mean"], type="p", pch=22)  # fitted values for hatchery fish
-   lines(time.W, etaU.W[,"mean"])  # add smoothed spline through points
-   lines(time[time.H]+.1, etaU.H[time.H,"mean"], lty=2)
-   # plot the 2.5 -> 97.5 posterior values
-   segments(time.W,    etaU.W[,"2.5%"], time.W,    etaU.W[,"97.5%"])
-   segments(time[time.H]+.1, etaU.H[time.H,"2.5%"], time[time.H]+.1, etaU.H[time.H,"97.5%"], lty=2)
-
-   # plot the spline curve before the error term is added.
-   # extract the bU coefficients
-   logUne.row.index.W <- grep("logUne.W", results.row.names)
-   logUne.W<- results$summary[logUne.row.index.W,"mean"]
-   logUne.row.index.H <- grep("logUne.H", results.row.names)
-   logUne.H<- results$summary[logUne.row.index.H,"mean"]
-#  points(time.W, logUne.W, type="p", pch=20) # too busy to plot the spline points as well)
-   lines (time.W, logUne.W, lty=1)  # plot the curve
-#  points(time[time.H], logUne.H[time.H], type="p", pch=21)
-   lines (time[time.H], logUne.H[time.H], lty=2)  # plot the curve # too busy to plot the spline points as well
-
-}
-
-pdf(file=paste(prefix,"-logU.pdf",sep=""))
-plot_logU(title=title, time=new.time, n1=new.n1, m2=new.m2, u2.A=new.u2.A, u2.N=new.u2.N, clip.frac.H, results=results)
-dev.off()
-
+# Plot the logitP over time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, u2=new.u2.A+new.u2.N,  logitP.cov=new.logitP.cov, results=results)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in", dpi=300)
 results$plots$logitP.plot <- logitP.plot
+
 
 # Look at autocorrelation function for Utot.W and Utot.H
 mcmc.sample1<- data.frame(parm="Utot.W", sample=results$sims.matrix[,"Utot.W"], stringsAsFactors=FALSE)

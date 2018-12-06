@@ -543,44 +543,35 @@ sampfrac <- as.vector(sampfrac)
   Nstrata.rel <- length(n1)
   Nstrata.cap <- ncol(expanded.m2) -1 ## don't forget that last column of m2 is number of fish never seen
   
-  ## A plot of the observered log(U) on the log scale, and the final mean log(U)
-  plot_logU <- function(title, time, n1, m2, u2, logitP.cov, results){
-    ##  Plot the observed and fitted logU values along with posterior limits
-    ##  n1, m2 (the expanded version), u2 are the raw data
-    ##  results is the summary table from WinBugs
-    
-    Nstrata.rel <- length(n1)
-    Nstrata.cap <- ncol(m2)-1  ## remember that last column of m2 is number of fish never seen again
-    Uguess <- (u2[1:Nstrata.rel]+1)*(n1+2)/(apply(m2[,1:Nstrata.cap],1,sum)+1)  ## try and keep Uguess larger than observed values
-    plot(time[1:Nstrata.rel], log(Uguess), type="p", 
-         main=paste(title,"\nFitted spline curve to raw U[i] with 95% credible intervals"),
-         sub='Open/closed circles - initial and final estimates',
-         ylab='log(U[i])',
-         xlab='Time Index',xlim=c(min(time),max(time)))  ## initial points on log scale.
-    
-    
-    ## which rows contain the etaU[xx] ?
-    results.row.names <- rownames(results$summary)
-    etaU.row.index    <- grep("etaU", results.row.names)
-    etaU<- results$summary[etaU.row.index,]
-    
-    ## plot the mean of the etaU
-    points(time, etaU[,"mean"], type="p", pch=19)  ## fitted values
-    lines(time, etaU[,"mean"])  ## add smoothed spline through points
-    ## plot the 2.5 -> 97.5 posterior values
-    segments(time, etaU[,"2.5%"], time, etaU[,"97.5%"])
-    
-    ## plot the spline curve before the error term is added.
-    ## extract the bU coefficients
-    logUne.row.index <- grep("logUne", results.row.names)
-    logUne<- results$summary[logUne.row.index,"mean"]
-    points(time, logUne, type="p", pch=20)
-    lines(time, logUne, lty=2)  ## plot the curve
-  }
-  
-  pdf(file=paste(prefix,"-logU.pdf",sep=""))
-  plot_logU(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, results=results)
-  dev.off()
+  # A plot of the observered log(U) on the log scale, and the final mean log(U)
+  plot.df   <- data.frame(time =new.time)
+  plot.df$logUi <-log( c((new.u2[1:Nstrata.rel]+1)*(new.n1+2)/(apply(expanded.m2[,1:Nstrata.cap],1,sum)+1), rep(NA, length(u2)-Nstrata.rel)))
+
+# extract the fitted U values
+  results.row.names <- rownames(results$summary)
+  etaU.row.index    <- grep("etaU", results.row.names)
+  etaU<- results$summary[etaU.row.index,]
+  plot.df$logU =etaU[,"mean"]
+  plot.df$lcl =etaU[,"2.5%"]
+  plot.df$ucl =etaU[,"97.5%"]
+
+# extract the spline values
+  logUne.row.index <- grep("logUne", results.row.names)
+  logUne<- results$summary[logUne.row.index,"mean"]
+  plot.df$spline <- results$summary[logUne.row.index,"mean"]
+
+  fit.plot <- ggplot(data=plot.df, aes_(x=~new.time))+
+    ggtitle(title, subtitle="Fitted spline curve with 95% credible intervals for estimated log(U[i])")+
+    geom_point(aes_(y=~logUi), color="red", shape=1)+  # open circle
+    xlab("Time Index\nOpen/closed circles - initial and final estimates")+ylab("log(U[i])")+
+    geom_point(aes_(y=~logU), color="black", shape=19)+
+    geom_line (aes_(y=~logU), color="black")+
+    geom_errorbar(aes_(ymin=~lcl, ymax=~ucl), width=.1)+
+    geom_line(aes_(y=~spline),linetype="dashed")
+
+  if(save.output.to.files)ggsave(plot=fit.plot, filename=paste(prefix,"-fit.pdf",sep=""), height=6, width=10, units="in")
+  results$plots$fit.plot <- fit.plot
+
   
   ## acf plot
   logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, logitP.cov=new.logitP.cov, results=results) 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/TimeStratPetersenNonDiagError_fit.R
 \name{TimeStratPetersenNonDiagError_fit}
 \alias{TimeStratPetersenNonDiagError_fit}
-\title{Wrapper (*_fit) and function to call the Time Statified Petersen Estimator
+\title{Wrapper (*_fit) to fit the Time Statified Petersen Estimator
 with NON Diagonal Entries function.}
 \usage{
 TimeStratPetersenNonDiagError_fit(title = "TSPNDE", prefix = "TSPNDE-",
