@@ -1,3 +1,4 @@
+# 2018-12-06 CJS created initial plot
 # 2018-11-27 CJS removed openBugs
 # 2014-09-01 CJS conversion to JAGS
 #                - no model name
@@ -33,7 +34,8 @@ TimeStratPetersenDiagErrorWHSteel <-
            tau_xiP=1/var( logit((m2+.5)/(n1+1)),na.rm=TRUE),
            tauP.alpha=.001, tauP.beta=.001,
            debug=FALSE, debug2=FALSE,
-           InitialSeed){
+           InitialSeed,
+           save.output.to.files=TRUE){
 
 set.seed(InitialSeed)  # set prior to initial value computations
 
@@ -368,6 +370,26 @@ SplineDesign.H.1 <- rbind(matrix(0,nrow=hatch.after, ncol=ncol(SplineDesign.H.1)
 
 
 #browser()
+# Initial plot
+# create an initial plot of the fit to the number of YoY and Age1 unmarked fish
+  plot.data <- rbind(data.frame(time=time, group="H.1", pch="H",
+                                logUguess = log(Uguess.H.1+1),
+                                spline=SplineDesign.H.1 %*% init.bU.H.1, stringsAsFactors=FALSE),
+                     data.frame(time=time, group="W.1", pch="W",
+                                logUguess = log(Uguess.W.1+1),
+                                spline=SplineDesign.W.1 %*% init.bU.W.1, stringsAsFactors=FALSE),
+                     data.frame(time=time, group="W.YoY", pch="w",
+                                logUguess = log(Uguess.W.YoY+1),
+                                spline=SplineDesign.W.YoY %*% init.bU.W.YoY, stringsAsFactors=FALSE))
+  init.plot <- ggplot(data=plot.data, aes_(x=~time, color=~group, shape=~group))+
+     ggtitle(title, subtitle="Initial spline fit to estimated log U[i] for W and H")+
+     geom_point(aes_(y=~logUguess), position=position_dodge(width=0.2))+
+     geom_line(aes_(y=~spline),     position=position_dodge(width=0.2))+
+     xlab("Stratum")+ylab("log(U[i])")+
+     theme(legend.position=c(0,0), legend.justification=c(0,0))
+  if(save.output.to.files)ggsave(init.plot, filename=paste(prefix,"-initialU.pdf",sep=""), height=4, width=6, units="in")
+  #results$plots$plot.init <- init.plot  # do this after running the MCMC chain (see end of function)
+
 
 # get the logitP=logit(P) covariate matrix ready
 logitP.cov <- as.matrix(logitP.cov)
@@ -462,6 +484,8 @@ results <- run.MCMC(modelFile=model.file,
                         initialSeed=InitialSeed,
                         working.directory=working.directory,
                         debug=debug)
+
+results$plots$plot.init <- init.plot  # do this after running the MCMC chain (see end of function)
 
 return(results)
 }

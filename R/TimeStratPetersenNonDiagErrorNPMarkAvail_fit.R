@@ -1,5 +1,6 @@
 ## Yet to do - add bayesian p-value plots/ add p-values to results
 
+## 2018-12-06 CJS convert report to textConnections
 ## 2018-12-02 CJS convert trace plots to ggplot
 ## 2018-12-01 CJS converted acf, posterior plots to ggplot
 ## 2018-11-30 CJS Fixed problem of epsilon not being right length
@@ -297,7 +298,10 @@ sampfrac <- as.vector(sampfrac)
   results.filename <- paste(prefix,"-results.txt",sep="")   
 
   ## Open sink to output file
-  sink(results.filename)
+  stdout <- vector('character')
+  report <- textConnection('stdout', 'wr', local = TRUE)
+  sink(report)
+
   cat(paste("Time Stratified Petersen with Non-Diagonal recaptures, error in smoothed U, non-parametric modelling of travel times, and incorporating mark availability- ", date()))
   cat("\nVersion: ", version)
   
@@ -460,7 +464,7 @@ sampfrac <- as.vector(sampfrac)
      }
   }
 
-  sink(results.filename, append=TRUE)
+  sink(report, append=TRUE)
   # assign the logitP fixed values etc.
   new.logitP.fixed <- rep(NA, length(new.u2))
   new.logitP.fixed[match(logitP.fixed, time)] <- logitP.fixed.values
@@ -524,7 +528,8 @@ sampfrac <- as.vector(sampfrac)
                          tauU.alpha=tauU.alpha, tauU.beta=tauU.beta,
                          taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
                          Delta.max=Delta.max,tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
-                         debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+                         debug=debug, debug2=debug2, InitialSeed=InitialSeed,
+                         save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenNonDiagErrorNPMarkAvail(title=title, prefix=prefix, 
                          time=new.time, n1=new.n1, m2=new.m2, u2=new.u2,
@@ -535,7 +540,8 @@ sampfrac <- as.vector(sampfrac)
                          tauU.alpha=tauU.alpha, tauU.beta=tauU.beta,
                          taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
                          Delta.max=Delta.max,tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
-                         debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+                         debug=debug, debug2=debug2, InitialSeed=InitialSeed,
+                         save.output.to.files=save.output.to.files)
    } 
   
   ## Now to create the various summary tables of the results
@@ -608,7 +614,7 @@ sampfrac <- as.vector(sampfrac)
      l_ply(trace.plot, function(x){plot(x)})
      dev.off()
   }
-  results$plot$trace.logitP.plot <- trace.plot
+  results$plots$trace.logitP.plot <- trace.plot
 
   # now for the traceplots of logU (etaU), Utot, and Ntot
   trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
@@ -617,10 +623,10 @@ sampfrac <- as.vector(sampfrac)
      l_ply(trace.plot, function(x){plot(x)})
      dev.off()
   }
-  results$plot$trace.logU.plot <- trace.plot
+  results$plots$trace.logU.plot <- trace.plot
 
   
-  sink(results.filename, append=TRUE)
+  sink(report, append=TRUE)
   
   ## Global summary of results
   cat("\n\n*** Summary of MCMC results *** \n\n")
@@ -672,6 +678,10 @@ sampfrac <- as.vector(sampfrac)
   
   sink()
   
+  # save the report to a files?
+  if(save.output.to.files)writeLines(stdout, results.filename)
+  results$report <- stdout
+
   
   ## add some of the raw data to the bugs object for simplicity in referencing it later
   results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac, 

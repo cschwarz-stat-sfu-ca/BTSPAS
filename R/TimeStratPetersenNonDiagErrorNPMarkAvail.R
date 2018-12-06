@@ -37,7 +37,8 @@ TimeStratPetersenNonDiagErrorNPMarkAvail <- function(title,
                                                      tauP.beta=.001, 
                                                      debug=FALSE,
                                                      debug2=FALSE,
-                                                     InitialSeed){
+                                                     InitialSeed,
+                                                     save.output.to.files=TRUE){
 
 set.seed(InitialSeed)  # set prior to initial value computations
 
@@ -352,12 +353,17 @@ ma.p.guess <- ma.p.alpha/(ma.p.alpha+ma.p.beta)
 
 
 # create an initial plot of the fit
-pdf(file=paste(prefix,"-initialU.pdf",sep=""))
-plot(time, log(Uguess[1:Nstrata.cap]), 
-    main=paste(title,"\nInitial spline fit to estimated U[i]"),
-    ylab="log(U[i])", xlab='Stratum')  # initial points on log scale.
-lines(time, SplineDesign %*% init.bU)  # add smoothed spline through points
-dev.off()
+plot.data <- data.frame(time=time, 
+                        logUguess=log(Uguess[1:Nstrata.cap]),
+                        spline=SplineDesign %*% init.bU, stringsAsFactors=FALSE)
+init.plot <- ggplot(data=plot.data, aes_(x=~time, y=~logUguess))+
+  ggtitle(title, subtitle="Initial spline fit to estimated log U[i]")+
+  geom_point()+
+  geom_line(aes_(y=~spline))+
+  xlab("Stratum")+ylab("log(U[i])")
+if(save.output.to.files)ggsave(init.plot, filename=paste(prefix,"-initialU.pdf",sep=""), height=4, width=6, units="in")
+#results$plots$plot.init <- init.plot  # do this after running the MCMC chain (see end of function)
+
 
 parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                 "bU", "tauU", "sigmaU", 
@@ -460,6 +466,8 @@ results <- run.MCMC(modelFile=model.file,
                         initialSeed=InitialSeed,
                         working.directory=working.directory,
                         debug=debug)
+
+results$plots$plot.init <- init.plot  # save initial plot to results object
 
 return(results)
 }

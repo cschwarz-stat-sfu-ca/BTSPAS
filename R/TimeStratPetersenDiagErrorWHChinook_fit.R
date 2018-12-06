@@ -1,3 +1,4 @@
+# 2018-12-06 CJS saved report to a text connections
 # 2018-12-05 CJS converted final spline plot gggplot
 # 2018-12-02 CJS converted trace plots to ggplot
 # 2018-12-01 CJS changed posterior plot to ggplot
@@ -249,8 +250,10 @@ if(!all(hatch.after %in% time, na.rm=TRUE)){
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
+stdout <- vector('character')
+report <- textConnection('stdout', 'wr', local = TRUE)
+sink(report)
 
-sink(results.filename)
 cat(paste("Time Stratified Petersen with Diagonal recaptures, error in smoothed U, separating wild and hatchery fish - ", date()))
 cat("\nVersion:", version)
 
@@ -584,7 +587,8 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to low values for debugging only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug,InitialSeed=InitialSeed)
+            debug=debug,InitialSeed=InitialSeed,
+            save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagErrorWHChinook(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2.A=new.u2.A, u2.N=new.u2.N, 
@@ -592,7 +596,8 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            InitialSeed=InitialSeed)
+            InitialSeed=InitialSeed,
+            save.output.to.files=save.output.to.files)
    }
 
 # Now to create the various summary tables of the results
@@ -710,7 +715,7 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logitP.plot <- trace.plot
+results$plots$trace.logitP.plot <- trace.plot
 
 # now for the traceplots of logU (etaU), Utot, and Ntot
 trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
@@ -719,10 +724,10 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logU.plot <- trace.plot
+results$plots$trace.logU.plot <- trace.plot
 
 
-sink(results.filename, append=TRUE)
+sink(report, append=TRUE)
 # What was the initial seed
 cat("\n\n*** Initial Seed for this run ***: ", results$Seed.initial,"\n")
 
@@ -792,6 +797,10 @@ cat("\n\n")
 cat(paste("*** end of fit *** ", date()))
 
 sink()
+
+# save the report to a files?
+if(save.output.to.files)writeLines(stdout, results.filename)
+results$report <- stdout
 
 
 # add some of the raw data to the bugs object for simplicity in referencing it later

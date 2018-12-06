@@ -141,7 +141,8 @@ demo.cr.2009.as.tspndenp <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.iter=5000, n.burnin=1000, n.sims=300,
-                  debug=FALSE
+                  debug=FALSE,
+                  save.output.to.files=TRUE
                   )
 # Rename files that were created.
 

@@ -135,8 +135,8 @@ demo.cr.1987.as.tspnde <- TimeStratPetersenNonDiagError_fit(
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
                   bad.u2=     demo.bad.u2,
-                  debug=TRUE
-                  )
+                  debug=TRUE,
+                  save.output.to.files=FALSE)
 
 # Rename files that were created.
 

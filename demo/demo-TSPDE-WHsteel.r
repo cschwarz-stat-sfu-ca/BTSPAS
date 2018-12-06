@@ -129,8 +129,8 @@ demo.jc.2003.st.tspde <- TimeStratPetersenDiagErrorWHSteel_fit(
                   bad.u2.W.YoY=demo.bad.u2.W.YoY,
                   bad.u2.W.1  =demo.bad.u2.W.1,
                   bad.u2.H.1  =demo.bad.u2.H.1,
-                  debug=TRUE  # this generates only 10,000 iterations of the MCMC chain for checking.
-                  )
+                  debug=TRUE,  # this generates only 10,000 iterations of the MCMC chain for checking.
+                  save.output.to.files=TRUE)
 
 # Rename files that were created.
 

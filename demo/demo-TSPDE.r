@@ -118,8 +118,8 @@ demo.jc.2003.ch.tspde <- TimeStratPetersenDiagError_fit(
                   bad.m2=demo.bad.m2,
                   bad.u2=demo.bad.u2,
                   InitialSeed=890110,
-                  debug=TRUE  # this generates only 10,000 iterations of the MCMC chain for checking.
-                  )
+                  debug=TRUE,  # this generates only 10,000 iterations of the MCMC chain for checking.
+                  save.output.to.files=TRUE)
 
 # Rename files that were created.
 

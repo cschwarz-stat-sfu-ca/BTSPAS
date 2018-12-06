@@ -233,8 +233,12 @@ if(!all(jump.after %in% time, na.rm=TRUE)){
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
-   
-sink(results.filename)
+# Create the report
+stdout <- vector('character')
+report <- textConnection('stdout', 'wr', local = TRUE)
+ 
+sink(report)
+#sink(results.filename)
 cat(paste("Time Stratified Petersen with Diagonal recaptures and error in smoothed U - ", date()))
 cat("\nVersion:", version, "\n\n")
 
@@ -424,14 +428,14 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to low values for debugging purposes only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+            debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagError(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2=new.u2, 
             jump.after=jump.after-min(time)+1, logitP.cov=new.logitP.cov,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+            debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    }
 
 # Now to create the various summary tables of the results
@@ -512,7 +516,7 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logitP.plot <- trace.plot
+results$plots$trace.logitP.plot <- trace.plot
 
 # now for the traceplots of logU (etaU), Utot, and Ntot
 trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
@@ -521,11 +525,12 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logU.plot <- trace.plot
+results$plots$trace.logU.plot <- trace.plot
 
 
 
-sink(results.filename, append=TRUE)
+#sink(results.filename, append=TRUE)
+sink(report, append=TRUE)
 # Global summary of results
 cat("\n\n*** Summary of MCMC results *** \n\n")
   save.max.print <- getOption("max.print")
@@ -576,6 +581,9 @@ cat(paste("*** end of fit *** ", date()))
 
 sink()
 
+# save the report to a files?
+if(save.output.to.files)writeLines(stdout, results.filename)
+results$report <- stdout
 
 # add some of the raw data to the bugs object for simplicity in referencing it later
 results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac, 

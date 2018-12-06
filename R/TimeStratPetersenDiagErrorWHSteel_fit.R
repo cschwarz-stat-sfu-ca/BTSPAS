@@ -1,3 +1,5 @@
+# 2018-12-06 CJS converted report to textConnection
+# 2018-12-06 CJS converted initial plot to ggplots
 # 2018-12-02 CJS converted trace plots to ggplots
 # 2018-12-01 CJS converted posterior plots to ggplot2
 # 2018-11-30 CJS converted acf to ggplot2
@@ -230,8 +232,10 @@ if(!all(hatch.after %in% time, na.rm=TRUE)){
 
    results.filename <- paste(prefix,"-results.txt",sep="")   
 
+stdout <- vector('character')
+report <- textConnection('stdout', 'wr', local = TRUE)
+sink(report)
 
-   sink(results.filename)
 cat(paste("Time Stratified Petersen with Diagonal recaptures, error in smoothed U, separating wild and hatchery fish, STEELHEAD ONLY - ", date()))
 cat("\nVersion: ", version)
 
@@ -543,7 +547,8 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,   # set to low value for debugging only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+            debug=debug, debug2=debug2, InitialSeed=InitialSeed,
+            save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagErrorWHSteel(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2.W.YoY=new.u2.W.YoY, u2.W.1=new.u2.W.1, u2.H.1=new.u2.H.1, 
@@ -551,99 +556,77 @@ if (debug)
             logitP.cov=new.logitP.cov,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims, 
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+            debug=debug, debug2=debug2, InitialSeed=InitialSeed,
+            save.output.to.files=save.output.to.files)
   }
 
 # Now to create the various summary tables of the results
 
 #browser()
 # A plot of the observered log(U) on the log scale, and the final mean log(U)
-plot_logU <- function(title, time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1, results){
-#  Plot the observed and fitted logU values along with posterior limits
-#  n1, m2, u2.* are the raw data
-#  results is the summary table from WinBugs
-
+# in the diagonal case, all of n1, m2, u2 have the same length
    Nstrata <- length(n1)
 
-   u2.W.YoY[is.na(u2.W.YoY)] <- 1  # in case of missing values
-   u2.W.1  [is.na(u2.W.1)]   <- 1  # in case of missing values
-   u2.H.1  [is.na(u2.H.1)]   <- 1  # in case of missing values
-
-   avg.P <- sum(m2,na.rm=TRUE)/sum(n1, na.rM=TRUE)
-   Uguess.W.YoY <- pmax((u2.W.YoY+1)*(n1+2)/(m2+1), u2.W.YoY/avg.P, na.rm=TRUE)  # try and keep Uguess larger than observed values
-   Uguess.W.1   <- pmax((u2.W.1  +1)*(n1+2)/(m2+1), u2.W.1  /avg.P, na.rm=TRUE)  # try and keep Uguess larger than observed values
-   Uguess.H.1   <- pmax((u2.H.1  +1)*(n1+2)/(m2+1), u2.H.1  /avg.P, na.rm=TRUE)  # try and keep Uguess larger than observed values
-   Uguess.H.1[1:(hatch.after-min(time))] <- 0   # no hatchery fish prior to release from hatchery
-
-   min_logU <- min( log(c(Uguess.W.YoY,Uguess.W.1,Uguess.H.1)+1), na.rm=TRUE)
-   max_logU <- max( log(c(Uguess.W.YoY,Uguess.W.1,Uguess.H.1)+1), na.rm=TRUE)
-
-   # which rows contain the etaU.W[xx] and etaU.H[xx] ?
-   results.row.names <- rownames(results$summary)
-   etaU.row.index.W.YoY    <- grep("etaU.W.YoY", results.row.names)
-   etaU.W.YoY<- results$summary[etaU.row.index.W.YoY,]
-   etaU.row.index.W.1      <- grep("etaU.W.1",   results.row.names)
-   etaU.W.1  <- results$summary[etaU.row.index.W.1,]
-   etaU.row.index.H.1      <- grep("etaU.H.1",   results.row.names)
-   etaU.H.1  <- results$summary[etaU.row.index.H.1,]
+  plot.df   <- data.frame(time =new.time)
  
-   min_logU <- min( c(min_logU, etaU.W.YoY[,"mean"], etaU.W.1[,"mean"], etaU.H.1[,"mean"]), na.rm=TRUE)
-   max_logU <- max( c(min_logU, etaU.W.YoY[,"mean"], etaU.W.1[,"mean"], etaU.H.1[,"mean"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.YoY[,"2.5%"], etaU.W.1[,"2.5%"], etaU.H.1[,"2.5%"]), na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.YoY[,"2.5%"], etaU.W.1[,"2.5%"], etaU.H.1[,"2.5%"]), na.rm=TRUE)
-   min_logU <- min( c(min_logU, etaU.W.YoY[,"97.5%"],etaU.W.1[,"97.5%"],etaU.H.1[,"97.5%"]),na.rm=TRUE)
-   max_logU <- max( c(max_logU, etaU.W.YoY[,"97.5%"],etaU.W.1[,"97.5%"],etaU.H.1[,"97.5%"]),na.rm=TRUE)
-   min_logU <- max(min_logU, -1)  # no point in plotting values less than 1 for abundance
+  # adjust the u2 for the clipping fractions
+  plot.df$n1       <- new.n1
+  plot.df$m2       <- new.m2
+  plot.df$u2.H.1   <- new.u2.H.1 
+  plot.df$u2.W.1   <- new.u2.W.1
+  plot.df$u2.W.YoY <- new.u2.W.YoY
 
-   #browser()
-   # the wild fish are estimated for ALL strata
-   # the hatchery fish are estimated ONLY for those weeks after hatch.after
-   time.W <- time
-   time.H <- time>hatch.after
-   # plot the raw log(U) values
-   plot(time.W, log(Uguess.W.YoY), type="p", pch="w", cex=.5,
-        main=paste(title,"\nFitted spline curve to raw U.W[i] U.H[i] with 95% credible intervals"),
-        sub='Fitted/Smoothed/Raw values plotted for W.YoY(solid), W.1 (dash), and H.1(dash-2)',
-        ylab='log(U[i])',
-        xlab='Time Index', ylim=c(min_logU,max_logU))  # initial points on log scale.
-   points(time.W,       log(Uguess.W.1),         pch="W", cex=.5)
-   points(time[time.H], log(Uguess.H.1[time.H]), pch="h", cex=.5)
+  plot.df$u2.W.YoY[is.na(plot.df$u2.W.YoY)] <- 1  # in case of missing values
+  plot.df$u2.H.1  [is.na(plot.df$u2.H.1)  ] <- 1  # in case of missing values
+  plot.df$u2.W.1  [is.na(plot.df$u2.W.1)  ] <- 1  # in case of missing values
 
-   # plot the mean of the etaU
-   points(time.W   ,       etaU.W.YoY[,"mean"],       type="p", pch=19)  # fitted values for wild YoY fish
-   points(time.W+.1,       etaU.W.1  [,"mean"],       type="p", pch=20)  # fitted values for wild 1+  fish
-   points(time[time.H]+.2, etaU.H.1  [time.H,"mean"], type="p", pch=22)  # fitted values for hatchery fish
-   lines(time.W,          etaU.W.YoY[,"mean"])  # add smoothed spline through points
-   lines(time.W+.1,       etaU.W.1  [,"mean"],       lty=2)  # add smoothed spline through points
-   lines(time[time.H]+.2, etaU.H.1  [time.H,"mean"], lty=3, lwd=2)
+  get.est <- function(est.name, plot.df, hatch.after, results){
+      # get the inital estimates, and extract from the results data structure and put into a data frame
+      est.df <- data.frame(group=est.name, time=plot.df$time)
+      avgP <- sum(plot.df$m2,na.rm=TRUE)/sum(plot.df$n1, na.rM=TRUE)
+      #browser()
+      # initial guess
+      est.df$logUguess <- log(1+pmax( (plot.df[, paste("u2.",est.name,sep="")]+1)*(plot.df$n1+2)/(plot.df$m2+1), 
+                                       plot.df[, paste("u2.",est.name,sep="")]/avgP, na.rm=TRUE))
+      # extract estimates from results
+      results.row.names <- rownames(results$summary)
+      est.row.index    <- grep(paste("etaU.",est.name, sep=""), results.row.names)
+      etaU <- results$summary[est.row.index,]
+      est.df$logU    =etaU[,"mean"]
+      est.df$logUlcl =etaU[,"2.5%"]
+      est.df$logUucl =etaU[,"97.5%"]
+      # extract the spline
+      logUne.row.index <- grep(paste("logUne.",est.name,sep=""), results.row.names)
+      est.df$spline    <- results$summary[logUne.row.index,"mean"]
 
-   # plot the 2.5 -> 97.5 posterior values
-   segments(time.W,          etaU.W.YoY[      ,"2.5%"], time.W,          etaU.W.YoY[      ,"97.5%"])
-   segments(time.W+.1,       etaU.W.1  [      ,"2.5%"], time.W,          etaU.W.1  [      ,"97.5%"], lty=2)
-   segments(time[time.H]+.2, etaU.H.1  [time.H,"2.5%"], time[time.H]+.2, etaU.H.1  [time.H,"97.5%"], lty=3, lwd=2)
+      if(est.name=="H.1"){
+         est.df$logUguess[1:(hatch.after-min(plot.df$time)+1)]<- NA
+         est.df$logU     [1:(hatch.after-min(plot.df$time)+1)]<- NA
+         est.df$logUlcl  [1:(hatch.after-min(plot.df$time)+1)]<- NA
+         est.df$logUucl  [1:(hatch.after-min(plot.df$time)+1)]<- NA
+         est.df$spline   [1:(hatch.after-min(plot.df$time)+1)]<- NA
+      }
+      est.df
+  }
+  plot.data <-rbind( get.est("H.1"  ,plot.df, hatch.after, results),
+                     get.est("W.YoY",plot.df, hatch.after, results),
+                     get.est("W.1"  ,plot.df, hatch.after, results))
+  fit.plot <- ggplot(data=plot.data, aes_(x=~time, color=~group))+
+     ggtitle(title, subtitle="Fitted spline curve with 95% credible intervals")+
+     geom_point(aes_(y=~logUguess), shape=16, position=position_dodge(width=.2))+  # guesses for population
+     geom_point(aes_(y=~logU), shape=19, position=position_dodge(width=.2))+
+     geom_line (aes_(y=~logU), position=position_dodge(width=.2))+
+     geom_errorbar(aes_(ymin=~logUlcl, ymax=~logUucl), width=.1, position=position_dodge(width=.2))+
+     geom_line(aes_(y=~spline),linetype="dashed", position=position_dodge(width=.2)) + 
+     xlab("Time Index\nFitted/Smoothed/Raw values plotted for W(black) and H(blue)")+ylab("log(U[i])")+
+     theme(legend.justification = c(0, 0), legend.position = c(0, 0))+
+     scale_color_discrete(name="Group")
 
-   # plot the spline curve before the error term is added.
-   # extract the bU coefficients
-   logUne.row.index.W.YoY <- grep("logUne.W.YoY", results.row.names)
-   logUne.row.index.W.1   <- grep("logUne.W.1",   results.row.names)
-   logUne.row.index.H.1   <- grep("logUne.H.1",   results.row.names)
- 
-   logUne.W.YoY<- results$summary[logUne.row.index.W.YoY,"mean"]   
-   logUne.W.1  <- results$summary[logUne.row.index.W.1,  "mean"]
-   logUne.H.1  <- results$summary[logUne.row.index.H.1,  "mean"]
-
-   lines(time.W,       logUne.W.YoY,         lty=1)  # plot the curve
-   lines(time.W,       logUne.W.1,           lty=2)  # plot the curve
-   lines(time[time.H], logUne.H.1[time.H],   lty=3, lwd=2)  # plot the curve # too busy to plot the spline points as well
-
-}
+if(save.output.to.files)ggsave(plot=fit.plot, filename=paste(prefix,"-fit.pdf",sep=""), height=6, width=10, units="in")
+results$plots$fit.plot <- fit.plot
 
 
-pdf(file=paste(prefix,"-logU.pdf",sep=""))
-plot_logU(title=title, time=new.time, n1=new.n1, m2=new.m2, u2.W.YoY=new.u2.W.YoY, u2.W.1=new.u2.W.1, u2.H.1=new.u2.H.1, results=results)
-dev.off()
-
-
+# plot the estimated logits over time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, 
                u2=new.u2.W.YoY+new.u2.W.1+new.u2.H.1, logitP.cov=new.logitP.cov, results=results)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
@@ -693,7 +676,7 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logitP.plot <- trace.plot
+results$plots$trace.logitP.plot <- trace.plot
 
 # now for the traceplots of logU (etaU), Utot, and Ntot
 trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
@@ -702,11 +685,11 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logU.plot <- trace.plot
+results$plots$trace.logU.plot <- trace.plot
 
 
 
-sink(results.filename, append=TRUE)
+sink(report, append=TRUE)
 # What was the initial seed
 cat("\n\n*** Initial State for this run ***: ", results$Seed.initial,"\n")
 cat("*** See help(modelSetRN) for details. ***\n")
@@ -785,6 +768,10 @@ cat("\n\n")
 cat(paste("*** end of fit *** ", date()))
 
 sink()
+
+# save the report to a files?
+if(save.output.to.files)writeLines(stdout, results.filename)
+results$report <- stdout
 
 
 # add some of the raw data to the bugs object for simplicity in referencing it later

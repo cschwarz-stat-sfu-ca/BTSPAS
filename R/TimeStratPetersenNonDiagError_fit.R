@@ -1,6 +1,7 @@
 # TO DO
 #    - bayesian predictive posterior plots (the Bayesian p-values)
 
+# 2018-12-06 CJS converted report to textConnection() object
 # 2018-12-03 CJS converted fit plot to ggplot2
 # 2018-12-02 CJS converted trace plots to ggplot2
 # 2018-12-01 CJS Converted acf, posterior plots to ggplot2
@@ -278,7 +279,10 @@ if(length(logitP.fixed)!=length(logitP.fixed.values)){
 
 results.filename <- paste(prefix,"-results.txt",sep="")
 
-sink(results.filename)
+stdout <- vector('character')
+report <- textConnection('stdout', 'wr', local = TRUE)
+sink(report)
+
 cat(paste("Time Stratified Petersen with Non-Diagonal recaptures, error in smoothed U, and log-normal distribution for travel time - ", date()))
 cat("\nVersion: ", version)
 
@@ -467,7 +471,7 @@ if (debug)
                                             logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
                                             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to small values for debugging only
                                             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-                                            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+                                            debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
  }
 else #notice R syntax requires { before the else
   {results <- TimeStratPetersenNonDiagError(title=title, prefix=prefix,
@@ -476,7 +480,7 @@ else #notice R syntax requires { before the else
                                             logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
                                             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
                                             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-                                            debug=debug, debug2=debug2, InitialSeed=InitialSeed)
+                                            debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
  }
 
 # Now to create the various summary tables of the results
@@ -592,7 +596,7 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logitP.plot <- trace.plot
+results$plots$trace.logitP.plot <- trace.plot
 
 # now for the traceplots of logU (etaU), Utot, and Ntot
 trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
@@ -601,10 +605,10 @@ if(save.output.to.files){
    l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
-results$plot$trace.logU.plot <- trace.plot
+results$plots$trace.logU.plot <- trace.plot
 
 
-sink(results.filename, append=TRUE)
+sink(report, append=TRUE)
 
 # Global summary of results
 cat("\n\n*** Summary of MCMC results *** \n\n")
@@ -655,6 +659,9 @@ cat(paste("*** end of fit *** ", date()))
 
 sink()
 
+# save the report to a files?
+if(save.output.to.files)writeLines(stdout, results.filename)
+results$report <- stdout
 
 # add some of the raw data to the bugs object for simplicity in referencing it later
 results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac,

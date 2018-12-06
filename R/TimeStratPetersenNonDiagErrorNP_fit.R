@@ -1,3 +1,4 @@
+## 2018-12-06 CJS converted report to textConnection
 ## 2018-12-03 CJS converted fit plot to ggplot
 ## 2018-12-02 CJS converted traceplots to ggplot
 ## 2018-12-01 CJS created posterior plots using ggplot
@@ -338,7 +339,11 @@ sampfrac <- as.vector(sampfrac)
   results.filename <- paste(prefix,"-results.txt",sep="")
 
   ## Open sink to output file
-  sink(results.filename)
+  stdout <- vector('character')
+  report <- textConnection('stdout', 'wr', local = TRUE)
+  sink(report)
+  
+  
   cat(paste("Time Stratified Petersen with Non-Diagonal recaptures, error in smoothed U, and non-parametric modelling of travel times - ", date()))
   cat("\nVersion: ", version)
 
@@ -483,7 +488,7 @@ sampfrac <- as.vector(sampfrac)
      }
   }
 
-  sink(results.filename, append=TRUE)
+  sink(report, append=TRUE)
 
   # assign the logitP fixed values etc (replicates what was done above, but convenient to put here)
   new.logitP.fixed <- rep(NA, length(new.u2))
@@ -549,7 +554,7 @@ sampfrac <- as.vector(sampfrac)
                          mean.muTT=mean.muTT, sd.muTT=sd.muTT,
                          tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
                          debug=debug, debug2=debug2, 
-			                   InitialSeed=InitialSeed)
+			                   InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenNonDiagErrorNP(title=title, prefix=prefix,
                          time=new.time, n1=new.n1, m2=new.m2, u2=new.u2,
@@ -562,7 +567,7 @@ sampfrac <- as.vector(sampfrac)
                          mean.muTT=mean.muTT, sd.muTT=sd.muTT,
                          tauTT.alpha=tauTT.alpha,tauTT.beta=tauTT.beta,
                          debug=debug, debug2=debug2,  
-                  			 InitialSeed=InitialSeed)
+                  			 InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    }
 
   ## Now to create the various summary tables of the results
@@ -648,7 +653,7 @@ sampfrac <- as.vector(sampfrac)
      l_ply(trace.plot, function(x){plot(x)})
      dev.off()
   }
-  results$plot$trace.logitP.plot <- trace.plot
+  results$plots$trace.logitP.plot <- trace.plot
 
   
   # now for the traceplots of logU (etaU), Utot, and Ntot
@@ -658,10 +663,10 @@ sampfrac <- as.vector(sampfrac)
      l_ply(trace.plot, function(x){plot(x)})
      dev.off()
   }
-  results$plot$trace.logU.plot <- trace.plot
+  results$plots$trace.logU.plot <- trace.plot
 
 
-  sink(results.filename, append=TRUE)
+  sink(report, append=TRUE)
 
    ## Global summary of results
   cat("\n\n*** Summary of MCMC results *** \n\n")
@@ -708,6 +713,10 @@ sampfrac <- as.vector(sampfrac)
   cat(paste("*** end of fit *** ", date()))
 
   sink()
+
+  # save the report to a files?
+  if(save.output.to.files)writeLines(stdout, results.filename)
+  results$report <- stdout
 
 
   ## add some of the raw data to the bugs object for simplicity in referencing it later

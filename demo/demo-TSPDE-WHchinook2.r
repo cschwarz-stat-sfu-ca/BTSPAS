@@ -156,8 +156,8 @@ demo.nf.2009.ch2.tspde <- TimeStratPetersenDiagErrorWHChinook2_fit(
                   bad.m2=demo.bad.m2, 
                   bad.u2.A.YoY=demo.bad.u2.A.YoY, bad.u2.N.YoY=demo.bad.u2.N.YoY,
                   bad.u2.A.1  =demo.bad.u2.A.1  , bad.u2.N.1  =demo.bad.u2.N.1,
-                  debug=TRUE  # this generates only 10,000 iterations of the MCMC chain for checking.
-                  )
+                  debug=TRUE,  # this generates only 10,000 iterations of the MCMC chain for checking.
+                  save.output.to.files=TRUE)
 
 # Rename files that were created.
 
