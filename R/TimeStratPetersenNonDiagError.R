@@ -312,7 +312,7 @@ free.logitP.index <- (1:Nstrata.cap)[ is.na(logitP.fixed)]  # free values are th
 Nfree.logitP <- length(free.logitP.index)
 
 # create copy of u2 for use in improving mixing
-u2copy <- spline(x=1:length(u2), y=u2, xout=1:length(u2))$y
+u2copy <- exp(spline(x = 1:length(u2), y = log(u2+1), xout = 1:length(u2))$y)-1 # on log scale to avoid negative values
 u2copy <- round(u2copy) # round to integers
 
 datalist <- list("Nstrata.rel", "Nstrata.cap", "n1", "m2", "u2", "u2copy",
