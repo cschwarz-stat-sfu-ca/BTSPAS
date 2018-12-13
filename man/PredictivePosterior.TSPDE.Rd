@@ -6,7 +6,7 @@
 %   R/PredictivePosterior_TSPDE_WHChinook.R,
 %   R/PredictivePosterior_TSPDE_WHChinook2.r,
 %   R/PredictivePosterior_TSPDE_WHSteel.R, R/PredictivePosterior_TSPNDE.R,
-%   R/PredictivePosterior_TSPNDENP.R
+%   R/PredictivePosterior_TSPNDENP.R, R/PredictivePosterior_TSPNDENPMarkAvail.R
 \name{PredictivePosteriorPlot.TSPDE}
 \alias{PredictivePosteriorPlot.TSPDE}
 \alias{PredictivePosteriorPlot.TSPDE.WHCH2}
@@ -19,6 +19,7 @@
 \alias{PredictivePosterior.TSPDE.WHSteel}
 \alias{PredictivePosterior.TSPNDE}
 \alias{PredictivePosterior.TSPNDENP}
+\alias{PredictivePosterior.TSPNDENPMarkAvail}
 \title{Gemerate Predictive Posterior Plots (Bayesian p-values) for number of models.}
 \usage{
 PredictivePosteriorPlot.TSPDE(discrep)
@@ -45,6 +46,12 @@ PredictivePosterior.TSPNDE(n1, m2, u2, logitP.fixed, p, U, mu, sigma)
 
 PredictivePosterior.TSPNDENP(n1, m2.expanded, u2, logitP.fixed, p, U,
   Theta, Delta.max)
+
+PredictivePosterior.TSPNDENPMarkAvail(n1, m2.expanded, u2, logitP.fixed, p,
+  U, Theta, ma.p, Delta.max)
+}
+\arguments{
+\item{ma.p}{Proporiton of marks available, i.e 1-fallback probability}
 }
 \description{
 This is an internal function, not normally of use to users.

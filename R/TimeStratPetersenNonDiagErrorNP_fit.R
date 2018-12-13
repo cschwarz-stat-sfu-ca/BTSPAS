@@ -631,6 +631,7 @@ sampfrac <- as.vector(sampfrac)
 
   #browser()
   ## Bayesian P-values
+  browser()
   discrep <-PredictivePosterior.TSPNDENP(new.n1, expanded.m2, new.u2,
                                          new.logitP.fixed,
                                          expit(results$sims.list$logitP),

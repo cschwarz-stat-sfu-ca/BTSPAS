@@ -1,22 +1,22 @@
 #' @rdname PredictivePosterior.TSPDE
+#' @param ma.p Proporiton of marks available, i.e 1-fallback probability
 #' @import stats 
 
-# 2018-11-30 CJS Changed defintion of m2.expanded propogates down here
-# 2018-11-27 CJS Removed openbugs stuff
-# 2014-09-01 CJS Fixed bug when logitP.fixed is fixed in first position
+# 2018-12-14 CJS First edition based on PredictivePosterior.TSPNDENP
 # 2014-09-01
 #    There was also a subtle bug in dealing with the multinomial distribution where the length of p 
 #    (that had to be padded to deal with an OpenBugs problem
 #    had to have the indicies explicitly stated.
 
 
-PredictivePosterior.TSPNDENP <- function (n1,
+PredictivePosterior.TSPNDENPMarkAvail <- function (n1,
                                           m2.expanded,
                                           u2,
                                           logitP.fixed,
                                           p,
                                           U,
                                           Theta,
+                                          ma.p,
                                           Delta.max) {
 #  Generate Predictive Posterior Plot (Bayesian p-value) given the data
 #  for a TimeStratified Petersen with Non-Diagonal entries and a non-parametric movement model
@@ -27,7 +27,7 @@ PredictivePosterior.TSPNDENP <- function (n1,
 #    Delta.max    - maximum strata involved in movement from diagonal
 #    U, Theta  = matrix of values (rows=number of posterior samples, columns=strata)
 #                  These are returned from the call to OpenBugs/ JAGS
-#
+#    ma.p         - mark availability proportion
 
 
 s <- length(n1)
@@ -48,7 +48,7 @@ Theta <- lapply(1:nrow(Theta.bkp),function(k){
 
 ## Simulate data for each iteration
 #browser()
-simData <- lapply(1:nrow(p),function(k) simTSPNDE(n1,U[k,],p[k,],Theta[[k]]))
+simData <- lapply(1:nrow(p),function(k) simTSPNDENPMarkAvail(n1,U[k,],p[k,],Theta[[k]],ma.p[k]))
 
 #browser()
 ## Compute discrepancy measures
@@ -107,15 +107,16 @@ discrep <- t(sapply(1:nrow(p),function(k){
 discrep
 }
 
-simTSPNDE <- function(n1,U,p,Theta){
-  ## Simulate data from the TSPNDE model conditional on values of n and U.
+simTSPNDENPMarkAvail <- function(n1,U,p,Theta, ma.p){
+  ## Simulate data from the TSPNDENPMarkAvail model conditional on values of n and U.
+  ## and the proportion of marks available (ma.p)
 
   s <- length(n1)
   t <- length(U)
 
   ## 1) Simulate matrix of recoveries
   m2 <- t(sapply(1:length(n1),function(i){
-    cellProbs <- Theta[i,] * p[1:t]
+    cellProbs <- Theta[i,] * p[1:t] * ma.p
     cellProbs <- c(cellProbs,1-sum(cellProbs))
     if( any(cellProbs < 0)){browser()}
     rmultinom(1,n1[i],cellProbs)[1:t]

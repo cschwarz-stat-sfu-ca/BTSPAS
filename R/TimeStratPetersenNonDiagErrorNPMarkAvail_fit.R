@@ -1,5 +1,6 @@
 ## Yet to do - add bayesian p-value plots/ add p-values to results
 
+## 2018-12-14 CJS bayesian p-value plots added
 ## 2018-12-06 CJS convert report to textConnections
 ## 2018-12-02 CJS convert trace plots to ggplot
 ## 2018-12-01 CJS converted acf, posterior plots to ggplot
@@ -601,7 +602,16 @@ sampfrac <- as.vector(sampfrac)
   results$plots$post.UNtot.plot <- post.UNtot.plot
 
   ## Bayesian P-values
-  ## Not yet implemented
+  discrep <-PredictivePosterior.TSPNDENPMarkAvail(new.n1, expanded.m2, new.u2,
+                                         new.logitP.fixed,
+                                         expit(results$sims.list$logitP),
+                                         round(results$sims.list$U),
+                                         results$sims.list$Theta,
+                                         results$sims.list$ma.p,
+                                         Delta.max)
+  gof <- PredictivePosteriorPlot.TSPNDE (discrep)
+  if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),  height=8, width=8, units="in", dpi=300 )
+  results$plots$gof <- gof
 
   # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
   # the plot_trace will return a list of plots (one for each page as needed)
@@ -689,7 +699,6 @@ sampfrac <- as.vector(sampfrac)
                        bad.n1=bad.n1, bad.m2=bad.m2, bad.u2=bad.u2, 
                        logitP.cov=logitP.cov,
                        version=version, date_run=date(),title=title)
-  ## results$gof <- gof
-  
+
   return(results)
 } ## end of function
