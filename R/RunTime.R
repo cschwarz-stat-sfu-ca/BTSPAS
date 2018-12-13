@@ -22,20 +22,20 @@
 #' the literature/web site here ~
 #
 #' @export RunTime
+#' @import plyr
+#' @importFrom actuar grouped.data
 # The actuar pacakge cm() function conflicts with another package.
 # The following excludes is
 # See https://stackoverflow.com/questions/51899220/import-all-the-functions-of-a-package-except-one-when-building-a-package
 #' @rawNamespace import(actuar, except = cm) 
 
+# 2018-12-14 CJS converted from a for() loop to adply()
+
 RunTime <- function(time, U, prob=seq(0,1,.1)) {
   timing <- c(min(time):(1+max(time)))
-  q.U <- NULL
-  #browser()
-  for( i in 1:nrow(U)) {  # go through each sample from the posterior    
-    U.sample <- U[i,]
-    # this is the quantile function from the actuar package for grouped data
-    quant <- quantile(grouped.data(Group=timing, Frequency=U.sample), prob=prob)
-    q.U <- rbind(q.U, quant)
-  }
+  q.U <- plyr::adply(U, 1, function(U.sample, timing){
+       quant <- quantile(grouped.data(Group=timing, Frequency=U.sample), prob=prob)
+       quant
+  }, timing=timing, .id=NULL)
   q.U
 }

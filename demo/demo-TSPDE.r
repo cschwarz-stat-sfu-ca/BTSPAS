@@ -144,7 +144,6 @@ file.remove("inits3.txt"     )
 # save the results in a data dump that can be read in later using the load() command.
 # Contact Carl Schwarz (cschwarz@stat.sfu.ca) for details.
 save(list=c("demo.jc.2003.ch.tspde"), file="demo-jc-2003-ch-tspde-saved.Rdata")  # save the results from this run
-             demo.jc.2003.ch.tspde
 cat("\n\n\n ***** FILES and GRAPHS saved in \n    ", getwd(), "\n\n\n")
 print(dir())
 

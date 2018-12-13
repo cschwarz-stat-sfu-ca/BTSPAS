@@ -21,11 +21,12 @@
       \item OpenBugs no longer supported.
       \item All plots converted to ggplot format and stored in the plots object in the final result. An argument is available in the 
       fitting routines to stop saving output to files. 
+      \item Bayesian p.value plot created for MarkAvail routines (issue #17) 
     }
   }
    \subsection{BUG FIX}{
      \itemize{
-       \item  None.
+       \item  Corrected error in creating u2copy to improve mixing. Issue #18..
      }
    }
 }
