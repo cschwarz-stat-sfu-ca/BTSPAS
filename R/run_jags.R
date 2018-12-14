@@ -8,6 +8,7 @@
 #' @keywords internal
 #' 
 
+
 run.jags <-
     function(modelFile,
              dataFile,
@@ -23,7 +24,6 @@ run.jags <-
              initialSeed,
              working.directory,
              debug=FALSE){
-
   cat("\n\n*** Start of call to JAGS \n")
   cat("Working directory: ",working.directory,"\n")
 
@@ -63,7 +63,7 @@ run.jags <-
 
   ## Load the DIC model
   load.module("dic")
-        
+  #browser()
   ## Initialize JAGS model and run burnin
   jags <- jags.model(file=modelFile,
                      data=dataList,

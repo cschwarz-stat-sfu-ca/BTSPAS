@@ -17,7 +17,11 @@
 
 #' @keywords internal
 
-PredictivePosterior.TSPDE <- function (n1, m2, u2, p, U) {
+# 2018-12-15 CJS added in logitP fixed entries.
+
+PredictivePosterior.TSPDE <- function (n1, m2, u2, 
+                                       logitP.fixed, p, 
+                                       U) {
 #  Generate Predictive Posterior Plot (Bayesian p-value) given the data
 #  for a TimeStratified Petersen with Diagonal Elements and error
 #    n1, m2, u2  = vectors of input data

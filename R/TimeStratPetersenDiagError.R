@@ -25,15 +25,13 @@ TimeStratPetersenDiagError <- function(
     m2,
     u2,
     jump.after=NULL,
-    logitP.cov,
+    logitP.cov, logitP.fixed, 
     n.chains=3,
     n.iter=200000,
     n.burnin=100000,
     n.sims=2000,
-    tauU.alpha=1,
-    tauU.beta=.05,
-    taueU.alpha=1,
-    taueU.beta=.05,
+    tauU.alpha=1, tauU.beta=.05,
+    taueU.alpha=1,  taueU.beta=.05,
     mu_xiP=logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),
     tau_xiP=1/var(logit((m2+.5)/(n1+1)),na.rm=TRUE),
     tauP.alpha=.001, tauP.beta=.001,
@@ -74,6 +72,7 @@ set.seed(InitialSeed)  # set prior to initial value computations
 #      jump.after - points after which the spline is allowed to jump. Specify as a list of integers in the
 #              range of 1:Nstrata. If jump.after[i]=k, then the spline is split between strata k and k+1
 #      logitP.cov - covariates for logit(P)=X beta.logitP
+#      logitP.fixed - indicator if this logitP is fixed. If NA, then not fixed; else fixed to the particular value
 
 
 #  This routine makes a call to the MCMC sampler to fit the model and then gets back the
@@ -108,6 +107,12 @@ model{
 #      u2         - number of unmarked fish captured (To be expanded to population).
 #      logitP.cov   - covariates for logitP
 #      NlogitP.cov  - number of logitP covariates
+#      Nfree.logitP - number of free logitP parameters
+#      free.logitP.index - vector of length(Nfree.logitP) for the free logitP parameters
+#      Nfixed.logitP - number of fixed logitP parameters
+#      fixed.logitP.index - vector of length(Nfixed.logitP) for the free logitP parameters
+#      fixed.logitP.value - value of fixed logit entries
+
 #      SplineDesign- spline design matrix of size [Nstrata, maxelement of n.b.notflat]
 #                   This is set up prior to the call.
 #      b.flat   - vector of strata indices where the prior for the b's will be flat.
@@ -139,15 +144,18 @@ model{
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff
         etaU[i] ~ dnorm(logUne[i], taueU)T(,20)    # add random error
         eU[i] <- etaU[i] - logUne[i]
-        mu.logitP[i] <- inprod(logitP.cov[i,1:NlogitP.cov], beta.logitP[1:NlogitP.cov])
+   }
 
-#        logitPu[i] ~ dnorm(mu.logitP[i],tauP)       # uncontrained logitP value
-#        logitP [i] <- max(-10,min(10, logitPu[i]))  # keep the logit from wandering too far off
-
+   for(i in 1:Nfree.logitP){   # model the free capture rates using covariates
+        mu.logitP[free.logitP.index[i]] <- inprod(logitP.cov[free.logitP.index[i],1:NlogitP.cov], beta.logitP[1:NlogitP.cov])
         ## Matt's fix to improve mixing. Use u2copy to break the cycle (this doesn't work??)
-        mu.epsilon[i] <- mu.logitP[i] - log(u2copy[i] + 1) + etaU[i]   
-        epsilon[i] ~ dnorm(mu.epsilon[i],tauP)                     
-        logitP[i] <- max(-10,min(10,log(u2copy[i] + 1) - etaU[i] + epsilon[i]))  
+        mu.epsilon[free.logitP.index[i]] <- mu.logitP[free.logitP.index[i]] - log(u2copy[free.logitP.index[i]] + 1) + etaU[free.logitP.index[i]]
+        epsilon[free.logitP.index[i]] ~ dnorm(mu.epsilon[free.logitP.index[i]],tauP)
+        logitP[free.logitP.index[i]] <- max(-10, min(10,log(u2copy[free.logitP.index[i]] + 1) - etaU[free.logitP.index[i]] + epsilon[free.logitP.index[i]]))
+   }
+
+   for(i in 1:Nfixed.logitP){  # logit P parameters are fixed so we need to force epsilon to be defined.
+       epsilon[fixed.logitP.index[i]] <- 0
    }
 
    ##### Hyperpriors #####
@@ -165,7 +173,7 @@ model{
    taueU ~ dgamma(taueU.alpha,taueU.beta) # dgamma(100,.05) # Notice reduction from .0005 (in thesis) to .05
    sigmaeU <- 1/sqrt(taueU)
 
-   ## Capture probabilities. The logit(p[i]) are n(logitP.cov*beta.logitP.cov, sigmaP**2)
+   ## Capture probabilities covariates
    beta.logitP[1] ~ dnorm(mu_xiP,tau_xiP) # first term is usually an intercept
    for(i in 2:NlogitP.cov){
       beta.logitP[i] ~ dnorm(0, .01)   # rest of beta terms are normal 0 and a large variance
@@ -231,12 +239,25 @@ n.bU <- n.b.flat + n.b.notflat
 logitP.cov <- as.matrix(logitP.cov)
 NlogitP.cov <- ncol(as.matrix(logitP.cov))
 
+# get the logitP's ready to allow for fixed values
+logitP <- as.numeric(logitP.fixed)
+storage.mode(logitP) <- "double" # if there are no fixed logits, the default class will be logical which bombs
+free.logitP.index <- (1:Nstrata)[ is.na(logitP.fixed)]  # free values are those where NA is specifed
+Nfree.logitP <- length(free.logitP.index)
+
+fixed.logitP.index <- (1:Nstrata)[!is.na(logitP.fixed)]
+fixed.logitP.value <- logitP.fixed[ fixed.logitP.index]
+Nfixed.logitP      <- length(fixed.logitP.index)
+
+
+
 # create a copy of the u2 to improve mixing in the MCMC model
 u2copy <- exp(spline(x = 1:Nstrata, y = log(u2+1), xout = 1:Nstrata)$y)-1 # on log scale to avoid negative values
 u2copy <- round(u2copy)  # round to integersbrowser()
 
 datalist <- list("Nstrata", "n1", "m2", "u2", "u2copy", 
-		 "logitP.cov", "NlogitP.cov",
+                 "logitP", "Nfree.logitP", "free.logitP.index", "Nfixed.logitP", "fixed.logitP.index", "fixed.logitP.value",   # those indices that are fixed and free to vary
+                 "logitP.cov", "NlogitP.cov",
                  "SplineDesign",
                  "b.flat", "n.b.flat", "b.notflat", "n.b.notflat", "n.bU",
                  "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
@@ -320,10 +341,12 @@ init.vals <- genInitVals(model="TSPDE",
                          m2=m2,
                          u2=u2,
                          logitP.cov=logitP.cov,
+                         logitP.fixed=logitP.fixed,
                          SplineDesign=SplineDesign,
                          n.chains=n.chains)
 
 ## Generate data list
+
 data.list <- list()
 for(i in 1:length(datalist)){
   data.list[[length(data.list)+1]] <-get(datalist[[i]])

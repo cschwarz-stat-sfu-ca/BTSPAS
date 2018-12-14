@@ -30,7 +30,7 @@ PredictivePosteriorPlot.TSPDE.WHSteel(discrep)
 
 PredictivePosteriorPlot.TSPNDE(discrep)
 
-PredictivePosterior.TSPDE(n1, m2, u2, p, U)
+PredictivePosterior.TSPDE(n1, m2, u2, logitP.fixed, p, U)
 
 PredictivePosterior.TSPDE.WHCH(time, n1, m2, u2.A, u2.N, clip.frac.H, p,
   U.W, U.H, hatch.after)

@@ -1,3 +1,4 @@
+# 2018-12-15 CJS Added ability to fix some logitP values
 # 2018-12-02 CJS Convert trace plots to ggplot
 # 2018-12-01 CJS COnvert posterior plots to ggplot
 # 2018-11-30 CJS Convert acf plot to ggplot
@@ -74,6 +75,16 @@
 #' @param logitP.cov A numeric matrix for covariates to fit the
 #' logit(catchability). Default is a single intercept, i.e. all strata have the
 #' same mean logit(catchability).
+#' @param logitP.fixed A numeric vector (could be null) of the time strata
+#' where the logit(P) whould be fixed. Typically, this is used when the capture
+#' rates for some strata are 0 and logit(P) is set to -10 for these strata. The
+#' fixed values are given in \code{logitP.fixed.values}
+#' @param logitP.fixed.values A numerical vector (could be null) of the fixed
+#' values for logit(P) at strata given by logitP.fixed. Typically this is used
+#' when certain strata have a 0 capture rate and the fixed value is set to -10
+#' which on the logit scale gives p[i] essentially 0. Don't specify values such
+#' as -50 because numerical problems could occur in WinBugs/OpenBugs.
+
 #' @param n.chains Number of parallel MCMC chains to fit.
 #' @param n.iter Total number of MCMC iterations in each chain.
 #' @param n.burnin Number of burn-in iterations.
@@ -137,6 +148,7 @@ TimeStratPetersenDiagError_fit <-
            time, n1, m2, u2, sampfrac, jump.after=NULL, 
            bad.n1=c(), bad.m2=c(), bad.u2=c(),
            logitP.cov=rep(1,length(n1)),
+           logitP.fixed=NULL, logitP.fixed.values=NULL,
            n.chains=3, n.iter=200000, n.burnin=100000, n.sims=2000,
            tauU.alpha=1, tauU.beta=.05, taueU.alpha=1, taueU.beta=.05, 
            mu_xiP=logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),
@@ -150,7 +162,7 @@ TimeStratPetersenDiagError_fit <-
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2015-07-01'
+   version <- '2019-01-01'
    options(width=200)
 
 # Input parameters are
@@ -186,6 +198,7 @@ TimeStratPetersenDiagError_fit <-
 #               for the first element of the covariance matrix and 0 for the rest of the covariates.
 #               CAUTION - this MAY not be what you want to do. It is likely best to enter ALL strata
 #               if you have any covariates. The default, if not specified, is a constant (the mean logit)
+#    logitP.fixed, logitP.fixed.values - if you are fixing any of the logit P and at what values. 
 #    tauU.alpha, tauU.beta   - parameters for the prior on variance in spline coefficients
 #    taueU.alpha, taueU.beta - parameters for the prior on variance in log(U) around fitted spline 
 #    mu_xiP, tau_xiP         - parameters for the prior on mean logit(P)'s [The intercept term]
@@ -231,6 +244,16 @@ if(!all(jump.after %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** jump.after must be elements of strata identifiers. You entered \n jump.after:",jump.after,"\n Strata identifiers are \n time:",time, "\n")
    return()}
 
+#  4. check that index of logitP.fixed belong to time
+if(!all(logitP.fixed %in% time,na.rm=TRUE)){
+   cat("***** ERROR ***** logitP.fixed must be elements of strata identifiers. You entered \n logitP.fixed:",logitP.fixed,"\n Strata identifiers are \n time:",time, "\n")
+   return()}
+if(length(logitP.fixed)!=length(logitP.fixed.values)){
+   cat("***** ERROR ***** Lengths of logitP.fixed and logitP.fixed.values must all be equal. They are:",
+        length(logitP.fixed),length(logitP.fixed.values),"\n")
+   return()}
+
+
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
 # Create the report
@@ -252,6 +275,11 @@ print(temp)
 cat("\n\n")
 cat("Jump point are after strata: ", jump.after)
 if(length(jump.after)==0) cat("none - A single spline is fit")
+
+cat("\nFixed logitP indices are:", logitP.fixed)
+if(length(logitP.fixed)==0) cat("none - NO fixed values")
+cat("\nFixed logitP values  are:", logitP.fixed.values)
+if(length(logitP.fixed)==0) cat("none - NO fixed values")
 
 cat("\n\nValues of bad.n1 are : ", bad.n1, ". The value of n1 will be set to 1 and m2 to NA for these strata")
 if(length(bad.n1)==0) cat("none.")
@@ -398,6 +426,12 @@ temp<- data.frame(time=new.time, n1=new.n1, m2=new.m2, u2=new.u2,
 print(temp) 
 cat("\n\n")
 
+
+# assign the logitP fixed values etc.
+new.logitP.fixed <- rep(NA, length(new.u2))
+new.logitP.fixed[match(logitP.fixed, time)] <- logitP.fixed.values
+
+
 # Print out information on the prior distributions used
 cat("\n\n*** Information on priors *** \n")
 cat("   Parameters for prior on tauU (variance in spline coefficients: ", tauU.alpha, tauU.beta, 
@@ -425,14 +459,15 @@ if (debug)
    {results <- TimeStratPetersenDiagError(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2=new.u2,
             jump.after=jump.after-min(time)+1,
-            logitP.cov=new.logitP.cov,
+            logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
             n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to low values for debugging purposes only
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
             debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagError(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2=new.u2, 
-            jump.after=jump.after-min(time)+1, logitP.cov=new.logitP.cov,
+            jump.after=jump.after-min(time)+1, 
+            logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
             n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
             debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
@@ -498,6 +533,7 @@ results$plots$post.UNtot.plot <- post.UNtot.plot
 #save the Bayesian predictive distribution (Bayesian p-value plots)
 #browser()
 discrep <-PredictivePosterior.TSPDE (new.n1, new.m2, new.u2,
+             new.logitP.fixed,
 				     expit(results$sims.list$logitP),
 				     round(results$sims.list$U))
 gof <- PredictivePosteriorPlot.TSPDE (discrep)  # get the bayesian p-values

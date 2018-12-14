@@ -19,6 +19,7 @@
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
       \item OpenBugs no longer supported.
+      \item Diagonal model now allows you to fix some P's -- typically used when second trap is not running.
       \item All plots converted to ggplot format and stored in the plots object in the final result. An argument is available in the 
       fitting routines to stop saving output to files. 
       \item Bayesian p.value plot created for MarkAvail routines (issue #17) 

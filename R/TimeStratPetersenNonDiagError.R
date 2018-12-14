@@ -167,6 +167,9 @@ model {
 
    }
 
+   for(i in 1:Nfixed.logitP){  # logit P parameters are fixed so we need to force epsilon to be defined.
+       epsilon[fixed.logitP.index[i]] <- 0
+   }
 
    ##### Hyperpriors #####
    ## Mean and sd of log travel-times
@@ -311,12 +314,17 @@ storage.mode(logitP) <- "double" # if there are no fixed logits, the default cla
 free.logitP.index <- (1:Nstrata.cap)[ is.na(logitP.fixed)]  # free values are those where NA is specifed
 Nfree.logitP <- length(free.logitP.index)
 
+fixed.logitP.index <- (1:Nstrata.cap)[!is.na(logitP.fixed)]
+fixed.logitP.value <- logitP.fixed[ fixed.logitP.index]
+Nfixed.logitP      <- length(fixed.logitP.index)
+
 # create copy of u2 for use in improving mixing
 u2copy <- exp(spline(x = 1:length(u2), y = log(u2+1), xout = 1:length(u2))$y)-1 # on log scale to avoid negative values
 u2copy <- round(u2copy) # round to integers
 
 datalist <- list("Nstrata.rel", "Nstrata.cap", "n1", "m2", "u2", "u2copy",
                  "logitP", "Nfree.logitP", "free.logitP.index",   # those indices that are fixed and free to vary
+                 "Nfixed.logitP","fixed.logitP.index","fixed.logitP.value", # indices that are fixed and cannot vary
                  "logitP.cov", "NlogitP.cov",
                  "SplineDesign",
                  "b.flat", "n.b.flat", "b.notflat", "n.b.notflat", "n.bU",

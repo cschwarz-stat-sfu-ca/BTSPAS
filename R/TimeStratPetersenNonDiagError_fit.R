@@ -1,6 +1,5 @@
-# TO DO
-#    - bayesian predictive posterior plots (the Bayesian p-values)
-
+# 2018-12-15 CJS converted the muTT and sdTT plots to ggplot objects
+# 2018-12-15 CJS tested fixing logitP to certain values especially at the end of the sampling chain
 # 2018-12-06 CJS converted report to textConnection() object
 # 2018-12-03 CJS converted fit plot to ggplot2
 # 2018-12-02 CJS converted trace plots to ggplot2
@@ -160,12 +159,10 @@ TimeStratPetersenNonDiagError_fit <-
            sampfrac, jump.after=NULL,
            bad.n1=c(), bad.m2=c(), bad.u2=c(),
            logitP.cov=rep(1,length(u2)),
-           logitP.fixed=NULL,
-           logitP.fixed.values=NULL, n.chains=3,
-           n.iter=200000, n.burnin=100000,
-           n.sims=2000, tauU.alpha=1,
-           tauU.beta=.05, taueU.alpha=1,
-           taueU.beta=.05,
+           logitP.fixed=NULL, logitP.fixed.values=NULL, 
+           n.chains=3, n.iter=200000, n.burnin=100000, n.sims=2000, 
+           tauU.alpha=1,tauU.beta=.05,
+           taueU.alpha=1, taueU.beta=.05,
            mu_xiP=logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),
            tau_xiP=.6666, # need a better initial value for variation in catchability
            tauP.alpha=.001,
@@ -178,7 +175,7 @@ TimeStratPetersenNonDiagError_fit <-
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- '2014-09-01'
+    version <- '2019-01-01'
     options(width=200)
 
 # Input parameters are
@@ -542,35 +539,35 @@ if(save.output.to.files)ggsave(plot=post.UNtot.plot, filename=paste(prefix,"-UNt
 results$plots$post.UNtot.plot <- post.UNtot.plot
 
 
-# plot the mean log(travel times) (the muLogTT) vs release stratum number
-pdf(file=paste(prefix,"-muLogTT.pdf",sep=""))
-# which rows contain the muLogTT[xx] ?
+# plot the mean and sd log(travel times) (the muLogTT and the sdLogTT) vs release stratum number
+#browser()
 results.row.names <- rownames(results$summary)
 muLogTT.row.index    <- grep("muLogTT", results.row.names)
-muLogTT<- results$summary[muLogTT.row.index,]
-ylim <- c( min(c(muLogTT[,"mean"],muLogTT[,"2.5%"] ), na.rm=TRUE),
-           max(c(muLogTT[,"mean"],muLogTT[,"97.5%"]), na.rm=TRUE))
-plot (time[1:Nstrata.rel], muLogTT[,"mean"], type="p", pch=19,
-      main=paste(title,"\n mean log(travel time) with 95% credible intervals"),
-      xlab="Stratum", ylab="mean log(travel time)", ylim=ylim)  # fitted values
-lines(time[1:Nstrata.rel],  muLogTT[,"mean"])  # join the points
-segments(time[1:Nstrata.rel], muLogTT[,"2.5%"], time[1:Nstrata.rel], muLogTT[,"97.5%"])  # plot the 2.5 -> 97.5 posterior values
-dev.off()
+muLogTT<- data.frame(results$summary[muLogTT.row.index,])
+muLogTT$stratum <- new.time[1:Nstrata.rel]
+muLogTT$source  <- "Mean log(travel time)"
 
-# plot the sd log(travel times) (the sdLogTT) vs release stratum number
-pdf(file=paste(prefix,"-sdLogTT.pdf",sep=""))
-# which rows contain the sdLogTT[xx] ?
 results.row.names <- rownames(results$summary)
 sdLogTT.row.index    <- grep("sdLogTT", results.row.names)
-sdLogTT<- results$summary[sdLogTT.row.index,]
-ylim <- c( min(c(sdLogTT[,"mean"],sdLogTT[,"2.5%"] ), na.rm=TRUE),
-           max(c(sdLogTT[,"mean"],sdLogTT[,"97.5%"]), na.rm=TRUE))
-plot(time[1:Nstrata.rel], sdLogTT[,"mean"], type="p", pch=19,
-      main=paste(title,"\n sd log(travel time) with 95% credible intervals"),
-      xlab='Stratum', ylab="sd(log travel time)", ylim=ylim)  # fitted values
-lines(time[1:Nstrata.rel],  sdLogTT[,"mean"])  # join the points
-segments(time[1:Nstrata.rel], sdLogTT[,"2.5%"], time[1:Nstrata.rel], sdLogTT[,"97.5%"])  # plot the 2.5 -> 97.5 posterior values
-dev.off()
+sdLogTT<- data.frame(results$summary[sdLogTT.row.index,])
+sdLogTT$stratum <- new.time[1:Nstrata.rel]
+sdLogTT$source  <- "SD log(travel time)"
+
+plotdata <- rbind( muLogTT, sdLogTT)
+
+musdLogTT.plot <- ggplot(data=plotdata, aes_(x=~stratum, y=~mean))+
+   ggtitle(title)+
+   geom_point()+
+   geom_line()+
+   geom_errorbar(aes_(ymin=~X2.5., ymax=~X97.5.), width=.1)+
+   xlab("Stratum")+ylab("mean/sd log(travel time)")+
+   facet_wrap(~source, ncol=1, scales="free_y")
+musdLogTT.plot
+
+if(save.output.to.files)ggsave(plot=musdLogTT.plot, filename=paste(prefix,"-musdLogTT.pdf",sep=""),
+                               height=6, width=6, units="in")
+results$plots$musdLogTTt <- musdLogTT.plot
+
 
 ## save the Bayesian predictive distribution (Bayesian p-value plots)
 

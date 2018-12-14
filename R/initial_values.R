@@ -344,19 +344,24 @@ genInitValsChain <- function(
   ## Option 1: Models with only one spline
   #cat("GenInitVals \n")
   #browser()
-  if(model %in% c("TSPDE","TSPNDE")){
+  if(model %in% c("TSPNDE")){
     #cat("GenInitVals - setting epsilon: ", model, "\n")
     #browser()
     init.epsilon <- init.logitP - log(u2 + 1) + inits$etaU
     # subtle problem. If the logitP.fixed include elements at the end of the experiment
     # then init.epsion needs to be truncated at the end, otherwise JAGS gets upset because these terms never define
     # see the TSPND NP routine for a fix in the jags code that should fix this.
-    if(length(logitP.fixed)>0){
-        for(i in length(logitP.fixed):1){
-           if( is.na(logitP.fixed[i])){break}
-          init.epsilon <- init.epsilon[-length(init.epsilon)] # drop last term
-        }
-    }
+    #if(length(logitP.fixed)>0){
+    #    for(i in length(logitP.fixed):1){
+    #       if( is.na(logitP.fixed[i])){break}
+    #      init.epsilon <- init.epsilon[-length(init.epsilon)] # drop last term
+    #    }
+    #}
+  }
+  if(model %in% c("TSPDE")){
+    #cat("GenInitVals - setting epsilon: ", model, "\n")
+    #browser()
+    init.epsilon <- init.logitP - log(u2 + 1) + inits$etaU
   }
   #browser()
   if(model %in% c("TSPNDENP")){

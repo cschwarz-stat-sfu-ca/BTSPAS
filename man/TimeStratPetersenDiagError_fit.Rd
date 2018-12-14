@@ -8,10 +8,11 @@ with Diagonal Entries function.}
 TimeStratPetersenDiagError_fit(title = "TSDPE", prefix = "TSPDE-",
   time, n1, m2, u2, sampfrac, jump.after = NULL, bad.n1 = c(),
   bad.m2 = c(), bad.u2 = c(), logitP.cov = rep(1, length(n1)),
-  n.chains = 3, n.iter = 2e+05, n.burnin = 1e+05, n.sims = 2000,
-  tauU.alpha = 1, tauU.beta = 0.05, taueU.alpha = 1,
-  taueU.beta = 0.05, mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm
-  = TRUE)), tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
+  logitP.fixed = NULL, logitP.fixed.values = NULL, n.chains = 3,
+  n.iter = 2e+05, n.burnin = 1e+05, n.sims = 2000, tauU.alpha = 1,
+  tauU.beta = 0.05, taueU.alpha = 1, taueU.beta = 0.05,
+  mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
+  tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
   tauP.alpha = 0.001, tauP.beta = 0.001, run.prob = seq(0, 1, 0.1),
   debug = FALSE, debug2 = FALSE, InitialSeed = ceiling(runif(1, min =
   0, max = 1e+06)), save.output.to.files = TRUE)
@@ -66,6 +67,17 @@ stratum.  The values of \code{u2} will be set to NA for these strata.}
 \item{logitP.cov}{A numeric matrix for covariates to fit the
 logit(catchability). Default is a single intercept, i.e. all strata have the
 same mean logit(catchability).}
+
+\item{logitP.fixed}{A numeric vector (could be null) of the time strata
+where the logit(P) whould be fixed. Typically, this is used when the capture
+rates for some strata are 0 and logit(P) is set to -10 for these strata. The
+fixed values are given in \code{logitP.fixed.values}}
+
+\item{logitP.fixed.values}{A numerical vector (could be null) of the fixed
+values for logit(P) at strata given by logitP.fixed. Typically this is used
+when certain strata have a 0 capture rate and the fixed value is set to -10
+which on the logit scale gives p[i] essentially 0. Don't specify values such
+as -50 because numerical problems could occur in WinBugs/OpenBugs.}
 
 \item{n.chains}{Number of parallel MCMC chains to fit.}
 
