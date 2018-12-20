@@ -7,12 +7,13 @@ with Diagonal Entries and separating Wild from Hatchery Steelhead function.}
 \usage{
 TimeStratPetersenDiagErrorWHSteel_fit(title = "TSPDE-WHSteel",
   prefix = "TSPDE-WHSteel-", time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1,
-  sampfrac, hatch.after = NULL, bad.m2 = c(), bad.u2.W.YoY = c(),
-  bad.u2.W.1 = c(), bad.u2.H.1 = c(), logitP.cov = rep(1,
-  length(n1)), n.chains = 3, n.iter = 2e+05, n.burnin = 1e+05,
-  n.sims = 2000, tauU.alpha = 1, tauU.beta = 0.05, taueU.alpha = 1,
-  taueU.beta = 0.05, mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm
-  = TRUE)), tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
+  sampfrac = rep(1, length(u2.W.YoY)), hatch.after = NULL,
+  bad.m2 = c(), bad.u2.W.YoY = c(), bad.u2.W.1 = c(),
+  bad.u2.H.1 = c(), logitP.cov = rep(1, length(n1)), n.chains = 3,
+  n.iter = 2e+05, n.burnin = 1e+05, n.sims = 2000, tauU.alpha = 1,
+  tauU.beta = 0.05, taueU.alpha = 1, taueU.beta = 0.05,
+  mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
+  tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
   tauP.alpha = 0.001, tauP.beta = 0.001, run.prob = seq(0, 1, 0.1),
   debug = FALSE, debug2 = FALSE, InitialSeed = ceiling(runif(1, min =
   0, 1e+06)), save.output.to.files = TRUE)
@@ -44,7 +45,7 @@ captured in each stratum.}
 \item{u2.H.1}{A umeric vector of the number of unmarked hatchery age 1+ fish
 (i.e. adipose fin clipped) captured in each stratum.}
 
-\item{sampfrac}{A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Depricated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}

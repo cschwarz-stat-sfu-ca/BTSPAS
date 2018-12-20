@@ -1,3 +1,4 @@
+# 2108-12-19 CJS depricate of use of sampling fraction
 # 2018-12-15 CJS converted the muTT and sdTT plots to ggplot objects
 # 2018-12-15 CJS tested fixing logitP to certain values especially at the end of the sampling chain
 # 2018-12-06 CJS converted report to textConnection() object
@@ -64,7 +65,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum.  These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1
-#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Depricated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -156,7 +157,7 @@
 TimeStratPetersenNonDiagError_fit <-
   function( title="TSPNDE",
            prefix="TSPNDE-", time, n1, m2, u2,
-           sampfrac, jump.after=NULL,
+           sampfrac=rep(1,length(u2)), jump.after=NULL,
            bad.n1=c(), bad.m2=c(), bad.u2=c(),
            logitP.cov=rep(1,length(u2)),
            logitP.fixed=NULL, logitP.fixed.values=NULL, 
@@ -194,7 +195,7 @@ TimeStratPetersenNonDiagError_fit <-
 #             The vector u2 should be long enough to account for any fish that are recaptured later on
 #             from releases late in the season. The bottom right diagonal of m2 may be all zeros - that is ok
 #             Notice that length(u2) can be longer than length(n1)+nrow(m2).
-#    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
+#    sampfrac - Depricated. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
 #              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
 #              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
 #              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -273,6 +274,11 @@ if(length(logitP.fixed)!=length(logitP.fixed.values)){
         length(logitP.fixed),length(logitP.fixed.values),"\n")
    return()}
 
+# Deprication of sampling fraction.
+if(any(sampfrac != 1)){
+  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  return()
+}
 
 results.filename <- paste(prefix,"-results.txt",sep="")
 
@@ -580,7 +586,7 @@ discrep <-PredictivePosterior.TSPNDE (new.n1, expanded.m2, new.u2,
 #browser()
 gof <- PredictivePosteriorPlot.TSPNDE (discrep)
 if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),  height=12, width=8, units="in", dpi=300 )
-results$plots$gof <- gof
+results$plots$gof.plot <- gof
 
 # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
 # the plot_trace will return a list of plots (one for each page as needed)
@@ -666,7 +672,6 @@ results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac,
                       bad.n1=bad.n1, bad.m2=bad.m2, bad.u2=bad.u2,
                       logitP.cov=logitP.cov,
                       version=version, date_run=date(),title=title)
-results$gof <- gof
 
 return(results)
 } # end of function

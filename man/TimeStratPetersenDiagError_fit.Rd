@@ -6,13 +6,13 @@
 with Diagonal Entries function.}
 \usage{
 TimeStratPetersenDiagError_fit(title = "TSDPE", prefix = "TSPDE-",
-  time, n1, m2, u2, sampfrac, jump.after = NULL, bad.n1 = c(),
-  bad.m2 = c(), bad.u2 = c(), logitP.cov = rep(1, length(n1)),
-  logitP.fixed = NULL, logitP.fixed.values = NULL, n.chains = 3,
-  n.iter = 2e+05, n.burnin = 1e+05, n.sims = 2000, tauU.alpha = 1,
-  tauU.beta = 0.05, taueU.alpha = 1, taueU.beta = 0.05,
-  mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
-  tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
+  time, n1, m2, u2, sampfrac = rep(1, length(u2)), jump.after = NULL,
+  bad.n1 = c(), bad.m2 = c(), bad.u2 = c(), logitP.cov = rep(1,
+  length(n1)), logitP.fixed = NULL, logitP.fixed.values = NULL,
+  n.chains = 3, n.iter = 2e+05, n.burnin = 1e+05, n.sims = 2000,
+  tauU.alpha = 1, tauU.beta = 0.05, taueU.alpha = 1,
+  taueU.beta = 0.05, mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm
+  = TRUE)), tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
   tauP.alpha = 0.001, tauP.beta = 0.001, run.prob = seq(0, 1, 0.1),
   debug = FALSE, debug2 = FALSE, InitialSeed = ceiling(runif(1, min =
   0, max = 1e+06)), save.output.to.files = TRUE)
@@ -37,7 +37,8 @@ stratum of release.}
 stratum. These will be expanded by the capture efficiency to estimate the
 population size in each stratum.}
 
-\item{sampfrac}{A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Depricated} because it really doesn't work as intended.
+A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}

@@ -1,5 +1,5 @@
-## Yet to do - add bayesian p-value plots/ add p-values to results
 
+## 2018-12-19 CJS sampling fraction depricated
 ## 2018-12-14 CJS bayesian p-value plots added
 ## 2018-12-06 CJS convert report to textConnections
 ## 2018-12-02 CJS convert trace plots to ggplot
@@ -51,7 +51,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum.  These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1
-#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Depricated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -155,7 +155,7 @@
 #' @export TimeStratPetersenNonDiagErrorNPMarkAvail_fit
 
 TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail", prefix="TSPNDENP-avail-", 
-                         time, n1, m2, u2, sampfrac, jump.after=NULL,
+                         time, n1, m2, u2, sampfrac=rep(1,length(u2)), jump.after=NULL,
                          bad.n1=c(), bad.m2=c(), bad.u2=c(),
                          logitP.cov=rep(1,length(u2)),
                          logitP.fixed=NULL, logitP.fixed.values=NULL, 
@@ -180,7 +180,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- '2014-01-01'
+  version <- '2019-01-01'
   options(width=200)
   
   ## Input parameters are
@@ -199,7 +199,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ##             The vector u2 should be long enough to account for any fish that are recaptured later on
   ##             from releases late in the season. The bottom right diagonal of m2 may be all zeros - that is ok
   ##             Notice that length(u2) can be longer than length(n1)+nrow(m2).
-  ##    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
+  ##    sampfrac - Depricated. DO NOT USE. sampling fraction to adjust for how many days of the week was the trap operating
   ##              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
   ##              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
   ##              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -289,6 +289,12 @@ sampfrac <- as.vector(sampfrac)
   #7 check that the length of u2 
   if(length(u2) < length(n1) | length(u2) > (length(n1)+ ncol(m2)-1)){
     cat("***** ERROR ***** Length(u2) must between length(n1) and length(n1)+ncol(m2) \n")
+    return()
+  }
+
+  # Deprication of sampling fraction.
+  if(any(sampfrac != 1)){
+    cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
     return()
   }
 

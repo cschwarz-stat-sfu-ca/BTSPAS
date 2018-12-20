@@ -1,3 +1,4 @@
+# 2018-12-19 CSJ depricated use of sampling fraction
 # 2018-12-06 CJS saved report to a text connections
 # 2018-12-05 CJS converted final spline plot gggplot
 # 2018-12-02 CJS converted trace plots to ggplot
@@ -63,7 +64,7 @@
 #' @param clip.frac.H.YoY,clip.frac.H.1 Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)
 #' @param clip.frac.H A numeric value for the fraction of the hatchery fish
 #' that have the adipose fin clipped (between 0 and 1).
-#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Depricated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -148,7 +149,7 @@
 
 TimeStratPetersenDiagErrorWHChinook_fit<- 
        function( title="TSPDE-WHChinook", prefix="TSPDE-WHChinook-", 
-                 time, n1, m2, u2.A, u2.N, clip.frac.H, sampfrac, 
+                 time, n1, m2, u2.A, u2.N, clip.frac.H, sampfrac=rep(1,length(u2.A)), 
                  hatch.after=NULL, 
                  bad.m2=c(), bad.u2.A=c(), bad.u2.N=c(),
                  logitP.cov=rep(1,length(n1)),
@@ -186,7 +187,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
 #               So u2.A MUST be hatchery fish.
 #                  u2.N is a mixture of wild and hatchery fish.
 #    clip.frac.H - what fraction of the hatchery fish are clipped?
-#    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
+#    sampfrac - Depricated. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
 #              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
 #              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
 #              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -247,6 +248,11 @@ if(!all(hatch.after %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** hatch.after must be elements of strata identifiers. You entered \n hatch.after:",hatch.after,"\n Strata identifiers are \n time:",time, "\n")
    return()}
 
+# Deprication of sampling fraction.
+if(any(sampfrac != 1)){
+  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  return()
+}
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
@@ -702,7 +708,7 @@ discrep <-PredictivePosterior.TSPDE.WHCH (time, new.n1, new.m2, new.u2.A, new.u2
           hatch.after)
 gof <- PredictivePosteriorPlot.TSPDE.WHCH (discrep)
 if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),   height=8, width=8, units="in", dpi=300 )
-results$plots$gof <- gof
+results$plots$gof.plot <- gof
 
 # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
 # the plot_trace will return a list of plots (one for each page as needed)
@@ -811,7 +817,6 @@ results$data <- list( time=time, n1=n1, m2=m2, u2.A=u2.A, u2.N=u2.N, clip.frac.H
                       logitP.cov=logitP.cov,
                       version=version, date_run=date(),
                       title=title)
-results$gof <- gof
 
 return(results)
 } # end of function

@@ -1,3 +1,4 @@
+# 2018-12-19 CJS deprication of sampling fraction
 # 2014-09-01 CJS modified for JAGS; removed prompts
 # 2010-03-03 Conne River 2009 analysis.
 
@@ -103,9 +104,6 @@ demo.m2 <- demo.m2[ 1:length(demo.n1),]     # last rows have no fish released
 
 demo.u2 <- demo.Fish$Untagged
 
-# what fraction of the day was sampled?
-demo.sampfrac <- rep(1,length(demo.u2)) # values are on a daily basis
-
 # what is the strata identification number (julian day since start of year)?
 demo.jday <- 119+ 1:length(demo.u2)
 
@@ -130,7 +128,6 @@ demo.cr.2009.as.tspnde <- TimeStratPetersenNonDiagError_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,

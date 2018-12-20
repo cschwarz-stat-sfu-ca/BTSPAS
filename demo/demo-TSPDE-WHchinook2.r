@@ -1,4 +1,4 @@
-#
+# 2018-12-19 CJS deprication of sampling fraction
 # 2010-03-30 CJS first edition
 # 2014-09-01 CJS remove prompts; jags; engine
 
@@ -22,9 +22,7 @@
 #                                    u2.A.1  [j] (Age1 adipose clipped fish known to be hatchery), and
 #                                    u2.N.1  [j] (Age1 unclipped fish) which are mixture of hatchery and wild fish
 #
-# The program assumes that the trap was operating all days of the week. The sampfrac[j] variable
-# gives the proportion of days the trap was operating. For example, if the trap was operating for 3 of the
-# 7 days in a week, then sampfrac[j]<- 3/7
+# The program assumes that the trap was operating all days of the week. 
 #
 #  The program tries to fit a single spline to the entire dataset. However, in julian week 23
 #  hatchery released YoY fish started to arrive at the trap resulting in sudden jump
@@ -110,9 +108,6 @@ demo.u2.N.YoY <- demo.Fish$CH_YOY_NC
 demo.u2.A.1   <- demo.Fish$CH_1_AD
 demo.u2.N.1   <- demo.Fish$CH_1_NC
 
-# What fraction of the week was sampled?
-demo.sampfrac <- demo.Fish$DaysOperating/7
-
 # After which weeks do the YoY hatchery fish start to arrive. 
 # Prior to this point, all YoY fish are wild and it is not
 # necessary to separate out the YoY wild vs hatchery
@@ -149,7 +144,6 @@ demo.nf.2009.ch2.tspde <- TimeStratPetersenDiagErrorWHChinook2_fit(
                   u2.N.YoY=demo.u2.N.YoY,
                   u2.A.1  =demo.u2.A.1,
                   u2.N.1  =demo.u2.N.1,
-                  sampfrac=demo.sampfrac,
                   clip.frac.H.YoY= demo.clip.frac.H.YoY,
                   clip.frac.H.1  = demo.clip.frac.H.1,
                   hatch.after.YoY=demo.hatch.after.YoY,

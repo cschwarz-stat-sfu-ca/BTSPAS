@@ -1,3 +1,4 @@
+# 2018-12-19 CJS depricated use of sampling fraction
 # 2018-12-06 CJS converted report to textConnection
 # 2018-12-06 CJS converted initial plot to ggplots
 # 2018-12-02 CJS converted trace plots to ggplots
@@ -50,7 +51,7 @@
 #' captured in each stratum.
 #' @param u2.H.1 A umeric vector of the number of unmarked hatchery age 1+ fish
 #' (i.e. adipose fin clipped) captured in each stratum.
-#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Depricated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -129,7 +130,7 @@
 #' @export TimeStratPetersenDiagErrorWHSteel_fit
 TimeStratPetersenDiagErrorWHSteel_fit <-
   function( title="TSPDE-WHSteel", prefix="TSPDE-WHSteel-", 
-           time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1, sampfrac, 
+           time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1, sampfrac=rep(1,length(u2.W.YoY)), 
            hatch.after=NULL, 
            bad.m2=c(), bad.u2.W.YoY=c(), bad.u2.W.1=c(), bad.u2.H.1=c(),
            logitP.cov=rep(1,length(n1)),
@@ -147,7 +148,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
 # The steelhead are nice because 100% of hatchery fish are adipose fin clipped and no wild fish are adipose fin clipped
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2015-07-01'
+   version <- '2019-01-01'
    options(width=200)
 
 # Input parameters are
@@ -164,7 +165,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
 #    u2.W.YoY - number of wild YoY fish (no clips)
 #    u2.W.1   - number of wild age 1+ fish (no clips)
 #    u2.H.1   - number of hatchery age 1+ fish (ad fin clipped). 100% of hatchery production is fin clipped
-#    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
+#    sampfrac - DEPRICATED. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
 #              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
 #              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
 #              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -229,6 +230,13 @@ if(!all(bad.u2.H.1 %in% time, na.rm=TRUE)){
 if(!all(hatch.after %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** hatch.after must be elements of strata identifiers. You entered \n hatch.after:",hatch.after,"\n Strata identifiers are \n time:",time, "\n")
    return()}
+
+# Deprication of sampling fraction.
+if(any(sampfrac != 1)){
+  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  return()
+}
+
 
    results.filename <- paste(prefix,"-results.txt",sep="")   
 
@@ -662,7 +670,7 @@ discrep <-PredictivePosterior.TSPDE.WHSteel (time, new.n1, new.m2, new.u2.W.YoY,
           round(pmax(results$sims.list$U.H.1,0)), hatch.after) #don't forget that hatchery fish is 0 until hatch.after
 gof <- PredictivePosteriorPlot.TSPDE.WHSteel(discrep)
 if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),   height=8, width=8, units="in", dpi=300 )
-results$plots$gof <- gof
+results$plots$gof.plot <- gof
 
 
 # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
@@ -781,7 +789,6 @@ results$data <- list( time=time, n1=n1, m2=m2, u2.W.YoY=u2.W.YoY, u2.W.1=u2.W.1,
                       bad.m2=bad.m2, bad.u2.W.YoY=bad.u2.W.YoY, bad.u2.W.1=bad.u2.W.1, bad.u2.H.1=bad.u2.H.1, 
                       logitP.cov=logitP.cov,
                       version=version, date_run=date(),title=title)
-results$gof <- gof
 
 return(results)
 } # end of function

@@ -1,4 +1,4 @@
-#
+# 2018-12-19 CJS deprication of sampling fraction
 # 2009-12-05 CJS first editions
 # 2014-09-01 CJS remove prompts; jags; engine
 # This is a demonstration of how to call the Time Stratified Petersen with Diagonal Entries (TSPDE) program
@@ -19,9 +19,7 @@
 # Hence the u2[j] are separated into u2.A[j] (adipose clipped fish known to be hatchery), and
 #                                    u2.N[j] (unclipped fish) which are mixture of hatchery and wild fish
 #
-# The program assumes that the trap was operating all days of the week. The sampfrac[j] variable
-# gives the proportion of days the trap was operating. For example, if the trap was operating for 3 of the
-# 7 days in a week, then sampfrac[j]<- 3/7
+# The program assumes that the trap was operating all days of the week. 
 #
 #
 # Notes:
@@ -29,13 +27,7 @@
 #      This leads to an estimate of almost 13 million fish from the simple stratified Petersen.
 #      Consequently, the recaptures for this
 #      week are set to missing and the program will interpolate the number of fish for this week
-#
-#    - the number of days operating is 8 in sample weeks 2 (julian week 10) and
-#      6 in sample week 3 (julian week 11). The 8 days in sample week 2 is "real" as
-#      the code used on the marked fish was used for 8 days. The program will automatically
-#      "reduce" the number of unmarked fish captured in this week to a "7" day week
-#      and will increase the number of unmarked fish captured in week 3 to "7" days as well.
-#
+##
 #  The program tries to fit a single spline to the entire dataset. However, in julian weeks
 #  23 and 40, hatchery released fish started to arrive at the trap resulting in sudden jump
 #  in abundance. The jump.after vector gives the julian weeks just BEFORE the sudden jump,
@@ -91,12 +83,6 @@ demo.u2.N <-c(4135,10452,2199,  655,  308,  719,  973,  972, 2386,  469,
          3575, 4284,2903, 1127,  898,  406,  317,   99,   77,   37,
            22,26706,26831,11309,2677, 1343,  519,  130)
 
-# What fraction of the week was sampled?
-demo.sampfrac<-c(3,   8,    6,    7,    7,    7,    7,    7,    7,    7,
-            7,   7,    7,    7,    7,    7,    7,    7,    7,    7,
-            6,   7,    7,    7,    7,    7,    7,    7,    7,    7,
-            7,   7,    7,    7,    7,    7,    7,    5)/7
-
 # After which weeks do the hatchery fish start to arrive. Prior to this point, all fish are wild and it is not
 # necessary to separate out the wild vs hatchery
 demo.hatch.after <- c(22)  # julian weeks after which hatchery fish arrive.
@@ -135,7 +121,6 @@ demo.jc.2003.ch.tspde <- TimeStratPetersenDiagErrorWHChinook_fit(
                   m2=demo.m2            [demo.YoY.select],
                   u2.A=demo.u2.A        [demo.YoY.select],
                   u2.N=demo.u2.N        [demo.YoY.select],
-                  sampfrac=demo.sampfrac[demo.YoY.select],
                   clip.frac.H= demo.clip.frac.H,
                   hatch.after=demo.hatch.after,
                   bad.m2=demo.bad.m2, bad.u2.A=demo.bad.u2.A, bad.u2.N=demo.bad.u2.N,

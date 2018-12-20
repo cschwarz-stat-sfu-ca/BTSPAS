@@ -1,3 +1,4 @@
+# 2018-12-19 CJS Deprication of sampling fraction
 # 2009-12-06 CJS First edition
 # 2014-09-01 CJS remove prompts; jags; engine
 
@@ -22,9 +23,7 @@
 #                              u2.W.1  [j] (wild, age 1+ steelhead), and
 #                              u2.H.1  [j] (hatchery, age 1+ steelhead)
 #
-# The program assumes that the trap was operating all days of the week. The sampfrac[j] variable
-# gives the proportion of days the trap was operating. For example, if the trap was operating for 3 of the
-# 7 days in a week, then sampfrac[j]<- 3/7
+# The program assumes that the trap was operating all days of the week. 
 #
 #  The vectors bad.m2 etc indicates which julian weeks something went wrong. 
 # 
@@ -87,12 +86,6 @@ demo.u2.H.1 <- c( 0,  2,    0, 4643, 5758, 4220, 2328, 1474,  875,   39,
              0,  0,    0,    0,    0,    0,    1,    0,   27,    2,
              0,  0,    0,    0,    0,    0,    0,    0)
 
-# What fraction of the week was sampled?
-demo.sampfrac<-c(3,   8,    6,    7,    7,    7,    7,    7,    7,    7,
-            7,   7,    7,    7,    7,    7,    7,    7,    7,    7,
-            6,   7,    7,    7,    7,    7,    7,    7,    7,    7,
-            7,   7,    7,    7,    7,    7,    7,    5)/7
-
 # After which weeks do the hatchery fish start to arrive. Prior to this point, all fish are wild and it is not
 # necessary to separate out the wild vs hatchery
 demo.hatch.after <- c(11)  # julian weeks after which hatchery fish arrive.
@@ -123,7 +116,6 @@ demo.jc.2003.st.tspde <- TimeStratPetersenDiagErrorWHSteel_fit(
                   n1=demo.n1,
                   m2=demo.m2,
                   u2.W.YoY=demo.u2.W.YoY, u2.W.1=demo.u2.W.1, u2.H.1=demo.u2.H.1,
-                  sampfrac=demo.sampfrac,
                   hatch.after=demo.hatch.after,
                   bad.m2=demo.bad.m2,
                   bad.u2.W.YoY=demo.bad.u2.W.YoY,

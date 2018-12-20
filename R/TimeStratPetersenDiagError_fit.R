@@ -1,3 +1,4 @@
+# 2018-12-19 CJS Deprecated use of sampling.fraction
 # 2018-12-15 CJS Added ability to fix some logitP values
 # 2018-12-02 CJS Convert trace plots to ggplot
 # 2018-12-01 CJS COnvert posterior plots to ggplot
@@ -50,10 +51,11 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum. These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum.
-#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Depricated} because it really doesn't work as intended.
+#' A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-#' value of \code{sampfrac} for that stratum would be 3/7.
+#' value of \code{sampfrac} for that stratum would be 3/7. 
 #' @param jump.after A numeric vector with elements belonging to \code{time}.
 #' In some cases, the spline fitting the population numbers should be allowed
 #' to jump. For example, the population size could take a jump when hatchery
@@ -145,7 +147,8 @@
 
 TimeStratPetersenDiagError_fit <-
   function( title="TSDPE", prefix="TSPDE-", 
-           time, n1, m2, u2, sampfrac, jump.after=NULL, 
+           time, n1, m2, u2, sampfrac=rep(1,length(u2)), 
+           jump.after=NULL, 
            bad.n1=c(), bad.m2=c(), bad.u2=c(),
            logitP.cov=rep(1,length(n1)),
            logitP.fixed=NULL, logitP.fixed.values=NULL,
@@ -252,6 +255,12 @@ if(length(logitP.fixed)!=length(logitP.fixed.values)){
    cat("***** ERROR ***** Lengths of logitP.fixed and logitP.fixed.values must all be equal. They are:",
         length(logitP.fixed),length(logitP.fixed.values),"\n")
    return()}
+
+# Deprication of sampling fraction.
+if(any(sampfrac != 1)){
+   cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+   return()
+}
 
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
@@ -538,7 +547,7 @@ discrep <-PredictivePosterior.TSPDE (new.n1, new.m2, new.u2,
 				     round(results$sims.list$U))
 gof <- PredictivePosteriorPlot.TSPDE (discrep)  # get the bayesian p-values
 if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),   height=8, width=8, units="in", dpi=300 )
-results$plots$gof <- gof
+results$plots$gof.plot <- gof
 
 
 # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
@@ -627,7 +636,6 @@ results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac,
                       bad.n1=bad.n1, bad.m2=bad.m2, bad.u2=bad.u2, 
                       logitP.cov=logitP.cov, version=version, date_run=date(),
                       title=title)
-results$gof  <- gof
 
 return(results)
 } # end of function

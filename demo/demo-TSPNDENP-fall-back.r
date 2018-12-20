@@ -8,6 +8,7 @@
 # http://people.stat.sfu.ca/~cschwarz/Consulting/Moricetown/Report-2011-06-01.pdf
 #                                                          #
 ############################################################
+# 2018-12-19 CJS deprication of samp frac
 # 2014-09-01 CJS fix up for jags
 
 if(file.access("demo-TSPNDENP-fall-back")!=0){ 
@@ -61,9 +62,6 @@ FB.m2 <- as.matrix(FB.data[1:FB.st.mark, paste("X",0:(ncol(FB.data)-4),sep="")])
 ## Number of unmarked fish captured 
 FB.u2 <- FB.data[,"unmarked"]
 
-## Sampling fraction for each stratum   ****** THIS NEEDES TO BE REVISED
-FB.sampfrac <- rep(1,FB.st.recov)
-
 ## Identify any expected jumps in abundance
 FB.jump.after <- NULL 
 
@@ -84,7 +82,6 @@ FB.results <- TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
                   n1=         FB.n1, 
                   m2=         FB.m2, 
                   u2=         FB.u2,
-                  sampfrac=   FB.sampfrac,
                   jump.after= FB.jump.after,
                   bad.n1=     FB.bad.n1,
                   bad.m2=     FB.bad.m2,

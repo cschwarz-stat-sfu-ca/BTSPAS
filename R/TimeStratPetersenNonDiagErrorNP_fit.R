@@ -1,3 +1,4 @@
+## 2018-12-18 CJS deprication of sampling fraction 
 ## 2018-12-06 CJS converted report to textConnection
 ## 2018-12-03 CJS converted fit plot to ggplot
 ## 2018-12-02 CJS converted traceplots to ggplot
@@ -60,7 +61,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum.  These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1
-#' @param sampfrac A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Depricated.} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -166,7 +167,7 @@
 #' @export TimeStratPetersenNonDiagErrorNP_fit
 
 TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDENP-",
-                         time, n1, m2, u2, sampfrac, jump.after=NULL,
+                         time, n1, m2, u2, sampfrac=rep(1,length(u2)), jump.after=NULL,
                          bad.n1=c(), bad.m2=c(), bad.u2=c(),
                          logitP.cov=rep(1,length(u2)),
                          logitP.fixed=NULL, logitP.fixed.values=NULL,
@@ -187,7 +188,7 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- '2018-12-01'
+  version <- '2019-01-01'
   options(width=200)
 
   ## Input parameters are
@@ -206,7 +207,7 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
   ##             The vector u2 should be long enough to account for any fish that are recaptured later on
   ##             from releases late in the season. The bottom right diagonal of m2 may be all zeros - that is ok
   ##             Notice that length(u2) can be longer than length(n1)+nrow(m2).
-  ##    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
+  ##    sampfrac - Depricated. Do not use anymore. sampling fraction to adjust for how many days of the week was the trap operating
   ##              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
   ##              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
   ##              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -320,6 +321,12 @@ sampfrac <- as.vector(sampfrac)
     return()
   }
 
+  # Deprication of sampling fraction.
+  if(any(sampfrac != 1)){
+    cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+    return()
+  }
+
 
   ## Define maximum travel time if not supplied by user
   if(is.null(Delta.max))
@@ -412,23 +419,8 @@ sampfrac <- as.vector(sampfrac)
   new.sampfrac <- sampfrac
   new.logitP.cov <- logitP.cov
 
-
-#################### This needs more thought ####################
-  ## Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
-  ## of unmarked fish that were captured. It is not necessary to adjust the n1 and m2 values
-  ## as these are used ONLY to estimate the capture efficiency.
-  ## In reality, there should be a slight adjustment
-  ## to the precision to account for this change, but this is not done.
-  ## Similarly, if the sampling fraction is more than 1, the adjustment is made back to a standard week.
-  ##new.u2 <- round(new.u2/new.sampfrac)
-
-  ## Adjust for strata where sampling fraction=0. On these strata
-  ## u2 is set to NA so that there is NO information on U2 for this stratum
-  new.u2[new.sampfrac<.001 & new.sampfrac >0] <- NA
-#################### This needs more thought ####################
-
   
-  
+ 
   ## Set the bad values to missing
   new.n1[time[1:length(n1)] %in% bad.n1]  <- NA
   new.m2[time[1:length(n1)] %in% bad.m2,] <- NA
@@ -640,7 +632,7 @@ sampfrac <- as.vector(sampfrac)
                                          Delta.max)
   gof <- PredictivePosteriorPlot.TSPNDE (discrep)
   if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),  height=8, width=8, units="in", dpi=300 )
-  results$plots$gof <- gof
+  results$plots$gof.plot <- gof
 
   # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
   # the plot_trace will return a list of plots (one for each page as needed)

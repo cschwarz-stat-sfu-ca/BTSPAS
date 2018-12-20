@@ -1,3 +1,4 @@
+# 2018-12-19 CJS Deprication of sampling fraction
 # 2011-03-15
 # This is a demonstration of the error messages in calling the
 #    TimeStratPetersenNonDiagErrorNP program
@@ -46,9 +47,6 @@ demo.m2 <- as.matrix(demo.fish[1:demo.st.mark, paste("X",0:(ncol(demo.fish)-4),s
 ## Number of unmarked fish captured 
 demo.u2 <- demo.fish[,"unmarked"]
 
-## Sampling fraction for each stratum 
-demo.sampfrac <- rep(1,demo.st.recov)
-
 ## Identify any expected jumps in abundance
 demo.jump.after <- NULL 
 
@@ -69,7 +67,6 @@ demo.logitP.fixed.values <- rep(-10,length(demo.logitP.fixed))
 #                  n1=         demo.n1, 
 #                  m2=         demo.m2, 
 #                  u2=         demo.u2,
-#                  sampfrac=   demo.sampfrac,
 #                  jump.after= demo.jump.after,
 #                  bad.n1=     demo.bad.n1,
 #                  bad.m2=     demo.bad.m2,
@@ -77,15 +74,14 @@ demo.logitP.fixed.values <- rep(-10,length(demo.logitP.fixed))
 #                  logitP.fixed=demo.logitP.fixed,
 #                  logitP.fixed.values=demo.logitP.fixed.values,
 #                  n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-#                  debug=FALSE,
-#                  #engine="openbugs"
+#                  debug=FALSE
 #)
 
 
 cat("********** CHECKING ERROR MESSAGES IN TimeStratPetersenNonDiagErrorNP_fit *********\n\n")
 
 # Generate the possible error messages.
-# Lengths of the n1, m2, u2, sampfrac, time not all the same
+# Lengths of the n1, m2, u2, time not all the same
 demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   title=      demo.title,
                   prefix=     demo.prefix,
@@ -93,7 +89,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1[-1], 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -101,8 +96,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"
+                  debug=FALSE
 )
 
 demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
@@ -112,7 +106,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2[-1],
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -120,8 +113,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"  # show how to call openbugs
+                  debug=FALSE
 )
 
 demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
@@ -132,7 +124,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   m2=         demo.m2, 
                   u2=         demo.u2,
                   logitP.cov= rep(1,20),
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -140,8 +131,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"    # show how to call openbugs
+                  debug=FALSE
 )
 
 
@@ -153,7 +143,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2*100, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -161,8 +150,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"   # show how to call openbugs
+                  debug=FALSE
 )
 
 
@@ -175,7 +163,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     max(demo.jweek)+1,
                   bad.m2=     demo.bad.m2,
@@ -183,8 +170,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"     # show how to call openbugs
+                  debug=FALSE
 )
 
 demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
@@ -194,7 +180,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     max(demo.jweek)+1,
@@ -202,8 +187,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"   # show how to call openbugs
+                  debug=FALSE
 )
 
 demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
@@ -213,7 +197,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -221,8 +204,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"   # show how to call openbugs
+                  debug=FALSE
 )
 
 demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
@@ -232,7 +214,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= max(demo.jweek)+1,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -240,30 +221,8 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"  # show how to call openbugs
+                  debug=FALSE
 )
-
-## Check for existence of openbugs/winbugs directory
-demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
-                  title=      demo.title,
-                  prefix=     demo.prefix,
-                  time=       demo.jweek,
-                  n1=         demo.n1, 
-                  m2=         demo.m2, 
-                  u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
-                  jump.after= demo.jump.after,
-                  bad.n1=     demo.bad.n1,
-                  bad.m2=     demo.bad.m2,
-                  bad.u2=     demo.bad.u2,
-                  logitP.fixed=demo.logitP.fixed,
-                  logitP.fixed.values=demo.logitP.fixed.values,
-                  n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  engine="openbugs",
-                  OPENBUGS.directory="SLFDJS",
-) 
 
 
 ## 5. Check that index of logitP.fixed is ok
@@ -275,7 +234,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -283,8 +241,7 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed=max(demo.jweek)+1,
                   logitP.fixed.values=c(-10),
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"  # show how to call openbugs
+                  debug=FALSE
 )
 
 
@@ -296,7 +253,6 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1, 
                   m2=         demo.m2, 
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
@@ -305,9 +261,8 @@ demo.results <- TimeStratPetersenNonDiagErrorNP_fit(
                   logitP.fixed.values=demo.logitP.fixed.values,
                   prior.muTT = c(23), 
                   n.chains=3, n.iter=200, n.burnin=100, n.sims=20,
-                  debug=FALSE,
-                  #engine="openbugs"  # show how to call openbugs
-)
+                  debug=FALSE
+ )
 
 
 cat("\n\n\n ***** End of Demonstration *****\n\n\n")

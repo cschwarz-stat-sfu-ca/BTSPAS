@@ -6,9 +6,9 @@
 with NON Diagonal Entries with an non-parametric travel time and fall back}
 \usage{
 TimeStratPetersenNonDiagErrorNPMarkAvail_fit(title = "TSPNDENP-avail",
-  prefix = "TSPNDENP-avail-", time, n1, m2, u2, sampfrac,
-  jump.after = NULL, bad.n1 = c(), bad.m2 = c(), bad.u2 = c(),
-  logitP.cov = rep(1, length(u2)), logitP.fixed = NULL,
+  prefix = "TSPNDENP-avail-", time, n1, m2, u2, sampfrac = rep(1,
+  length(u2)), jump.after = NULL, bad.n1 = c(), bad.m2 = c(),
+  bad.u2 = c(), logitP.cov = rep(1, length(u2)), logitP.fixed = NULL,
   logitP.fixed.values = NULL, marked_available_n, marked_available_x,
   n.chains = 3, n.iter = 2e+05, n.burnin = 1e+05, n.sims = 2000,
   tauU.alpha = 1, tauU.beta = 0.05, taueU.alpha = 1,
@@ -44,7 +44,7 @@ case.}
 stratum.  These will be expanded by the capture efficiency to estimate the
 population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1}
 
-\item{sampfrac}{A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Depricated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}

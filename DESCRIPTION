@@ -5,9 +5,9 @@ Title: Bayesian Time-Strat. Population Analysis
 Author: Carl J Schwarz <cschwarz@stat.sfu.ca> and
 	Simon J Bonner <simon.bonner@uky.edu>
 Maintainer: Carl J Schwarz <cschwarz@stat.sfu.ca>
-Depends:
 Imports: 
-    actuar, 
+    actuar,
+    binom,
     coda, 
     data.table,
     ggplot2,
@@ -32,3 +32,7 @@ Description: Provides advanced Bayesian methods to estimate
 License: GPL (>=2)
 URL: http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2
 RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

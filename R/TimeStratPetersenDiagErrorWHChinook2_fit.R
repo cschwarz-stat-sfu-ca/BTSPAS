@@ -1,3 +1,4 @@
+# 2018-12-19 CJS deprication of sampling fraction
 # 2018-12-06 CJS saved output to a textconnection that is saved
 # 2018-12-02 CJS converted trace plots to ggplot
 # 2018-12-01 CJS converted posterior plot to ggplot
@@ -21,7 +22,7 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
        function( title="TSPDE-WHChinook2", prefix="TSPDE-WHChinook2-", 
                  time, n1, m2, 
                  u2.A.YoY, u2.N.YoY, u2.A.1, u2.N.1,
-                 clip.frac.H.YoY, clip.frac.H.1, sampfrac, 
+                 clip.frac.H.YoY, clip.frac.H.1, sampfrac=rep(1,length(u2.A.YoY)), 
                  hatch.after.YoY=NULL, 
                  bad.m2=c(), bad.u2.A.YoY=c(), bad.u2.N.YoY=c(), bad.u2.A.1=c(), bad.u2.N.1=c(),
                  logitP.cov=rep(1,length(n1)),
@@ -38,7 +39,7 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
 # covariates for the the capture probabilities, and separating the YoY and Age1 wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2015-07-01'
+   version <- '2019-01-01'
    options(width=200)
 
 # Input parameters are
@@ -66,7 +67,7 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
 #                  u2.N.1 is a mixture of wild and hatchery fish.
 #    clip.frac.H.YoY - what fraction of the YoY hatchery fish are clipped?
 #    clip.frac.H.1   - what fraction of the Age1 hatchery fish are clipped (from last year's releases)?
-#    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
+#    sampfrac - Depricated **** DO NOT USE ANYMORE **** sampling fraction to adjust for how many days of the week was the trap operating
 #              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
 #              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
 #              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -153,6 +154,11 @@ if( any(seq(min(time),max(time),1) != time,na.rm=TRUE)){
    return()
 }
 
+# Deprication of sampling fraction.
+if(any(sampfrac != 1)){
+  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  return()
+}
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
@@ -638,7 +644,7 @@ if(save.output.to.files){
     l_ply(gof, function(x){plot(x)})
   dev.off()
 }
-results$plots$gof <- gof
+results$plots$gof.plot <- gof
 
 
 # create traceplots of logU, U, and logitP (along with R value) to look for non-convergence
@@ -782,7 +788,6 @@ results$data <- list( time=time, n1=n1, m2=m2,
                       bad.u2.A.1=bad.u2.A.1, bad.u2.N.1=bad.u2.N.1, 
                       logitP.cov=logitP.cov,
                       version=version, date_run=date(), title=title)
-results$gof <- gof
 
 return(results)
 } # end of function

@@ -1,3 +1,4 @@
+# 2018-12-19 CJS deprication of sampling fraction
 # 2018-12-14 CJS demo of fixing logitP
 # 2014-09-01 CJS fixup for JAGS, removal of prompts
 # 2009-12-07 
@@ -109,9 +110,6 @@ demo.m2 <- demo.m2[ 1:length(demo.n1),]     # last two rows are ficticious
 
 demo.u2 <- demo.Fish$Untagged
 
-# what fractio of the day was sampled?
-demo.sampfrac <- rep(1,length(demo.u2)) # values are on a daily basis
-
 # what is the strata identification number?
 demo.day <- 1:(length(demo.u2)) # in this case, we have two more sample times where fish are seen
 
@@ -135,7 +133,6 @@ demo.tspnde.fixed <- TimeStratPetersenNonDiagError_fit(
                   m2=         demo.m2, 
                   u2=         demo.u2,
                   logitP.fixed=demo.logitP.fixed, logitP.fixed.values=demo.logitP.fixed.values,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,

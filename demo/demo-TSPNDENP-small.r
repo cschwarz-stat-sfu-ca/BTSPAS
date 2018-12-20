@@ -1,3 +1,4 @@
+# 2018-12-19 CJS deprication of sampling fraction
 # 2014-09-01 CJS updated for jages; removed prompts
 # 2010-03-21 Conne River 2009 analysis.
 # 2010-11-29 Updated demo to show how to estimate time to get target value
@@ -60,9 +61,6 @@ demo.m2 <- demo.m2[ 1:length(demo.n1),]     # last rows have no fish released
 
 demo.u2 <- demo.Fish$Untagged
 
-# what fraction of the day was sampled?
-demo.sampfrac <- rep(1,length(demo.u2)) # values are on a daily basis
-
 # what is the strata identification number (julian day since start of year)?
 demo.jday <- 119+ 1:length(demo.u2)
 
@@ -87,15 +85,13 @@ demo.cr.2009.as.tspndenp <- TimeStratPetersenNonDiagErrorNP_fit(
                   n1=         demo.n1,
                   m2=         demo.m2,
                   u2=         demo.u2,
-                  sampfrac=   demo.sampfrac,
                   jump.after= demo.jump.after,
                   bad.n1=     demo.bad.n1,
                   bad.m2=     demo.bad.m2,
                   bad.u2=     demo.bad.u2,
                   logitP.fixed=demo.logitP.fixed,
                   logitP.fixed.values=demo.logitP.fixed.values,
-		              #engine="openbugs",
-                  debug=TRUE
+	                debug=TRUE
                   )
 # Rename files that were created.
 
