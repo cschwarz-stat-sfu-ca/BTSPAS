@@ -12,8 +12,7 @@
 #'
 #' @return Data frame with variables est and se.
 #' .
-#' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
-#' \email{cschwarz@@stat.sfu.ca}
+#' @template author 
 #' @examples
 #'  
 #' SimplePetersen( 200, 10, 300) 

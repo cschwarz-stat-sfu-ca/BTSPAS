@@ -97,10 +97,6 @@ cat("
 model {
 # Time Stratified Petersen with NON Diagonal recapture and allowing for error in the smoothed U curve.
 
-# Refer to Bonner (2008) Ph.D. thesis from Simon Fraser University available at
-#     http://www.stat.sfu.ca/people/alumni/Theses/Bonner-2008.pdf
-# The model is in Appendix B. The discussion of the model is in Chapter 2.
-
 #  Data input:
 #      Nstrata.rel - number of strata where fish are releases
 #      Nstrata.cap - number of (future strata) where fish are recaptured.

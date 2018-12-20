@@ -16,8 +16,7 @@
 #' @return A list with a sample of the posterior (index), quantiles
 #' (quantiles), mean (mean), median(median), and standard deviation (sd), and
 #' target value (targetU)
-#' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
-#' \email{cschwarz@@stat.sfu.ca}
+#' @template author 
 #' @keywords ~models ~plots
 #' @examples
 #'  

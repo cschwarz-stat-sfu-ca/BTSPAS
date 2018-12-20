@@ -46,7 +46,7 @@ if(save.output.to.files){
 
 }
 \author{
-Bonner, S.J. \email{s.bonner@stat.ubc.ca} and Schwarz, C. J.
-\email{cschwarz@stat.sfu.ca}
+Bonner, S.J. \email{sbonner@uwo.ca} and 
+Schwarz, C. J. \email{cschwarz.stat.sfu.ca@gmail.com}.
 }
 \keyword{internal}

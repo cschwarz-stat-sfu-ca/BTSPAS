@@ -101,10 +101,6 @@ model {
 # Time Stratified Petersen with NON Diagonal recapture and allowing for error in the smoothed U curve.
 # Non-parametric estimateion of travel times for marked individuals.
 #
-# Refer to Bonner and Schwarz (2010) Smoothed Estimates
-#   for Time-Stratified Mark-Recapture Experiments using Bayesian
-#   P-Splines
-#
 #  Data input:
 #      Nstrata.rel - number of strata where fish are releases
 #      Nstrata.cap - number of (future strata) where fish are recaptured.

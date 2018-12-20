@@ -96,10 +96,7 @@ model{
 # Time Stratified Petersen with Diagonal recapture (no spillover in subsequent weeks or marked fish)
 #    and allowing for error in the smoothed U curve.
 
-# Refer to Bonner (2008) Ph.D. thesis from Simon Fraser University available at
-#     http://www.stat.sfu.ca/people/alumni/Theses/Bonner-2008.pdf
-# The model is in Appendix B. The discussion of the model is in Chapter 2.
-
+# 
 #  Data input:
 #      Nstrata - number of strata
 #      n1         - number of marked fish released

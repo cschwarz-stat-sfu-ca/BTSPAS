@@ -125,22 +125,9 @@
 #' 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
-#' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
-#' \email{cschwarz@@stat.sfu.ca}
-#' @references Refer to the Trinity River Restoration Project report by
-#' Schwarz, C.J. et al. (2009) available at
-#' \url{http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2}. Please
-#' contact \email{cschwarz@stat.sfu.ca} for more details. %% ~put references to
-#' the literature/web site here ~
+#' @template author
+#' @template references
 #' @keywords ~models ~smooth
-#' @examples
-#'  
-#' ##---- See the demo files for examples of how to use this package
-#' ##
-#' ##     demo("demo-TSPDE",     package='BTSPAS', ask=FALSE)  # the simplest usage
-#' ##     demo("demo-TSPDE-cov", package='BTSPAS', ask=FALSE)  # including a covariate for logit(P)
-#' ##
-#' 
 #' @export TimeStratPetersenDiagError_fit
 #' 
 #' 

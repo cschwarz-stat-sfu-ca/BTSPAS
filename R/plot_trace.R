@@ -14,8 +14,7 @@
 #' @param ncol,nrow How many plots to put on a page (number of rows and columns)
 #' @return List of ggplot2 objects using facet_wrap_paginate (...., page=...) with each element of the list
 #' corresponding to one page of the plot. 
-#' @author Bonner, S.J. \email{s.bonner@@stat.ubc.ca} and Schwarz, C. J.
-#' \email{cschwarz@@stat.sfu.ca}
+#' @template author
 #' @import ggforce reshape2 ggplot2 plyr
 #' @keywords internal
 

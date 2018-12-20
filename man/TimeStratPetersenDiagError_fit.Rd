@@ -149,25 +149,22 @@ fitting routine.
 Use the \code{\link{TimeStratPetersenNonDiagError_fit}} function for cases
 where recaptures take place outside the stratum of release.
 }
-\examples{
- 
-##---- See the demo files for examples of how to use this package
-##
-##     demo("demo-TSPDE",     package='BTSPAS', ask=FALSE)  # the simplest usage
-##     demo("demo-TSPDE-cov", package='BTSPAS', ask=FALSE)  # including a covariate for logit(P)
-##
-
-}
 \references{
-Refer to the Trinity River Restoration Project report by
-Schwarz, C.J. et al. (2009) available at
-\url{http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2}. Please
-contact \email{cschwarz@stat.sfu.ca} for more details. %% ~put references to
-the literature/web site here ~
+Bonner, S. J., & Schwarz, C. J. (2011). 
+Smoothingyyy population size estimates for Time-Stratified Mark–Recapture experiments Using Bayesian P-Splines. 
+Biometrics, 67, 1498–1507. 
+\url{https://doi.org/10.1111/j.1541-0420.2011.01599.x}
+
+Schwarz, C. J., & Dempson, J. B. (1994).
+Mark-recapture estimation of a salmon smolt population. 
+Biometrics, 50, 98–108.
+
+Schwarz, C.J. et al. (2009) Trinity River Restoration Project Report available at
+\url{http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2}
 }
 \author{
-Bonner, S.J. \email{s.bonner@stat.ubc.ca} and Schwarz, C. J.
-\email{cschwarz@stat.sfu.ca}
+Bonner, S.J. \email{sbonner@uwo.ca} and 
+Schwarz, C. J. \email{cschwarz.stat.sfu.ca@gmail.com}.
 }
 \keyword{~models}
 \keyword{~smooth}
