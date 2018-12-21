@@ -631,7 +631,7 @@ print(demo3.data)
 
 A prelimary plot of the empirical logit (exlcuding those weeks when the trap was not running) shows an approximate quadratic fit to $log(flow)$,
 but the uncertainty in each week is enormous!
-```{r  echo=FALSE, fig.height=4, fig.width=6, fig.caption="Logit(p) vs log(flow)"}
+```{r  echo=FALSE, fig.height=4, fig.width=6, fig.caption="Logit(p) vs log(flow)", message=FALSE, warning=FALSE}
 demo3.data$elogitphat <- log(  (demo3.data$m2+.5)/(demo3.data$n1+1) / (1 - (demo3.data$m2+.5)/(demo3.data$n1+1)  ))
 plotdata <- demo3.data[ demo3.data$u2 >0, ]
 ggplot(data=plotdata, aes(x=logflow, y=elogitphat))+

@@ -15,12 +15,9 @@
 .onAttach <- function(libname,pkgname){
 
   packageStartupMessage("***** BTSPAS: Bayesian Time Stratified Petersen Analysis System - Version 2019.0101 (2019-01-01) ***** \n\n",
-        "      Help available with  help(package='BTSPAS')  or  \n",
-        "                           help(BTSPAS)                \n\n",
+        "      Help available with  help(package='BTSPAS') \n",
         '      List of demonstrations available with demo(package="BTSPAS") \n',
-        '      A demo is run as (e.g.): demo("demo-TSPDE", package="BTSPAS")\n\n')
-  ## Turn off the ask options when demonstrations are run
-  options(demo.ask=FALSE)
+        '      Several vignettes are also avaialble.\n\n')
 }
 
 
