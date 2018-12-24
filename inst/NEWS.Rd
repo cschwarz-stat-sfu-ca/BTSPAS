@@ -31,6 +31,7 @@
    \subsection{BUG FIX}{
      \itemize{
        \item  Corrected error in creating u2copy to improve mixing. Issue #18..
+       \item  Corrected error where output of Theta in non-diagonal cases was stored incorrectly in sims.matrix and sim.array objects. Code used sim.list where Theta were stored correctly, so no effect on fitting.
      }
    }
 }

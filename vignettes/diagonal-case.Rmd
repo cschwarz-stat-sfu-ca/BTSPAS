@@ -8,7 +8,7 @@ output:
     toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
     number_sections: true  ## if you want number sections at each table header
 vignette: >
-  %\VignetteIndexEntry{BTSPAS Diagonal Case}
+  %\VignetteIndexEntry{01 - Diagonal Case}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -16,20 +16,21 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE,message=FALSE}
-#knitr::opts_chunk$set(
-#  collapse = TRUE,
-#  comment = "#>"
-#)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 library(binom)
 library(BTSPAS)
 library(ggplot2)
+max.width=70
 ```
 # Introduction
 
 
 The two-sample capture-recapture experiment is one of the simplest possible studies 
 with a long history. The standad Lincoln-Petersen 
-estimator is used to estimate abundance as
+estimator  used to estimate abundance is
 $$ \widehat{N} = \frac{n_1 n_2}{m_2}$$
 where $n_1$ is the number of animals captured, marked and released at the first capture event; 
 $n_2$ is the number of animals captured at the second capture event;
@@ -64,7 +65,7 @@ the wheel and other uncontrollable events. So it is unlikely that the capture pr
 equal over time at either location, i.e. are heterogeneous over time. 
 
 We suppose that we can temporally stratify the data into, for example, weeks, where the
-capture-probabilities are (mostly) homogeneous at both wheels. Furthermore, suppsoe that
+capture-probabilities are (mostly) homogeneous at each wheel in each week. Furthermore, suppsoe that
 fish captured and marked in each week tend to migrate together so that they are
 captured in a single subsequent stratum. For example, 
 suppose that in each julian week $j$, $n1[j]$ fish are marked and released above the rotary screw trap.
@@ -89,17 +90,17 @@ Newly
 Untagged               u2[1]  u2[2] u2[3]  ... u2[k]  
 captured  
 ```
-Here the tagging and recapture events have been stratified in to $k$ temporal strata.
-Marked fish from one stratum tend to move a similar rates and so are recaptured
+Here the tagging and recapture events have been stratified into $k$ temporal strata.
+Marked fish from one stratum tend to move at similar rates and so are recaptured
 together with unmarked fish.
 Recaptures of marked fish take place along the "diagonal."
 
-Because the matrix is diagonal, and because the $u2$ vector is the same length as
-the $n1$ and $m2$ vectors, the data can be entered as several columns.
 
 # Example of basic BTSPAS fit.
 ## Reading in the data
-Here is an example of some raw data that is read in:
+Because the matrix is diagonal, and because the $u2$ vector is the same length as
+the $n1$ and $m2$ vectors, the data can be entered as several columns.
+Here is an example of some raw data:
 ```{r}
 demo.data.csv <- textConnection(
 'jweek, n1, m2, u2
@@ -197,7 +198,8 @@ to estimate the capture efficiency at the second trap in the first week.
 estimated recapture probabiiity will be zero. But the data shows that some unmarked
 fish were captured in these strata, so the actual efficiency must have been non-zero.
 * There appears to be heterogeneity in the capture probabilities.
-* In some julian weeks, the number of marked fish released and recaptured is
+* In some julian weeks, the number of marked fish released and recaptured is very small which
+lead to estimates with poor precision.
 
 Similarly, let us look at the pattern of unmarked fish captured at the second trap:
 ```{r umarked, echo=FALSE, fig.width=6, fig.height=4, include=TRUE, fig.align="center", fig.cap=c("Observed number of unmarked recaptures"), warning=FALSE}
@@ -262,12 +264,12 @@ missing stratum.
 probabilities for the missing strata.
 * the program allows you specify break points in the underlying spline to account
 for external events. We was in the above example, that hatchery fish were released at
-in julian weeks 23 and 40, hatchery  resulting in sudden jump
+in julian weeks 23 and 40  resulting in sudden jump
 in abundance. The $jump.after$ parameter gives the julian weeks just BEFORE the sudden jump,
 i.e. the spline is allowed to jump AFTER the julian weeks in jump.after.
-* sometimes bad thing happend.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
-number of recoveries in julian week 41 is far below expectations and leads to impossible
-Petersen estimate for julian week 41. Similrly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
+* sometimes bad thing happen.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
+number of recoveries in julian week 41 is far below expectations and leads to an impossible
+Petersen estimate for julian week 41. Similrly, the vector $bad.u2$ indicates in which julian weeks, the number of unmarked fish is suspect.
 In both cases, the suspect values of $m2$ and $u2$ are set to missing.
 Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input direcly.
 I arbitrarily chose the third julian week to demonstrate this feature.
@@ -342,14 +344,25 @@ for later processing. Notice that I didn't save the results below as part of thi
 
 ## The output from the basic fit
 The final object has many components
-```{r components}
+```{r components,results="hide"}
 names(demo.fit)
 ```
+```{r echo=FALSE}
+save.options <- options()
+options(width=max.width)
+names(demo.fit)
+options(save.options)
+```
 The *plots* sub-object contains many plots:
-```{r }
+```{r results="hide"}
 names(demo.fit$plots)
 ```
-
+```{r echo=FALSE}
+save.options <- options()
+options(width=max.width)
+names(demo.fit$plots)
+options(save.options)
+```
 In particular, it contains plots of the initial spline fit (*init.plot*), 
 the final fitted spline (*fit.plot*), 
 the estimated capture probabilities (on the logit scale) (*logitP.plot*),
@@ -360,7 +373,7 @@ and model diagnostic plots (goodness of fit (*gof.plot*), trace (*trace...plot*)
 These plots are all created using the $ggplot2$ packages, so the user can modify the plot (e.g. change titles etc).
 
 The $BTSPAS$ program also creates a report, which includes information about the data used in the fitting,
-the pooled- and stratified-Petersen estiamtes, a test for pooling, and summaries of the posterior. Only the first few lines
+the pooled- and stratified-Petersen estimates, a test for pooling, and summaries of the posterior. Only the first few lines
 are shown below:
 ```{r }
 head(demo.fit$report)
@@ -483,7 +496,7 @@ demo2.logitP.fixed <- c(37,38,39, 46)
 demo2.logitP.fixed.values <- rep(-10, length(demo2.logitP.fixed))
 ```
 
-The stratums where the value of *p* is to be fixed is specified along with the value (on the logit scale) at which the capture probabilities are fixed.
+The strata where the value of *p* is to be fixed is specified along with the value (on the logit scale) at which the capture probabilities are fixed.
 Technically, the $logit(0.0)$ is negative infinity, but $-10$ is ``close enough''.
 
 The rest of the call is basically the same -- don't forget to specify the additional arguments in the call
@@ -562,7 +575,7 @@ A plot of the $logit(P)$ is
 ```{r warnings=FALSE,message=FALSE,warning=FALSE, fig.width=6, fig.height=4,  include=TRUE, fig.align="center", fig.cap=c("Estimates of logit(p)")}
 demo2.fit$plots$logitP.plot
 ```
-Notice how the fixed values at $-10$ (on the logit scale0 occur.
+Notice how the fixed values at $-10$ (on the logit scale) occur.
 
 
 A summary of the posterior for each parameter is also available. In particular, here are the
@@ -646,7 +659,7 @@ ggplot(data=plotdata, aes(x=logflow, y=elogitphat))+
 
 ## Fitting the BTSPAS diagonal model and fixing p and covariates for p.  
 
-We need to create a matrix with the covariate values. We will need three columns - one for the intercept, the value of log(flow) and the square of it's values.
+We need to create a matrix with the covariate values. We will need three columns - one for the intercept, the value of log(flow) and the square of its values.
 In practise, it is often advisable to standardize covariates to prevent numerical difficulties, but in this case, the values are small enough that standardization
 is not really needed.
 
@@ -732,7 +745,7 @@ A plot of the $logit(P)$ is
 demo3.fit$plots$logitP.plot
 ```
 
-Here is a plot of the estimated $logit(p)$'s vs. the log(flow):
+Here is a plot of the estimated $logit(p)$'s vs. the log(flow) and its fitted curve:
 ```{r echo=FALSE, fig.width=6, fig.height=4, fig.caption="Fitted relationship between logit(p) and log(flow)"}
 demo3.row.names <- rownames(demo3.fit$summary)
 demo3.coeff.row.index <- grep("beta.logitP[", demo3.row.names, fixed=TRUE)
@@ -764,7 +777,7 @@ in each of the estimated $logit(p)$.
 
 The estimated coefficients of the quadratic relationship between logit(p) and *log(flow)* are:
 ```{r }
-demo3.fit$summary[demo3.coeff.row.index,]
+round(demo3.fit$summary[demo3.coeff.row.index,],3)
 
 ```
 
@@ -783,7 +796,7 @@ The estimated total abundance from $BTSPAS$ is
 # Adding structure to the p's with a spline.
  
 The previous example still showed some temporal structure in the $p$'s. This additional structure
-can be imposed by using a spline as the covariates for the $p$'s.
+can be imposed by using a spline for the $p$'s.
 
 ## Reading in the data
 Here is an example of some raw data: 
@@ -959,7 +972,7 @@ ggplot(data=plotdata, aes(x=jweek, y=pred))+
    geom_line()+
    geom_errorbar(aes(ymin=actual.lcl, ymax=actual.ucl), color="blue", width=.01)+
    geom_point(aes(y=actual),color="blue")+
-   ylab("logit(p) and 95% ci")+xlab("log(flow)")
+   ylab("logit(p) and 95% ci")+xlab("Julian week")
 ```
 
 The underlying spline smooths the p's somewhat, especially when the credible intervals

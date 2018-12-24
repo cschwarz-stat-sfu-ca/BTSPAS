@@ -174,27 +174,31 @@ model {
    ##### Priors and hyperpriors #####
    ## Transition probabilities -- continuation ratio model
    for(i in 1:Nstrata.rel){
-        ## delta[i,j] is the probability that a marked fish released on day i passes the second trap
-        ## on day i+j-1 given that it does not pass the on days i,...,i+j-2. r[i,j]=logit(delta[i,j])
-        ## is assumed to have a normal distribution with mean muTT[j] and precision tauTT.
+     ## delta[i,j] is the probability that a marked fish released on day i passes the second trap
+     ## on day i+j-1 given that it does not pass the on days i,...,i+j-2. r[i,j]=logit(delta[i,j])
+     ## is assumed to have a normal distribution with mean muTT[j] and precision tauTT.
+     r[i,1] ~ dnorm(muTT[1],tauTT)
 
-        r[i,1] ~ dnorm(muTT[1],tauTT)
+     logit(Theta[i,1] ) <- r[i,1]
 
-	logit(Theta[i,1] ) <- r[i,1]
-
-	for(j in 2:Delta.max){
-		r[i,j] ~ dnorm(muTT[j],tauTT)
-
-		logit(delta[i,j]) <- r[i,j]
-
-		Theta[i,j] <- delta[i,j] * (1 - sum(Theta[i,1:(j-1)]))
-	}
-	Theta[i,Delta.max+1] <- 1- sum(Theta[i,1:Delta.max])
+     for(j in 2:Delta.max){
+       r[i,j] ~ dnorm(muTT[j],tauTT)
+       logit(delta[i,j]) <- r[i,j]
+       Theta[i,j] <- delta[i,j] * (1 - sum(Theta[i,1:(j-1)]))
+     }
+     Theta[i,Delta.max+1] <- 1- sum(Theta[i,1:Delta.max])
    }
+
+#  derived parameters on actual movement probabilities
+   logit(movep[1]) <- muTT[1]
+   for(j in 2:Delta.max){
+      movep[j] <- ilogit(muTT[j]) *(1- sum(movep[1:(j-1)]))
+   }
+   movep[Delta.max+1] <- 1- sum(movep[1:Delta.max])
 
 #  prior on the movement rates. These are specified using the make.muTT.prior function
    for(j in 1:Delta.max){
-	muTT[j] ~ dnorm(mean.muTT[j],tau.muTT[j])
+     muTT[j] ~ dnorm(mean.muTT[j],tau.muTT[j])
    }
    tauTT~ dgamma(tauTT.alpha,tauTT.beta)
    sdTT <- 1/sqrt(tauTT)
@@ -368,7 +372,7 @@ parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                 "bU", "tauU", "sigmaU",
                 "eU", "taueU", "sigmaeU",
                 "Ntot", "Utot", "logUne", "etaU", "U",
-                 "muTT","sdTT","Theta")
+                 "muTT","sdTT","Theta","movep")
 
 if( any(is.na(m2))) {parameters <- c(parameters,"m2")} # monitor in case some bad data where missing values present
 if( any(is.na(u2))) {parameters <- c(parameters,"u2")}

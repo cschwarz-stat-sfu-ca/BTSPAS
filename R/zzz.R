@@ -16,8 +16,7 @@
 
   packageStartupMessage("***** BTSPAS: Bayesian Time Stratified Petersen Analysis System - Version 2019.0101 (2019-01-01) ***** \n\n",
         "      Help available with  help(package='BTSPAS') \n",
-        '      List of demonstrations available with demo(package="BTSPAS") \n',
-        '      Several vignettes are also avaialble.\n\n')
+        '      Several vignettes are available. See browseVignettes(package="BTSPAS") \n\n')
 }
 
 

@@ -1,3 +1,4 @@
+# 2018-12-23 CJS added movep to BUGS code
 # 2018-11-28 CJS removed referece to OpenBugs
 # 2014-09-01 CJS conversion to JAGS
 #                - no model name
@@ -171,26 +172,24 @@ model {
 
    ## Transition probabilities -- continuation ratio model
    for(i in 1:Nstrata.rel){
-        ## delta[i,j] is the probability that a marked fish released on day i passes the second trap
-        ## on day i+j-1 given that it does not pass the on days i,...,i+j-2. r[i,j]=logit(delta[i,j])
-        ## is assumed to have a normal distribution with mean muTT[j] and precision tauTT.
+      ## delta[i,j] is the probability that a marked fish released on day i passes the second trap
+      ## on day i+j-1 given that it does not pass the on days i,...,i+j-2. r[i,j]=logit(delta[i,j])
+      ## is assumed to have a normal distribution with mean muTT[j] and precision tauTT.
 
-        r[i,1] ~ dnorm(muTT[1],tauTT)
+      r[i,1] ~ dnorm(muTT[1],tauTT)
+	
+      logit(Theta[i,1] ) <- r[i,1]
 		
-	logit(Theta[i,1] ) <- r[i,1]
-		
-	for(j in 2:Delta.max){
-		r[i,j] ~ dnorm(muTT[j],tauTT)
-			
-		logit(delta[i,j]) <- r[i,j]
-			
-		Theta[i,j] <- delta[i,j] * (1 - sum(Theta[i,1:(j-1)]))
-	}
-	Theta[i,Delta.max+1] <- 1- sum(Theta[i,1:Delta.max])
+      for(j in 2:Delta.max){
+         r[i,j] ~ dnorm(muTT[j],tauTT)
+         logit(delta[i,j]) <- r[i,j]
+        Theta[i,j] <- delta[i,j] * (1 - sum(Theta[i,1:(j-1)]))
+      }
+   Theta[i,Delta.max+1] <- 1- sum(Theta[i,1:Delta.max])
    }
 
    for(j in 1:Delta.max){
-	muTT[j] ~ dnorm(0,.666)
+      muTT[j] ~ dnorm(0,.666)
    }
    tauTT~ dgamma(tauTT.alpha,tauTT.beta)
    sdTT <- 1/sqrt(tauTT)
@@ -220,6 +219,13 @@ model {
    tauP ~ dgamma(tauP.alpha,tauP.beta)
    sigmaP <- 1/sqrt(tauP)
 
+#  derived parameters on actual movement probabilities
+   logit(movep[1]) <- muTT[1]
+   for(j in 2:Delta.max){
+      movep[j] <- ilogit(muTT[j]) *(1- sum(movep[1:(j-1)]))
+   }
+   movep[Delta.max+1] <- 1- sum(movep[1:Delta.max])
+
    ##### Likelihood contributions #####
    ## marked fish ##
    for(i in 1:Nstrata.rel){
@@ -243,8 +249,9 @@ model {
    }
 
    ##### Derived Parameters #####
-   Utot <- sum( U[1:Nstrata.cap])          # Total number of unmarked fish
-   Ntot <- sum(n1[1:Nstrata.rel]) + Utot  # Total population size including those fish marked and released
+   Utot <- sum( U[1:Nstrata.cap])              # Total number of unmarked fish
+   n1.avail ~ dbin( ma.p, sum(n1[1:Nstrata.rel]))
+   Ntot <- n1.avail + Utot  # Total population size including those fish marked and released but excluding fallback
 } # end of model
 ", fill=TRUE)
 
@@ -365,7 +372,7 @@ parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                 "bU", "tauU", "sigmaU", 
                 "eU", "taueU", "sigmaeU", 
                 "Ntot", "Utot", "logUne", "etaU", "U",
-                 "muTT","sdTT","Theta","ma.p")
+                 "muTT","sdTT","Theta","ma.p", "movep")
 
 if( any(is.na(m2))) {parameters <- c(parameters,"m2")} # monitor in case some bad data where missing values present
 if( any(is.na(u2))) {parameters <- c(parameters,"u2")}

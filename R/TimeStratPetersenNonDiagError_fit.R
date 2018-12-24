@@ -323,59 +323,29 @@ cat("\n\n*** Pooled Petersen Estimate after fixing bad m2 values  CHECK - CHECK 
 cat("The following strata were excluded:",
      if(length(time[!select])>0){time[!select]} else {" NONE"}, "\n")
 
-#temp.n1 <- n1[select]
-#temp.m2 <- m2[select]
-#temp.u2 <- u2[select]
+temp.n1 <- n1[select]
+temp.m2 <- m2[select]
+temp.u2 <- u2[select]
 
 cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
 pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
 cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
 
 
-######## This needs more thoughs #########
-# Obtain Petersen estimator for each stratum prior to removing bad m2 values
-#cat("*** Stratified Petersen Estimator for each stratum PRIOR to removing bad m2 values ***\n\n")
-#temp.n1 <- n1
-#temp.m2 <- m2
-#temp.u2 <- u2
-#sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-#temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
-#colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
-#print(temp)
-#cat("\n")
-#cat("Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-#   "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 
-# Obtain Petersen estimator for each stratum after removing bad m2 values
-#cat("*** Stratified Petersen Estimator for each stratum AFTER removing bad m2 values ***\n\n")
-#temp.n1 <- n1
-#temp.m2 <- m2
-#temp.m2[index.bad.m2] <- NA
-#temp.u2 <- u2
-#sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-#temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
-#colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
-#print(temp)
-#cat("\n")
-#cat("Est U(total) ", format(round(sum(sp$est)),big.mark=","),
-#    "  (SE ", format(round(sqrt(sum(sp$se^2))), big.mark=","), ")\n\n\n")
-
-
-
-
-####### This needs more thought #############
 # Test if pooling can be done
-#cat("*** Test if pooled Petersen is allowable. [Check if marked fractions are equal] ***\n\n")
-#select <- (n1>0) & (!is.na(n1)) & (!is.na(temp.m2))
-#temp.n1 <- n1[select]
-#temp.m2 <- m2[select]
-#test <- TestIfPool( temp.n1, temp.m2)
-#cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
-#temp <- cbind(time[select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
-#colnames(temp) <- c('time','n1-m2','m2','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
-#print(temp)
-#cat("\n Be cautious of using this test in cases of small expected values. \n\n")
+
+cat("*** Test if pooled Petersen is allowable. [Check if equal recovery from each stratum] ***\n\n")
+select <- (n1>0) & (!is.na(n1)) & (!is.na(apply(m2,1,sum)))
+temp.n1 <- n1[select]
+temp.m2 <- m2[select,]
+test <- TestIfPool( temp.n1, apply(temp.m2,1,sum))
+cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
+temp <- cbind(time[1:length(n1)][select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
+colnames(temp) <- c('time','n1-m2','m2','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
+print(temp)
+cat("\n Be cautious of using this test in cases of small expected values. \n\n")
 
 
 # Adjust the data for the explicity bad values or other problems

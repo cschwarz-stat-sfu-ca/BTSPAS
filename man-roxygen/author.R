@@ -1,4 +1,4 @@
-#' @author Bonner, S.J. \email{sbonner@@uwo.ca} and 
+#' @author Bonner, S.J. \email{sbonner6@@uwo.ca} and 
 #' Schwarz, C. J. \email{cschwarz.stat.sfu.ca@@gmail.com}. 
 #' 
 

@@ -182,7 +182,7 @@ Schwarz, C.J. et al. (2009) Trinity River Restoration Project Report available a
 \url{http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2}
 }
 \author{
-Bonner, S.J. \email{sbonner@uwo.ca} and 
+Bonner, S.J. \email{sbonner6@uwo.ca} and 
 Schwarz, C. J. \email{cschwarz.stat.sfu.ca@gmail.com}.
 }
 \keyword{~models}

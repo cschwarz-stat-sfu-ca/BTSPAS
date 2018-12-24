@@ -126,7 +126,7 @@ model {
 #      tauP.alpha, tauP.beta - parameter for prior on tauP (residual variance of logit(P)'s after adjusting for
 #                         covariates)
 #      xiMu, tauMu  - mean and precision (1/variance) for prior on mean(log travel-times)
-#      siSd, tauSd  - mean and precision (1/variance) for prior on sd(log travel times)
+#      xiSd, tauSd  - mean and precision (1/variance) for prior on sd(log travel times) - ON THE LOG SCALE
 #
 #  Parameters of the model are:
 #      p[i]
@@ -212,6 +212,9 @@ model {
    for(i in 1:Nstrata.rel){
       log(sdLogTT[i]) <- etasdLogTT[i]
    }
+
+   baseMu <- xiMu        # mean and sd of log(travel time) distribution
+   baseSd <- exp(xiSd)   # for the base distribution
 
    ## Transition probabilities
    for(i in 1:Nstrata.rel){
@@ -369,6 +372,8 @@ parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                 "bU", "tauU", "sigmaU",
                 "eU", "taueU", "sigmaeU",
                 "Ntot", "Utot", "logUne", "etaU", "U",
+                 "baseMu","baseSd",  # mean and sd of base log(travel time)
+                 "Theta",            # the movement probabilities 
                  "muLogTT", "sdLogTT")      #  mean and sd of log(travel times)
 if( any(is.na(m2))) {parameters <- c(parameters,"m2")} # monitor in case some bad data where missing values present
 if( any(is.na(u2))) {parameters <- c(parameters,"u2")}

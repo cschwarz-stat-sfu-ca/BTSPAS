@@ -30,6 +30,6 @@ SimplePetersen(c(200,400), c(10,20), c(300,600))
 
 }
 \author{
-Bonner, S.J. \email{sbonner@uwo.ca} and 
+Bonner, S.J. \email{sbonner6@uwo.ca} and 
 Schwarz, C. J. \email{cschwarz.stat.sfu.ca@gmail.com}.
 }

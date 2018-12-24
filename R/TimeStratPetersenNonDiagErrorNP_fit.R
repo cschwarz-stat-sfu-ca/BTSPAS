@@ -393,18 +393,17 @@ sampfrac <- as.vector(sampfrac)
   cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
 
 
-    ## Test if pooling can be done
+  ## Test if pooling can be done
   cat("*** Test if pooled Petersen is allowable. [Check if fraction captured equal] ***\n\n")
   select <- (n1>0) & (!is.na(n1)) & (!is.na(apply(m2,1,sum)))
   temp.n1 <- n1[select]
   temp.m2 <- m2[select,]
   test <- TestIfPool( temp.n1, apply(temp.m2,1,sum))
   cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
-  temp <- cbind(time[select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
+  temp <- cbind(time[1:length(n1)][select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
   colnames(temp) <- c('time','n1-m2*','m2*','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
   print(temp)
   cat("\n Be cautious of using this test in cases of small expected values. \n\n")
-
 
   ## Adjust the data for the explicity bad values or other problems
   new.time <- time
@@ -556,7 +555,6 @@ sampfrac <- as.vector(sampfrac)
                          debug=debug, debug2=debug2,  
                   			 InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    }
-
   ## Now to create the various summary tables of the results
 
   Nstrata.rel <- length(n1)

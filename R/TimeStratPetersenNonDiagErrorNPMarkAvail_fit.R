@@ -1,4 +1,4 @@
-
+## 2018-12-22 CJS add code to estimate mean movement vector (movep)
 ## 2018-12-19 CJS sampling fraction depricated
 ## 2018-12-14 CJS bayesian p-value plots added
 ## 2018-12-06 CJS convert report to textConnections
@@ -240,15 +240,15 @@ sampfrac <- as.vector(sampfrac)
   ##  In the non-diagonal case, they don't have to match
   if(length(n1)!=nrow(m2))
     stop("***** ERROR ***** Length of n1 and number of rows of m2 must be equal. They are:",
-        length(n1),nrow(u2),"\n")
+        length(n1)," ",nrow(u2),"\n")
 
   if(var(c(length(u2),length(sampfrac),length(time)))>0)
     stop("***** ERROR ***** Lengths of u2, sampfrac, time must all be equal. They are:",
-         length(u2),length(sampfrac),length(time),"\n")
+         length(u2),' ',length(sampfrac),' ',length(time),"\n")
 
     if(length(logitP.cov) %% length(u2) != 0)
       stop("***** ERROR ***** Dimension of covariate vector doesn't match length of u2. They are:",
-        length(u2),length(logitP.cov),dim(logitP.cov),"\n")
+        length(u2),' ',length(logitP.cov),' ',dim(logitP.cov),"\n")
 
   ##  2. Check that rowsum of m2<= n1
   if(any(apply(m2,1,sum, na.rm=TRUE)>n1))
@@ -364,9 +364,6 @@ sampfrac <- as.vector(sampfrac)
   cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
   
   
-  
-  
-  
   ## Test if pooling can be done
   cat("*** Test if pooled Petersen is allowable. [Check if fraction captured equal] ***\n\n")
   select <- (n1>0) & (!is.na(n1)) & (!is.na(apply(m2,1,sum)))
@@ -374,7 +371,7 @@ sampfrac <- as.vector(sampfrac)
   temp.m2 <- m2[select,]
   test <- TestIfPool( temp.n1, apply(temp.m2,1,sum))
   cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
-  temp <- cbind(time[select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
+  temp <- cbind(time[1:length(n1)][select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
   colnames(temp) <- c('time','n1-m2*','m2*','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
   print(temp)
   cat("\n Be cautious of using this test in cases of small expected values. \n\n")

@@ -1,10 +1,12 @@
+## 2018-12-21 CJS converted to simple call to jags using R2jags package. This fixed problem that arrays not stored properly in output
 ## 2014-09-01 CJS added code to dump out mcmc.list to coda files to match functionality of OpenBugs
 ##                Set the seed here.
 ## 2013-12-31 CJS added code to dump out data and initial values to files as in run.openbugs
 ## 2013-12-30 CJS changed program argument in as.bugs.array to JAGS
 ## 2013-09-22 sjb Created file. Copied from run_openbugs.R
 
-#' @import rjags R2OpenBUGS utils
+#' @import R2jags utils
+#' @importFrom coda as.mcmc.list
 #' @keywords internal
 #' 
 
@@ -58,70 +60,41 @@ run.jags <-
     with(initial.values, dump(names(initial.values), file = initFiles[i]))
   }
   #browser()     
-  #parametersToSave <- unique(c(parameters, "deviance")) # Always get the deviance
-  parametersToSave <- unique(c(parameters, "deviance","pD"))
+  parametersToSave <- unique(c(parameters))
 
-  ## Load the DIC model
-  load.module("dic")
-  #browser()
-  ## Initialize JAGS model and run burnin
-  jags <- jags.model(file=modelFile,
-                     data=dataList,
-                     inits=initVals,
-                     n.chains=nChains,
-                     n.adapt=nBurnin,
-                     quiet=FALSE)
+  results1 <- R2jags::jags( 
+      data       =dataList,   # list of data variables
+      inits      =initVals,   # list/function for initial values
+      parameters =parametersToSave,# list of parameters to monitor
+      model.file =modelFile, # where the model is saved by the cat above
+      n.chains   =nChains,
+      n.iter     =nIter,           # total iterations INCLUDING burn in
+      n.burnin   =nBurnin,          # number of burning iterations
+      n.thin     =nThin,                # how much to thin
+      DIC=TRUE,                # is DIC to be computed?
+      jags.seed  = initialSeed,
+      working.dir=working.directory      # store results in current working directory
+      )
 
-   ## Run sampling iterations
-  samples <- coda.samples(model=jags,
-                          variable.names=parametersToSave,
-                          n.iter=nIterPostBurnin,
-                           thin = nThin)
-
-	## save the MCMC list as a coda file (to match OpenBugs)
+	## save the sample of the posteriors  as a coda file (for debugging)
 	## taken from http://stackoverflow.com/questions/12078152/how-can-i-convert-an-mcmc-list-to-a-bugs-object
-        s2 <- as.array(samples)
-        lapply(seq_len(dim(s2)[3]), function(i) {
-              write.table(cbind(rep(seq_len(nrow(s2[,,i])), ncol(s2)), c(s2[,,i])), 
-                 paste0(working.directory, '/CODAchain', i, '.txt'),
-                 row.names=FALSE, col.names=FALSE)
-              })
-        cat(paste(colnames(s2), 1+(seq_len(ncol(s2))-1) * nrow(s2), nrow(s2)*seq_len(ncol(s2))), 
+  s2 <- as.array(coda::as.mcmc.list(results1$BUGSoutput))
+  lapply(seq_len(dim(s2)[3]), function(i) {
+      write.table(cbind(rep(seq_len(nrow(s2[,,i])), ncol(s2)), c(s2[,,i])), 
+              paste0(working.directory, '/CODAchain', i, '.txt'),
+              row.names=FALSE, col.names=FALSE)
+  })
+  cat(paste(colnames(s2), 1+(seq_len(ncol(s2))-1) * nrow(s2), nrow(s2)*seq_len(ncol(s2))), 
                sep='\n', 
                file=file.path(working.directory, 'codaIndex.txt'))
-        #browser()
+  #browser()
 
-        ## Convert output to array for input to as.bugs.array
-        nSavedPerChain <- nrow(samples[[1]])
-        samples.array.jags <- array(NA,c(nSavedPerChain, nChains, ncol(samples[[1]])))
-        dimnames(samples.array.jags)[[3]] <- dimnames(samples[[1]])[[2]]
-        
-        for(i in 1:nChains){
-#           there is subtle problem with two dimensional entries. OpenBUGS stores them in row major order; JAGS in column major
-#           order and this screws up the entries. Convert the theta[] entries to the correct order by simple sort
-#           before calling the as.bugs.array function 
-	    Theta.cols <- grep("Theta", colnames(samples[[i]]))
-	    if(length(Theta.cols)>0){
-               temp        <-sapply(strsplit(colnames(samples[[i]])[Theta.cols],"\\["), "[", 2)
-	       row.index   <-as.numeric(sapply(strsplit(temp                   ,","),"[",1))
-	       temp        <-sapply(strsplit(temp,","), "[", 2)  # get the column index now
-     	       col.index   <-as.numeric(sapply(strsplit(temp                   ,"\\]"),"[",1))
-               samples[[i]][,Theta.cols] <- samples[[i]][,Theta.cols[order(row.index,col.index)]]
-            } 
-            samples.array.jags[,i,] <- samples[[i]]	    
-        }
+  
+  results <- results1$BUGSoutput
+  results$model <- results1$model
+  results$parameters.to.save <- results1$parameters.to.save
+  ## Return results
+  cat("\n\n*** Finished JAGS ***\n\n")
 
-        ## Save the results
-        results <- as.bugs.array(sims.array = samples.array.jags,
-                                 model.file = "model.R",
-                                 program = "JAGS",
-                                 DIC = TRUE,
-                                 ##DICOutput = DICOutput,
-                                 n.iter = nIter,
-                                 n.burnin = nBurnin,
-                                 n.thin = nThin)
-        ## Return results
-        cat("\n\n*** Finished JAGS ***\n\n")
-
-        return(results)
+  return(results)
 }
