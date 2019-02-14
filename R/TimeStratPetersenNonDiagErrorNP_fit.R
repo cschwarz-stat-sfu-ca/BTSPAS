@@ -381,6 +381,8 @@ sampfrac <- as.vector(sampfrac)
   pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
   cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
 
+  
+  
   ## Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
   ## select <- !(time %in% bad.n1 | time %in% bad.m2 | time %in% bad.u2)
   select <- (temp.n1>0) & (!is.na(n1)) & (!apply(is.na(temp.m2),1,any)) & (!is.na(temp.u2[1:length(n1)]))
@@ -557,6 +559,9 @@ sampfrac <- as.vector(sampfrac)
    }
   ## Now to create the various summary tables of the results
 
+  ## Add the pooled Petersen estimators to the result
+  results$PP$using.all.data <-pp 
+    
   Nstrata.rel <- length(n1)
   Nstrata.cap <- ncol(expanded.m2) -1 ## don't forget that last column of m2 is number of fish never seen
 
@@ -623,6 +628,7 @@ sampfrac <- as.vector(sampfrac)
                                          round(results$sims.list$U),
                                          results$sims.list$Theta,
                                          Delta.max)
+  #browser()
   gof <- PredictivePosteriorPlot.TSPNDE (discrep)
   if(save.output.to.files)ggsave(gof[[1]],filename=paste(prefix,"-GOF.pdf",sep=""),  height=8, width=8, units="in", dpi=300 )
   results$plots$gof.plot <- gof
@@ -711,7 +717,8 @@ sampfrac <- as.vector(sampfrac)
                        bad.n1=bad.n1, bad.m2=bad.m2, bad.u2=bad.u2,
                        logitP.cov=logitP.cov,
                        version=version, date_run=date(),title=title)
-  results$gof <- gof
 
+  results$gof <- gof
+  
   return(results)
 } ## end of function

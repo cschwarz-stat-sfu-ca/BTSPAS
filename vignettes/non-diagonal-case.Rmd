@@ -144,8 +144,10 @@ There are `r nrow(demo.data)` release strata, and tagged fish are recovered in t
 In the first release stratum, a total of `r demo.data[1,"n1"]` fish were tagged and released.
 No recoveries occured until 4 days later.
 
-Because the recoveries take place in more strata than releases, the $u2$ vector is read in separately. Note that is must be sufficiently long
-to account for the number of releases plus potential movement, for a length of `r nrow(demo.data)+ ncol(demo.data)-4`:
+Because the recoveries take place in more strata than releases, the $u2$ vector is read in separately. 
+Note that is must be sufficiently long
+to account for the number of releases plus potential movement, for a length of 
+`r nrow(demo.data)+ ncol(demo.data)-4`:
 ```{r }
 demo.data.u2 <- c(0  ,    2  ,    1  ,  2 ,   39 , 226  , 75 , 129 , 120 , 380 ,
                   921, 1005  , 1181 ,1087 , 1108 ,1685  ,671 ,1766 , 636 , 483 , 
@@ -224,9 +226,11 @@ missing stratum.
 probabilities for the missing strata.
 * the program allows you specify break points in the underlying spline to account
 for external events.
-* sometimes bad thing happend.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
+* sometimes bad thing happend.  The vector $bad.m2$ indicates which julian weeks something went wrong. 
+In the above example, the
 number of recoveries in julian week 41 is far below expectations and leads to impossible
-Petersen estimate for julian week 41. Similrly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
+Petersen estimate for julian week 41. 
+Similrly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
 In both cases, the suspect values of $m2$ and $u2$ are set to missing.
 Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input direcly.
 I arbitrarily chose the third julian week to demonstrate this feature.
@@ -246,9 +250,9 @@ library("BTSPAS")
 demo.jump.after <- c()  # julian weeks after which jump occurs
 
 # Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
-demo.bad.m2     <- c()   # list julian weeks with bad m2 values. This is used in the Trinity Example
-demo.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demostrate the feature.]
-demo.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demonstrate the feature.]
+demo.bad.m2     <- c(117)   # list julian weeks with bad m2 values. 
+demo.bad.u2     <- c()   # list julian weeks with bad u2 values. 
+demo.bad.n1     <- c(117)   # list julian weeks with bad n1 values. 
 
 # The prefix for the output files:
 demo.prefix <- "demo-1987-Conne River-TSP NDE" 
