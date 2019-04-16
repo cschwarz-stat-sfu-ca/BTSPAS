@@ -4,7 +4,8 @@ Bayesian Time Stratified Petersen Analysis System
 
 ## Versions and installation
 
-  * **CRAN** Download the BTSPAS package.
+  * **CRAN** This contains an obsolte version, so don't use. I am trying
+  to update the CRAN site but it will take a while.
 
   * **Github** To install the latest development version from Github, 
     install the newest version of the **devtools** package; then run
