@@ -3,7 +3,7 @@
 #' Simple Petersen Estimator and test if pooling can be done
 #' 
 #' Computes the Petersen estimator (CHapman correction applied) for the number of UNMARKED animals given n1, m2, and u2.
-#' To find the estimate of abundance, you need to add back n1+u2 animals.
+#' To find the estimate of abundance, you need to add back n1 animals.
 #' 
 #' @aliases TestIfPool
 #' @param n1 Number of animals tagged and released. Can be a vector in which the estimate is formed for each element of the vector

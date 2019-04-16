@@ -89,7 +89,8 @@
 #' @param marked_available_n Information, usually from prior studies, on the
 #' fraction of marks that will be available. The *_n and *_x are used to create
 #' a "binomial" distribution for information on the marked availability. For
-#' example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\%.
+#' example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\% of marks
+#' are available and 39\% have dropped out or falled back.
 #' @param marked_available_x See marked_available_n
 #' @param n.chains Number of parallel MCMC chains to fit.
 #' @param n.iter Total number of MCMC iterations in each chain.

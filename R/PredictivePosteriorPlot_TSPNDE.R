@@ -50,5 +50,6 @@ gof.plot <-ggplot(data=discrep.long, aes_(x=~Simulated, y=~Observed))+
        facet_wrap(~Title, ncol=2, nrow=3, scales="free")
  
 gof <- list(bp.plot=gof.plot,  bp.values=data.frame(test.names=titles, p.value=p_values, stringsAsFactors=FALSE))
+#browser()
 gof
 }
