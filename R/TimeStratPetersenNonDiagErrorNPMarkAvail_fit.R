@@ -348,6 +348,22 @@ sampfrac <- as.vector(sampfrac)
   pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
   cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
   
+  # adjustment for dropout
+  dr <- 1-marked_available_x/marked_available_n # dropout probability
+  se_dr <- sqrt(dr*(1-dr)/marked_available_n)
+  cat("\n\nAdjusting for fallback/dropout  \n")
+  cat("Estimated dropout is", dr, "with se of ", se_dr, "\n")
+
+  pp.adj <- pp
+  pp.adj$est <- pp.adj$est * (1-dr)
+  pp.adj$se  <- sqrt(pp$se^2 * se_dr^2+
+                     pp$se^2 * (1-dr)^2 +
+                     pp$est^2 * se_dr^2)
+  cat("Est U(total) adjusting for dropout is ", format(round(pp.adj$est),big.mark=","),"  (SE ", format(round(pp.adj$se), big.mark=","), ")\n\n\n")
+  
+  
+  
+  
   ## Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
   ## select <- !(time %in% bad.n1 | time %in% bad.m2 | time %in% bad.u2) 
   select <- (temp.n1>0) & (!is.na(n1)) & (!apply(is.na(temp.m2),1,any)) & (!is.na(temp.u2[1:length(n1)]))
@@ -543,6 +559,11 @@ sampfrac <- as.vector(sampfrac)
                          debug=debug, debug2=debug2, InitialSeed=InitialSeed,
                          save.output.to.files=save.output.to.files)
    } 
+  
+
+  results$PP$using.all.data <-pp 
+  results$PP$using.all.data.fallback <- pp.adj
+  results$dr <- data.frame(est=dr, se=se_dr)
   
   ## Now to create the various summary tables of the results
   
