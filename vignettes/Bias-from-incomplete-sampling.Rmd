@@ -283,12 +283,11 @@ We are now back to familiar territory.
 ```{r ppz,echo=FALSE,warning=FALSE,message=FALSE}
 library(BTSPAS)
 ppz.complete <- BTSPAS::SimplePetersen( sum(takuz[,"tagged"], na.rm=TRUE), sum(takuz[-nrow(takuz), -1]), sum(takuz["untagged",],na.rm=TRUE)) 
-ppz.complete$est <- ppz.complete$est + sum(takuz[,"tagged"],na.rm=TRUE) + sum(takuz["untagged",],na.rm=TRUE)
 ```
 The pooled Petersen estimator of abundance is 
-`r formatC(round(ppz.complete$est,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppz.complete$N.est,0), digits=0, big.mark=',', format="f")` 
 (SE
-`r formatC(round(ppz.complete$se,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppz.complete$N.se,0), digits=0, big.mark=',', format="f")` 
 ). Notice the negative bias in the estimate as predicted.
 
 
@@ -434,9 +433,9 @@ The estimated total run size (with 95% credible interval)
 round(ex.3day.fit$summary[ grepl("Ntot", rownames(ex.3day.fit$summary)),],0)
 ```
 which can be compared to the real total population of `r formatC(round(N,0), digits=0, big.mark=',', format="f")` and the Pooled Petersen estimate of
-`r formatC(round(ppz.complete$est,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppz.complete$N.est,0), digits=0, big.mark=',', format="f")` 
 (SE
-`r formatC(round(ppz.complete$se,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppz.complete$N.se,0), digits=0, big.mark=',', format="f")` 
 ). The bias in the pooled-Petersen seems to have been resolved.
 
 The individual estimates of the number of unmarked in each recovery stratum are:
@@ -497,12 +496,11 @@ Notice that no recovery strata are now zero (except at the end of the study)
 ```{r ppzp,echo=FALSE,warning=FALSE,message=FALSE}
 library(BTSPAS)
 ppzp.complete <- BTSPAS::SimplePetersen( sum(takuzp[,"tagged"], na.rm=TRUE), sum(takuzp[-nrow(takuzp), -1]), sum(takuzp["untagged",],na.rm=TRUE)) 
-ppzp.complete$est <- ppzp.complete$est + sum(takuzp[,"tagged"],na.rm=TRUE) + sum(takuzp["untagged",],na.rm=TRUE)
 ```
 The pooled Petersen estimator of abundance is the same as before as there are no changes to the number tagged, recaptured, or fished. 
-`r formatC(round(ppzp.complete$est,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppzp.complete$N.est,0), digits=0, big.mark=',', format="f")` 
 (SE
-`r formatC(round(ppzp.complete$se,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppzp.complete$N.se,0), digits=0, big.mark=',', format="f")` 
 ).
 
 
@@ -638,9 +636,9 @@ The estimated total run size (with 95% credible interval)
 round(ex.6day.fit$summary[ grepl("Ntot", rownames(ex.6day.fit$summary)),],0)
 ```
 which can be compared to the real total population of `r formatC(round(N,0), digits=0, big.mark=',', format="f")` and the Pooled Petersen estimate of
-`r formatC(round(ppz.complete$est,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppz.complete$N.est,0), digits=0, big.mark=',', format="f")` 
 (SE
-`r formatC(round(ppz.complete$se,0), digits=0, big.mark=',', format="f")` 
+`r formatC(round(ppz.complete$N.se,0), digits=0, big.mark=',', format="f")` 
 ). The data pooled to the 6-day strata appears to be biased, but not as much as the pooled-Petersen estimator. 
 
 The revised individual estimates of the number of unmarked in each recovery stratum are:

@@ -15,12 +15,12 @@ SimplePetersen(n1, m2, u2)
 \item{u2}{Number of unmarked animals in the second sample.}
 }
 \value{
-Data frame with variables est and se.
+Data frame with variables U.est, U.se, N.est, and N.se.
 .
 }
 \description{
-Computes the Petersen estimator (CHapman correction applied) for the number of UNMARKED animals given n1, m2, and u2.
-To find the estimate of abundance, you need to add back n1+u2 animals.
+Computes the Petersen estimator (Chapman correction applied) for the number of UNMARKED animals (U)
+and total population (N) given n1, m2, and u2.
 }
 \examples{
  

@@ -339,14 +339,17 @@ sampfrac <- as.vector(sampfrac)
   
   ## Obtain the Pooled Petersen estimator prior to fixup of bad.n1, bad.m2, and bad.u2 values
   cat("\n\n*** Pooled Petersen Estimate prior to fixing bad n1, m2, or u2 values  CHECK - CHECK - CHECK - CHECK ***\n\n")
-  cat("    *** NOT ADJUSTED FOR MARK AVAILABILITY ***\n")
+  cat("    *** NOT ADJUSTED FOR MARK AVAILABILITY/Dropout/Fallback ***\n")
   temp.n1 <- n1
   temp.m2 <- m2
   temp.u2 <- u2
   
   cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2,na.rm=TRUE),"\n\n")
   pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
-  cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+  cat("Est U(total) not adjusted for fallback ", format(round(pp$U.est),big.mark=","),
+      "  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+  cat("Est N(total) not adjusted for fallback ", format(round(pp$N.est),big.mark=","),
+      "  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
   
   # adjustment for dropout
   dr <- 1-marked_available_x/marked_available_n # dropout probability
@@ -354,31 +357,21 @@ sampfrac <- as.vector(sampfrac)
   cat("\n\nAdjusting for fallback/dropout  \n")
   cat("Estimated dropout is", dr, "with se of ", se_dr, "\n")
 
+  # adjust the petersen estimator for drop out including the uncertainty in the dropout probability
   pp.adj <- pp
-  pp.adj$est <- pp.adj$est * (1-dr)
-  pp.adj$se  <- sqrt(pp$se^2 * se_dr^2+
-                     pp$se^2 * (1-dr)^2 +
-                     pp$est^2 * se_dr^2)
-  cat("Est U(total) adjusting for dropout is ", format(round(pp.adj$est),big.mark=","),"  (SE ", format(round(pp.adj$se), big.mark=","), ")\n\n\n")
+  pp.adj$N.est <- pp.adj$N.est * (1-dr)
+  pp.adj$N.se  <- sqrt(pp$N.se^2 * se_dr^2+
+                     pp$N.se^2 * (1-dr)^2 +
+                     pp$N.est^2 * se_dr^2)
+  pp.adj$U.est <- pp.adj$U.est * (1-dr)
+  pp.adj$U.se  <- sqrt(pp$U.se^2 * se_dr^2+
+                     pp$U.se^2 * (1-dr)^2 +
+                     pp$U.est^2 * se_dr^2)
   
-  
-  
-  
-  ## Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
-  ## select <- !(time %in% bad.n1 | time %in% bad.m2 | time %in% bad.u2) 
-  select <- (temp.n1>0) & (!is.na(n1)) & (!apply(is.na(temp.m2),1,any)) & (!is.na(temp.u2[1:length(n1)]))
-  cat("\n\n*** Pooled Petersen Estimate after fixing bad m2 values  CHECK - CHECK - CHECK - CHECK ***\n\n")
-  cat("    *** NOT ADJUSTED FOR MARK AVAILABILITY ***\n")
-  cat("The following strata were excluded:",
-      if(length(time[!select])>0){time[!select]} else {" NONE"}, "\n")
-  
-  ##temp.n1 <- n1[select]
-  ##temp.m2 <- m2[select]
-  ##temp.u2 <- u2[select]
-  
-  cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
-  pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
-  cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+  cat("Est U(total) adjusting for dropout is ", format(round(pp.adj$U.est),big.mark=","),
+      "  (SE ", format(round(pp.adj$U.se), big.mark=","), ")\n")
+  cat("Est N(total) adjusting for dropout is ", format(round(pp.adj$N.est),big.mark=","),
+      "  (SE ", format(round(pp.adj$N.se), big.mark=","), ")\n\n\n")
   
   
   ## Test if pooling can be done
@@ -402,23 +395,7 @@ sampfrac <- as.vector(sampfrac)
   new.sampfrac <- sampfrac
   new.logitP.cov <- logitP.cov
   
-  
-#################### This needs more thought ####################
-  ## Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
-  ## of unmarked fish that were captured. It is not necessary to adjust the n1 and m2 values 
-  ## as these are used ONLY to estimate the capture efficiency. 
-  ## In reality, there should be a slight adjustment
-  ## to the precision to account for this change, but this is not done.
-  ## Similarly, if the sampling fraction is more than 1, the adjustment is made back to a standard week.
-  ##new.u2 <- round(new.u2/new.sampfrac)
-  
-  ## Adjust for strata where sampling fraction=0. On these strata
-  ## u2 is set to NA so that there is NO information on U2 for this stratum
-  new.u2[new.sampfrac<.001] <- NA
-#################### This needs more thought ####################
 
-  
-    
   ## Set the bad values to missing 
   new.n1[time[1:length(n1)] %in% bad.n1]  <- NA
   new.m2[time[1:length(n1)] %in% bad.m2,] <- NA

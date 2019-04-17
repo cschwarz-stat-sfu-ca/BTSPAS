@@ -202,7 +202,9 @@ cat("Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",
 pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), 
       sum(u2.A.YoY/sampfrac, na.rm=TRUE)+sum(u2.N.YoY/sampfrac, na.rm=TRUE)+
       sum(u2.A.1  /sampfrac, na.rm=TRUE)+sum(u2.N.1  /sampfrac, na.rm=TRUE))
-cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")n")
+cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
+
 # estimate for YoY clipped fish (hatchery) and expand by the clip fraction
 cat("Total n1=", sum(n1, na.rm=TRUE),
     ";  m2=",    sum(m2, na.rm=TRUE),
@@ -212,8 +214,11 @@ pp <- SimplePetersen(
      sum(n1, na.rm=TRUE), 
      sum(m2, na.rm=TRUE), 
      sum(u2.A.YoY/sampfrac, na.rm=TRUE))
-cat("Est U.H.YoY(total) ", format(round(pp$est)/clip.frac.H.YoY,big.mark=","),
-    "  (SE ",          format(round(pp$se) /clip.frac.H.YoY,big.mark=","), ")\n\n\n")
+cat("Est U.H.YoY(total) ", format(round(pp$U.est)/clip.frac.H.YoY,big.mark=","),
+    "  (SE ",              format(round(pp$U.se) /clip.frac.H.YoY,big.mark=","), ")\n")
+cat("Est N.H.YoY(total) ", format(round(pp$N.est)/clip.frac.H.YoY,big.mark=","),
+    "  (SE ",              format(round(pp$N.se) /clip.frac.H.YoY,big.mark=","), ")\n\n\n")
+
 # estimate for Age1 clipped fish (hatchery) and expand by the clip fraction
 cat("Total n1=", sum(n1, na.rm=TRUE),
     ";  m2=",    sum(m2, na.rm=TRUE),
@@ -223,8 +228,10 @@ pp <- SimplePetersen(
      sum(n1, na.rm=TRUE), 
      sum(m2, na.rm=TRUE), 
      sum(u2.A.1/sampfrac, na.rm=TRUE))
-cat("Est U.H.1(total) ", format(round(pp$est)/clip.frac.H.1,big.mark=","),
-      "  (SE ",          format(round(pp$se) /clip.frac.H.1,big.mark=","), ")\n\n\n")
+cat("Est U.H.1(total) ", format(round(pp$U.est)/clip.frac.H.1,big.mark=","),
+      "  (SE ",          format(round(pp$U.se) /clip.frac.H.1,big.mark=","), ")\n")
+cat("Est N.H.1(total) ", format(round(pp$N.est)/clip.frac.H.1,big.mark=","),
+    "  (SE ",            format(round(pp$N.se) /clip.frac.H.1,big.mark=","), ")\n\n\n")
 
 # estimate for YoY wild fish found by subtraction
 cat("Total n1=", sum(n1, na.rm=TRUE),
@@ -236,8 +243,11 @@ pp <- SimplePetersen(
      sum(n1, na.rm=TRUE), 
      sum(m2, na.rm=TRUE), 
      sum((u2.N.YoY+u2.A.YoY-u2.A.YoY/clip.frac.H.YoY)/sampfrac, na.rm=TRUE))
-cat("Est U.W.YoY(total) ", format(round(pp$est),big.mark=","),
-        "  (SE ",          format(round(pp$se) ,big.mark=","), ") APPROXIMATE\n\n\n")
+cat("Est U.W.YoY(total) ", format(round(pp$U.est),big.mark=","),
+        "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE\n")
+cat("Est N.W.YoY(total) ", format(round(pp$N.est),big.mark=","),
+        "  (SE ",          format(round(pp$N.se) ,big.mark=","), ") APPROXIMATE\n\n\n")
+
 # estimate for Age1 wild fish found by subtraction
 cat("Total n1=", sum(n1, na.rm=TRUE),
     ";  m2=",    sum(m2, na.rm=TRUE),
@@ -248,8 +258,10 @@ pp <- SimplePetersen(
      sum(n1, na.rm=TRUE), 
      sum(m2, na.rm=TRUE), 
      sum((u2.N.1+u2.A.1-u2.A.1/clip.frac.H.1)/sampfrac, na.rm=TRUE))
-cat("Est U.W.1(total) ", format(round(pp$est),big.mark=","),
-      "  (SE ",          format(round(pp$se) ,big.mark=","), ") APPROXIMATE\n\n\n")
+cat("Est U.W.1(total) ", format(round(pp$U.est),big.mark=","),
+      "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE\n")
+cat("Est N.W.1(total) ", format(round(pp$N.est),big.mark=","),
+      "  (SE ",          format(round(pp$N.se) ,big.mark=","), ") APPROXIMATE\n\n\n")
 
 
 # Obtain the Pooled Petersen estimator without excluding bad.m2, bad.u2.A.YoY, or bad.u2.N.YoY,
@@ -273,7 +285,8 @@ cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2.YoY=",
 pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), 
      sum(temp.u2.A.YoY/temp.sampfrac+temp.u2.N.YoY/temp.sampfrac+
          temp.u2.A.1  /temp.sampfrac+temp.u2.N.1  /temp.sampfrac, na.rm=TRUE))
-cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 # estimate for YoY clipped fish (hatchery) and expand by the clip fraction
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
@@ -284,8 +297,11 @@ pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
      sum(temp.u2.A.YoY/temp.sampfrac, na.rm=TRUE))
-cat("Est U.H.YoY(total) ", format(round(pp$est)/clip.frac.H.YoY,big.mark=","),
-    "  (SE ",          format(round(pp$se) /clip.frac.H.YoY,big.mark=","), ")\n\n\n")
+cat("Est U.H.YoY(total) ", format(round(pp$U.est)/clip.frac.H.YoY,big.mark=","),
+        "  (SE ",          format(round(pp$U.se) /clip.frac.H.YoY,big.mark=","), ")\n")
+cat("Est N.H.YoY(total) ", format(round(pp$N.est)/clip.frac.H.YoY,big.mark=","),
+        "  (SE ",          format(round(pp$N.se) /clip.frac.H.YoY,big.mark=","), ")\n\n\n")
+
 # estimate for YoY wild fish
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
     ";  m2=",    sum(temp.m2, na.rm=TRUE),
@@ -296,8 +312,10 @@ pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
      sum((temp.u2.N.YoY+temp.u2.A.YoY-temp.u2.A.YoY/clip.frac.H.YoY)/temp.sampfrac, na.rm=TRUE))
-cat("Est U.W.YoY(total) ", format(round(pp$est),big.mark=","),
-    "  (SE ",          format(round(pp$se) ,big.mark=","), ") APPROXIMATE \n\n\n")
+cat("Est U.W.YoY(total) ", format(round(pp$U.est),big.mark=","),
+        "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE \n")
+cat("Est N.W.YoY(total) ", format(round(pp$N.est),big.mark=","),
+        "  (SE ",          format(round(pp$N.se) ,big.mark=","), ") APPROXIMATE \n\n\n")
 
 # estimate for Age1 clipped fish (hatchery) and expand by the clip fraction
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
@@ -308,8 +326,11 @@ pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
      sum(temp.u2.A.1/temp.sampfrac, na.rm=TRUE))
-cat("Est U.H.1(total) ", format(round(pp$est)/clip.frac.H.1,big.mark=","),
-    "  (SE ",          format(round(pp$se) /clip.frac.H.1,big.mark=","), ")\n\n\n")
+cat("Est U.H.1(total) ", format(round(pp$U.est)/clip.frac.H.1,big.mark=","),
+      "  (SE ",          format(round(pp$U.se) /clip.frac.H.1,big.mark=","), ")\n\n\n")
+cat("Est N.H.1(total) ", format(round(pp$N.est)/clip.frac.H.1,big.mark=","),
+      "  (SE ",          format(round(pp$N.se) /clip.frac.H.1,big.mark=","), ")\n\n\n")
+
 # estimate for Age1 wild fish
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
     ";  m2=",    sum(temp.m2, na.rm=TRUE),
@@ -320,8 +341,10 @@ pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
      sum((temp.u2.N.1+temp.u2.A.1-temp.u2.A.1/clip.frac.H.1)/temp.sampfrac, na.rm=TRUE))
-cat("Est U.W.1(total) ", format(round(pp$est),big.mark=","),
-    "  (SE ",          format(round(pp$se) ,big.mark=","), ") APPROXIMATE \n\n\n")
+cat("Est U.W.1(total) ", format(round(pp$U.est),big.mark=","),
+      "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE \n")
+cat("Est N.W.1(total) ", format(round(pp$N.est),big.mark=","),
+      "  (SE ",          format(round(pp$N.se) ,big.mark=","), ") APPROXIMATE \n\n\n")
 
 
 # Set the bad values to missing
@@ -345,50 +368,50 @@ temp.u2.N.1  [bad.u2.N.1  -min(time)+1] <- NA
 cat("*** Stratified Petersen Estimator for each stratum AFTER removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.u2 <- (temp.u2.A.YoY + temp.u2.N.YoY)/sampfrac
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','(u2.A.YoY+u2.N.YoY)*adj', 'U.YoY[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("Est U.YoY(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ",        format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("Est U.YoY(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ",        format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 cat("*** Stratified Petersen Estimator for each stratum YoY Hatchery YoY AFTER removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.u2 <- u2.A.YoY/sampfrac
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.A.YoY*adj', 'U.H.YoY[i]', 'SE(U[i])')
 print(temp)
 cat("** Estimates not adjusted for clip fraction above \n")
-cat("Est U.H(total) ", format(round(sum(sp$est, na.rm=TRUE)/clip.frac.H.YoY),big.mark=","),
-    "  (SE ",          format(round(sqrt(sum(sp$se^2, na.rm=TRUE))/clip.frac.H.YoY), big.mark=","), ")\n\n\n")
+cat("Est U.H(total) ", format(round(sum(sp$U.est, na.rm=TRUE)/clip.frac.H.YoY),big.mark=","),
+    "  (SE ",          format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))/clip.frac.H.YoY), big.mark=","), ")\n\n\n")
 
 cat("*** Stratified Petersen Estimator for each stratum YoY Wild YoY after removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.u2 <- pmax(0,(u2.N.YoY+u2.A.YoY-u2.A.YoY/clip.frac.H.YoY)/sampfrac)
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.YoY-est', 'U.W.YoY[i]', 'SE(U[i])')
 print(temp)
-cat("Est U.W.YoY(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ",          format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ") APPROXIMATE\n\n\n")
+cat("Est U.W.YoY(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+        "  (SE ",          format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ") APPROXIMATE\n\n\n")
 
 cat("*** Stratified Petersen Estimator for each stratum Age1 Hatchery AFTER removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.u2 <- u2.A.1/sampfrac
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.A.1*adj', 'U.H.1[i]', 'SE(U[i])')
 print(temp)
 cat("** Estimates not adjusted for clip fraction above \n")
-cat("Est U.H(total) ", format(round(sum(sp$est, na.rm=TRUE)/clip.frac.H.YoY),big.mark=","),
-    "  (SE ",          format(round(sqrt(sum(sp$se^2, na.rm=TRUE))/clip.frac.H.1), big.mark=","), ")\n\n\n")
+cat("Est U.H(total) ", format(round(sum(sp$U.est, na.rm=TRUE)/clip.frac.H.YoY),big.mark=","),
+    "  (SE ",          format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))/clip.frac.H.1), big.mark=","), ")\n\n\n")
 
 cat("*** Stratified Petersen Estimator for each stratum Age1 Wild after removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.u2 <- pmax(0,(u2.N.1+u2.A.1-u2.A.1/clip.frac.H.1)/sampfrac)
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.1-est', 'U.W.1[i]', 'SE(U[i])')
 print(temp)
-cat("Est U.W.1(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ",          format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ") APPROXIMATE\n\n\n")
+cat("Est U.W.1(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ",          format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ") APPROXIMATE\n\n\n")
 
 
 

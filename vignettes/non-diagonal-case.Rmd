@@ -163,12 +163,11 @@ demo.data.m2 <- as.matrix(demo.data[,c("X0","X1","X2","X3","X4")])
 
 ```{r pp,message=FALSE,echo=FALSE}
 Nhat <-BTSPAS::SimplePetersen( sum(demo.data$n1), sum(demo.data.m2), sum(demo.data.u2))
-Nhat$est <- Nhat$est + sum(demo.data$n1) + sum(demo.data.u2)
 ```
 ## Preliminary screening of the data
 
 A pooled-Petersen estimator would add all of the marked, recaptured and unmarked fish
-to give an estimate of `r formatC( round(Nhat$est), digits=0, width=20, format="f",big.mark=",")`.
+to give an estimate of `r formatC( round(Nhat$N.est), digits=0, width=20, format="f",big.mark=",")`.
 
 Let us look at the data in more detail:
 

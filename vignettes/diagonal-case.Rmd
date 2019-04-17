@@ -159,12 +159,11 @@ In the next week,  `r demo.data$n1[2]` fish were captured, tagged, and released,
 
 ```{r pp,message=FALSE,echo=FALSE}
 Nhat <-BTSPAS::SimplePetersen( sum(demo.data$n1), sum(demo.data$n2), sum(demo.data$u2))
-Nhat$est <- Nhat$est + sum(demo.data$n1) + sum(demo.data$u2)
 ```
 ## Preliminary screening of the data
 
 A pooled-Petersen estimator would add all of the marked, recaptured and unmarked fish
-to give an estimate of `r formatC( round(Nhat$est), digits=0, width=20, format="f",big.mark=",")` which seems unbelievable!
+to give an estimate of `r formatC( round(Nhat$N.est), digits=0, width=20, format="f",big.mark=",")` which seems unbelievable!
 
 What went wrong? Let us first examine a plot of the estimated capture efficiency
 at the second trap for each (recovery) julian week.
@@ -220,7 +219,7 @@ Finally, let us look at the individual estimates for each stratum found by
 computing a Petersen estimator for the total number of unmarked fishfor each individual stratum:
 
 ```{r Uplot, echo=FALSE,echo=FALSE,  include=TRUE, fig.align="center", fig.cap=c("Estimated log(total unmarked) by julian week"), fig.height=4, fig.width=6}
-demo.data$Uest <- BTSPAS::SimplePetersen( demo.data$n1, demo.data$m2, demo.data$u2)$est
+demo.data$Uest <- BTSPAS::SimplePetersen( demo.data$n1, demo.data$m2, demo.data$u2)$U.est
 ggplot(data=demo.data, aes(x=jweek, y=log(Uest)))+
   ggtitle("Estimated total unmarked fish captured by julian week")+
   geom_point()+

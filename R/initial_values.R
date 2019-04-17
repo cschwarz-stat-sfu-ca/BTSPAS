@@ -22,11 +22,11 @@ genInitsTTln <-
         Nstrata.rel <- length(n1)
         Nstrata.cap <- length(u2)
 
-        m2dot1 <- apply(m2[,1:Nstrata.cap],1,sum)
+        m2dot1 <- apply(m2[,1:Nstrata.cap],1,sum, na.rm=TRUE)
 
         init.muLogTT <- rep(NA,Nstrata.rel)
         tmp1 <- (m2dot1>0)
-#       init.muLogTT[tmp1] <- log((m2[tmp1,1:Nstrata.cap] %*% 1:Nstrata.cap)/(m2dot1[tmp1]) - (1:Nstrata.rel)[tmp1])
+        init.muLogTT[tmp1] <- log((m2[tmp1,1:Nstrata.cap] %*% 1:Nstrata.cap)/(m2dot1[tmp1]) - (1:Nstrata.rel)[tmp1])
         init.muLogTT[tmp1] <- log(pmax(1, (m2[tmp1,1:Nstrata.cap] %*% 1:Nstrata.cap)/(m2dot1[tmp1]) - (1:Nstrata.rel)[tmp1]))  # 2014-09-01 added the pmax(1, xxx) to avoid taking log of zero
 
         init.muLogTT[!tmp1] <- mean(init.muLogTT[tmp1])
@@ -130,8 +130,8 @@ genInitValsChain <- function(
 
      M <- Theta * n1
 
-     m2dot2 <- apply(m2[,1:Nstrata.cap],2,sum)
-     init.P <- (m2dot2 + 1)/(apply(M,2,sum) + m2dot2 + 1) * pScale
+     m2dot2 <- apply(m2[,1:Nstrata.cap],2,sum, na.rm=TRUE)
+     init.P <- (m2dot2 + 1)/(apply(M,2,sum,na.rm=TRUE) + m2dot2 + 1) * pScale
   }
   if(model %in% c("TSPNDENP")){
     ## Compute expected number of marked fish in each cell
@@ -161,6 +161,7 @@ genInitValsChain <- function(
   init.logitP <- logit(init.P)    # Compute the logit
 
   ## 2.2) Compute associated coefficients for design matrix
+  #browser()
   init.beta.logitP <- as.vector(lm(init.logitP ~ logitP.cov - 1)$coeff)
 
   ## 2.3) Set variance for hierarchical model of capture probabilities

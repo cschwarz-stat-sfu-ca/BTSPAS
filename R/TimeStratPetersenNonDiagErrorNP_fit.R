@@ -379,21 +379,9 @@ sampfrac <- as.vector(sampfrac)
 
   cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2,na.rm=TRUE),"\n\n")
   pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
-  cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
-
+  cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+  cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
   
-  
-  ## Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
-  ## select <- !(time %in% bad.n1 | time %in% bad.m2 | time %in% bad.u2)
-  select <- (temp.n1>0) & (!is.na(n1)) & (!apply(is.na(temp.m2),1,any)) & (!is.na(temp.u2[1:length(n1)]))
-  cat("\n\n*** Pooled Petersen Estimate after fixing bad m2 values  CHECK - CHECK - CHECK - CHECK ***\n\n")
-  cat("The following strata were excluded:",
-      if(length(time[!select])>0){time[!select]} else {" NONE"}, "\n")
-
-  cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
-  pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
-  cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
-
 
   ## Test if pooling can be done
   cat("*** Test if pooled Petersen is allowable. [Check if fraction captured equal] ***\n\n")

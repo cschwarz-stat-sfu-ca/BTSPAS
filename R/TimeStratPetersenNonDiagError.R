@@ -347,7 +347,9 @@ if(debug2) {
    browser()  # Stop here to examine the spline design matrix function
 }
 
-logitPguess <- c(logit((apply(m2[,1:Nstrata.cap],1,sum)+1)/(n1+1)),rep(mu_xiP,Nstrata.cap-Nstrata.rel))
+logitPguess <- c(logit(pmax(0.05,pmin(.95,(apply(m2[,1:Nstrata.cap],1,sum,na.rm=TRUE)+1)/(n1+1))))
+                 ,rep(mu_xiP,Nstrata.cap-Nstrata.rel))
+#browser()
 init.beta.logitP <- as.vector(lm( logitPguess ~ logitP.cov-1)$coefficients)
 if(debug2) {
    cat(" obtained initial values of beta.logitP\n")

@@ -289,7 +289,8 @@ cat("\n\n*** Pooled Petersen Estimate based on pooling over ALL strata")
 cat("\nValues of u2 are adjusting for sampling fraction \n\n")
 cat("Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2/sampfrac, na.rm=TRUE),"\n\n")
 pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2/sampfrac, na.rm=TRUE))
-cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 
 # Obtain the Pooled Petersen estimator after EXCLUDING strata with missing data or strata that are flagged as having bad.n1, bad.m2, and bad.u2  values
@@ -312,7 +313,8 @@ temp.sampfrac <- sampfrac[select]
 
 cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2/temp.sampfrac),"\n\n")
 pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2/temp.sampfrac))
-cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
    
 # Obtain Petersen estimator for each stratum prior to excluding any strata flagged as bad values
@@ -322,12 +324,12 @@ temp.n1 <- n1
 temp.m2 <- m2
 temp.u2 <- u2/sampfrac
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 
 # Obtain Petersen estimator for each stratum after excluding strata where n1=0, or flagged by bad.n1,  bad.m2, or bad.u2
@@ -348,12 +350,12 @@ temp.u2[match(bad.m2,time)] <- NA
 temp.u2[match(bad.u2,time)] <- NA
 temp.u2 <- temp.u2/sampfrac
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 # Test if pooling can be done
 cat("*** Test if pooled Petersen is allowable on strata without problems in n1 or m2. [Check if marked fractions are equal] ***\n\n")

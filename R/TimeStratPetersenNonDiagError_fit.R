@@ -314,8 +314,9 @@ temp.u2 <- u2
 
 cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2,na.rm=TRUE),"\n\n")
 pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
-cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
-
+cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
+.
 # Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
 # select <- !(time %in% bad.n1 | time %in% bad.m2 | time %in% bad.u2)
 select <- (temp.n1>0) & (!is.na(n1)) & (!apply(is.na(temp.m2),1,any)) & (!is.na(temp.u2[1:length(n1)]))
@@ -329,7 +330,8 @@ temp.u2 <- u2[select]
 
 cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
 pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
-cat("Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 
 
@@ -356,23 +358,12 @@ new.u2   <- u2
 new.sampfrac <- sampfrac
 new.logitP.cov <- logitP.cov
 
-########## This needs more thought ##########
-# Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
-# of unmarked fish that were captured. It is not necessary to adjust the n1 and m2 values
-# as these are used ONLY to estimate the capture efficiency.
-# In reality, there should be a slight adjustment
-# to the precision to account for this change, but this is not done.
-# Similarly, if the sampling fraction is more than 1, the adjustment is made back to a standard week.
-#new.u2 <- round(new.u2/new.sampfrac)
 
-# Adjust for strata where sampling fraction is very small, but the logitP has not been fixed
-# to zero. On these strata
-# u2 is set to NA so that there is NO information on U2 for this stratum
-new.u2[new.sampfrac<.001 & new.sampfrac > 0] <- NA
-
-# Set the bad values to missing
-new.n1[time[1:length(n1)] %in% bad.n1]  <- NA
-new.m2[time[1:length(n1)] %in% bad.m2,] <- NA
+# Set the bad n1 values to 0 for the number of fish released and corresponding values of m2 also to 0 recovered subsequently.
+# Set any bad m2 values to 0 for the number of releases and subsequent recoveries as well.
+# But we don't set bqd(u2) values to 0 as this would imply no catch. We set these to missing
+new.n1[time[1:length(n1)] %in% c(bad.n1,bad.m2) ]  <- 0
+new.m2[time[1:length(n1)] %in% c(bad.m2,bad.n1),]  <- 0
 new.u2[time %in% bad.u2]                <- NA
 
 # Print out the revised data

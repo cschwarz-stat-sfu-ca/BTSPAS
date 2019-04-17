@@ -90,8 +90,8 @@ as -50 because numerical problems could occur in WinBugs/OpenBugs.}
 \item{marked_available_n}{Information, usually from prior studies, on the
 fraction of marks that will be available. The *_n and *_x are used to create
 a "binomial" distribution for information on the marked availability. For
-example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\% of
-marks are available to be recaptured, i.e. a 39\% dropout probability.}
+example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\% of marks
+are available and 39\% have dropped out or falled back.}
 
 \item{marked_available_x}{See marked_available_n}
 

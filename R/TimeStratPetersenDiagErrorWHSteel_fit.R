@@ -265,15 +265,18 @@ cat("The following strata had u2.H.1   set to missing: ",
 cat("\n\n*** Pooled Petersen Estimates based on pooling over ALL strata adjusting for sampling fractions ***\n\n")
 cat("W.YoY  Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2.W.YoY/sampfrac, na.rm=TRUE),"\n")
 pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.W.YoY/sampfrac, na.rm=TRUE))
-cat("W.YoY  Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("W.YoY  Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("W.YoY  Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 cat("W.1    Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=", sum(u2.W.1/sampfrac, na.rm=TRUE),"\n")
 pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.W.1/sampfrac, na.rm=TRUE))
-cat("W.1    Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("W.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("W.1    Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 cat("H.1    Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2.H.1/sampfrac, na.rm=TRUE),"\n")
 pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.H.1/sampfrac, na.rm=TRUE))
-cat("H.1    Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("H.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("H.1    Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 
 # Obtain the Pooled Petersen estimator for each group excluding bad.m2, bad.u2.* values
@@ -290,15 +293,18 @@ temp.sampfrac <- sampfrac[select]
 
 cat("W.YoY  Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2.W.YoY/temp.sampfrac, na.rm=TRUE),"\n")
 pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.W.YoY/temp.sampfrac, na.rm=TRUE))
-cat("W.YoY  Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("W.YoY  Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("W.YoY  Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 cat("W.1    Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=", sum(temp.u2.W.1/temp.sampfrac, na.rm=TRUE),"\n")
 pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.W.1/temp.sampfrac, na.rm=TRUE))
-cat("W.1    Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("W.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("W.1    Est U(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 cat("H.1    Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2.H.1/temp.sampfrac, na.rm=TRUE),"\n")
 pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.H.1/sampfrac, na.rm=TRUE))
-cat("H.1    Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("H.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("H.1    Est U(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 
 # Obtain the Pooled Petersen estimator after fixup of bad.m2, bad.u2.* values after adjusting for sampling fractions
@@ -340,15 +346,18 @@ temp.sampfrac  <- sampfrac[select]
 
 cat("W.YoY  Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.W.YoY/temp.sampfrac),"\n")
 pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.W.YoY/temp.sampfrac))
-cat("W.YoY  Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("W.YoY  Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("W.YoY  Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 cat("W.1    Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.W.1/temp.sampfrac),"\n")
 pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.W.1/temp.sampfrac))
-cat("W.1    Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("W.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("W.1    Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 cat("H.1   Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.H.1/temp.sampfrac),"\n")
 pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.H.1/temp.sampfrac))
-cat("H.1   Est U(total) ", format(round(pp$est),big.mark=","),"  (SE ", format(round(pp$se), big.mark=","), ")\n\n\n")
+cat("H.1   Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
+cat("H.1   Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 
 
@@ -359,12 +368,12 @@ temp.n1 <- n1
 temp.m2 <- m2
 temp.u2 <- u2.W.YoY
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.YoY', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("W.YoY  Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("W.YoY  Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+                  "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 
 cat("W.1   raw data\n")
@@ -372,24 +381,24 @@ temp.n1 <- n1
 temp.m2 <- m2
 temp.u2 <- u2.W.1
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.1', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("W.1    Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("W.1    Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+                  "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 cat("H.1   raw data\n")
 temp.n1 <- n1
 temp.m2 <- m2
 temp.u2 <- u2.H.1
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.1', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("H.1    Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("H.1    Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+                  "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 
 
@@ -411,30 +420,30 @@ temp.u2.H.1[index.bad.u2.H.1] <- NA
 
 cat("\nW.YoY raw data\n")
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W.YoY/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.YoY/sampfrac, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.YoY/sampfrac, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.YoY(adj)', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("W.YoY Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("W.YoY Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 cat("\nW.1   raw data\n")
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W.1/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.1/sampfrac, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.1/sampfrac, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.1(adj)', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("W.1   Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("W.1   Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 cat("\nH.1   raw data\n")
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.H.1/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2.H.1/sampfrac, round(sp$est), round(sp$se))
+temp <- cbind(time, temp.n1, temp.m2, temp.u2.H.1/sampfrac, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.H.1(adj)', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
-cat("H.1   Est U(total) ", format(round(sum(sp$est, na.rm=TRUE)),big.mark=","),
-    "  (SE ", format(round(sqrt(sum(sp$se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
+cat("H.1   Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
+    "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 
 # Test if pooling can be done
