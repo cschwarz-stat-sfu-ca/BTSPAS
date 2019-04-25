@@ -456,7 +456,7 @@ sampfrac <- as.vector(sampfrac)
   sink()
   
   # some further checking on u2. Make sure that every columns where there are recoveries has a u2
-  # browser()
+  #browser()
   if( (length(u2)+1) <= (ncol(temp)-1)) {
      if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
        cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")

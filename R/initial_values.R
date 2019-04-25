@@ -1,3 +1,5 @@
+## 2019-04-24 CJS if sdmuTT=0 in genInitsTTnp gives infinite value for taumuTT. So i set this to a minimum of .01
+##                if Delta.max=1, then deal with droping row dimensions in np routines.
 ## 2014-09-01 CJS bug in init.muLogTT which gives log(0) if a release has all recoveries only in initial strataum of
 #                 of release. In those cases, I set the mean to those values that are not infinite
 ## 2013-12-18 CJS Any init.epsilon that correspond to logitP.fixed (typically to -10 or 0 on the p scale) must be set to NA
@@ -55,28 +57,35 @@ genInitsTTnp <-  function(n1,m2,u2,Delta.max){
 
   ## Compute empirical theta matrix
   init.Theta <- t(sapply(1:Nstrata.rel,function(i){
-  if(all(is.na(m2[i,])) || sum(m2[i,])==0)
-      return(rep(NA,Delta.max+1))
-  else{
+     if(all(is.na(m2[i,])) || sum(m2[i,])==0)
+        return(rep(NA,Delta.max+1))
+     else{
       thetatmp <- pmax(.01,
                   pmin(m2[i,-(Delta.max+2)]/sum(m2[i,-(Delta.max+2)],na.rm=TRUE),
                        .99,na.rm=TRUE))  # CJS 2011-02-16
       return(thetatmp/sum(thetatmp))
-  }
+     }
   }))
 
   ## Compute initial r
-  init.delta <- t(apply(as.matrix(init.Theta[,-(Delta.max+1)]),1,   # CJS 2011-02-16 as.matrix added
+  #init.delta <- t(apply(as.matrix(init.Theta[,-(Delta.max+1),drop=FALSE]),1,   # CJS 2011-02-16 as.matrix added
+  #                function(theta){    # CJS fixed -(Delta.max+1)
+  #                     if(length(theta) == 1){theta}
+  #                     else {theta/(1-c(0,cumsum(theta[-Delta.max])))}
+  #               }))
+  init.delta <- as.matrix(apply(init.Theta[,-(Delta.max+1),drop=FALSE],1,   # CJS 2019-04-24 dealing with delta.max=1
                   function(theta){    # CJS fixed -(Delta.max+1)
                        if(length(theta) == 1){theta}
                        else {theta/(1-c(0,cumsum(theta[-Delta.max])))}
                  }))
+  if(nrow(init.delta)==Delta.max){init.delta <- t(init.delta)}
+
   init.r <- log(init.delta)
 
   ## mean and standard deviation of transition probabilties
   init.muTT <- apply(logit(init.delta),2,mean,na.rm=TRUE)
-  init.sdTT <- sd(as.vector(t(logit(init.delta)))-init.muTT,na.rm=TRUE)
-
+  init.sdTT <- max(.01,sd(as.vector(t(logit(init.delta)))-init.muTT,na.rm=TRUE))
+  #browser()
   return(list(muTT  =init.muTT,
               tauTT =1/init.sdTT^2,
               r     =init.r,
