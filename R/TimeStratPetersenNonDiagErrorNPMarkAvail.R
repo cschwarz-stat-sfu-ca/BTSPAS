@@ -422,10 +422,12 @@ init.vals <- function(){
    }))
 # cat('Initial values')
 # browser()
-   init.delta <- t(apply(as.matrix(init.Theta[,-(Delta.max+1)]),1,   # CJS 2011-02-16 as.matrix added
-      function(theta){    # CJS fixed -(Delta.max+1)
-         if(length(theta) == 1){theta} else {theta/(1-c(0,cumsum(theta[-Delta.max])))}
-   }))
+   init.delta <- as.matrix(apply(init.Theta[,-(Delta.max+1),drop=FALSE],1,   # CJS 2019-04-24 dealing with delta.max=1
+                  function(theta){    # CJS fixed -(Delta.max+1)
+                       if(length(theta) == 1){theta}
+                       else {theta/(1-c(0,cumsum(theta[-Delta.max])))}
+                 }))
+   if(nrow(init.delta)==Delta.max){init.delta <- t(init.delta)}
    
    ## mean and standard deviation of transition probabilties
    init.muTT <- apply(logit(init.delta),2,mean,na.rm=TRUE)
