@@ -275,29 +275,31 @@ sampfrac <- as.vector(sampfrac)
 
   ##  3. Elements of bad.m2 and jump.after must belong to time
   if(!all(bad.n1 %in% time,na.rm=TRUE)){
-    cat("***** ERROR ***** bad.n1 must be elements of strata identifiers. You entered \n bad.n1:",bad.n1,
+    cat("***** ERROR ***** bad.n1 must be elements of strata identifiers. You entered \n bad.n1:",
+        paste(bad.n1,collapse=","),
          "\n Strata identifiers are \n time:",paste(time,collapse=","), "\n")
     return()}
 
   if(!all(bad.m2 %in% time,na.rm=TRUE)){
-    cat("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",bad.m2,
+    cat("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",
+        paste(bad.m2,collapse=","),
          "\n Strata identifiers are \n time:",paste(time,collapse=","), "\n")
     return()}
 
   if(!all(bad.u2 %in% time,na.rm=TRUE)){
-    cat("***** ERROR ***** bad.u2 must be elements of strata identifiers. You entered \n bad.u2:",bad.u2,
+    cat("***** ERROR ***** bad.u2 must be elements of strata identifiers. You entered \n bad.u2:",paste(bad.u2,collapse=","),
          "\n Strata identifiers are \n time:",paste(time,collapse=","), "\n")
     return()}
 
   if(!all(jump.after %in% time,na.rm=TRUE)){
-    cat("***** ERROR ***** jump.after must be elements of strata identifiers. You entered \n jump.after:",jump.after,
+    cat("***** ERROR ***** jump.after must be elements of strata identifiers. You entered \n jump.after:",paste(jump.after,collapse=","),
          "\n Strata identifiers are \n time:",paste(time,collapse=","), "\n")
     return()}
 
 
   #  5. check that index of logitP.fixed belong to time
   if(!all(logitP.fixed %in% time,na.rm=TRUE)){
-    cat("***** ERROR ***** logitP.fixed must be elements of strata identifiers. You entered \n logitP.fixed:",logitP.fixed,
+    cat("***** ERROR ***** logitP.fixed must be elements of strata identifiers. You entered \n logitP.fixed:",paste(logitP.fixed,collapse=","),
         "\n Strata identifiers are \n time:",paste(time,collapse=","), "\n")
     return()}
   if(length(logitP.fixed)!=length(logitP.fixed.values)){
@@ -457,7 +459,7 @@ sampfrac <- as.vector(sampfrac)
   
   # some further checking on u2. Make sure that every columns where there are recoveries has a u2
   if( (length(u2)+1) <= (ncol(temp)-1)) {
-     if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >=0)){
+     if(any( temp["Column totals", (length(u2)+1):(ncol(temp)-1)] >0)){
        cat("***** ERROR ***** Non-zero recoveries and u2 not available at end of experiment??? \n Check above matrix\n")
        return()
      }

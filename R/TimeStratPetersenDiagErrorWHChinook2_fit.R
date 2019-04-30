@@ -112,45 +112,57 @@ sampfrac <- as.vector(sampfrac)
 if(var(c(length(n1),length(m2),length(u2.A.YoY),length(u2.N.YoY),length(u2.A.1),length(u2.N.1),
        length(sampfrac),length(time)))>0){
    cat("***** ERROR ***** Lengths of n1, m2, u2.A.YoY, u2.N.YoY, u2.A.1, u2.N.1, sampfrac, time must all be equal. They are:",
-        length(n1),length(m2),length(u2.A.YoY),length(u2.N.YoY),length(u2.A.1),length(u2.N.1),
-        length(sampfrac),length(time),"\n")
+        length(n1)," ",length(m2)," ",length(u2.A.YoY)," ",length(u2.N.YoY)," ",length(u2.A.1)," ",length(u2.N.1),
+        length(sampfrac)," ",length(time),"\n")
    return()}
+
 if(length(logitP.cov) %% length(n1) != 0){
    cat("***** ERROR ***** Dimension of covariate vector doesn't match length of n1 etc They are:",
-        length(n1),length(logitP.cov),dim(logitP.cov),"\n")
+        length(n1)," ",length(logitP.cov)," ",dim(logitP.cov),"\n")
    return()}
+
 #  2. Check that m2<= n1
 if(any(m2>n1,na.rm=TRUE)){
-   cat("***** ERROR ***** m2 must be <= n1. The arguments are \n n1:",n1,"\n m2:",m2,"\n")
+   cat("***** ERROR ***** m2 must be <= n1. The arguments are \n n1:",
+       paste(n1,collapse=","),"\n m2:",
+       paste(m2.collapse=","),"\n")
    return()}
+
 #  3. Elements of bad.m2, bad.u2.A.YoY, bad.u2.A.1, bad.u2.N.YoY, bad.u2.N.1, and hatch.after.YoY must belong to time
 if(!all(bad.m2 %in% time,na.rm=TRUE)){
-   cat("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",bad.m2,"\n Strata identifiers are \n time:",time, "\n")
+   cat("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",
+       paste(bad.m2,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time,  collapse=","), "\n")
    return()}
 if(!all(bad.u2.A.YoY %in% time,na.rm=TRUE)){
    cat("***** ERROR ***** bad.u2.A.YoY must be elements of strata identifiers. You entered \n bad.u2.A.YoY:",
-       bad.u2.A.YoY,"\n Strata identifiers are \n time:",time, "\n")
+       paste(bad.u2.A.YoY,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time        ,collapse=","), "\n")
    return()}
 if(!all(bad.u2.A.1 %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** bad.u2.A.1 must be elements of strata identifiers. You entered \n bad.u2.A.1:",
-       bad.u2.A.1,"\n Strata identifiers are \n time:",time, "\n")
+       paste(bad.u2.A.1,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time      ,collapse=","), "\n")
    return()}
 if(!all(bad.u2.N.YoY %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** bad.u2.N.YoY must be elements of strata identifiers. You entered \n bad.u2.N.YoY:",
-       bad.u2.N.YoY,"\n Strata identifiers are \n time:",time, "\n")
+       paste(bad.u2.N.YoY,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time,        collapse=","), "\n")
    return()}
 if(!all(bad.u2.N.1 %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** bad.u2.N.1 must be elements of strata identifiers. You entered \n bad.u2.N.1:",
-       bad.u2.N.1,"\n Strata identifiers are \n time:",time, "\n")
+       paste(bad.u2.N.1,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time,      collapse=","), "\n")
    return()}
 if(!all(hatch.after.YoY %in% time, na.rm=TRUE)){
    cat("***** ERROR ***** hatch.after.YoY must be elements of strata identifiers. You entered \n hatch.after.YoY:",
-   hatch.after.YoY,"\n Strata identifiers are \n time:",time, "\n")
+   paste(hatch.after.YoY,collapse=","),"\n Strata identifiers are \n time:",
+   paste(time,           collapse=","), "\n")
    return()}
 
 #  4. check that strata numbers are contiguous between smallest and largest value of the strata numbers
 if( any(seq(min(time),max(time),1) != time,na.rm=TRUE)){
-   cat("***** ERROR ***** Strata numbers must be contiguous. \n You entered :", time, "\n")
+   cat("***** ERROR ***** Strata numbers must be contiguous. \n You entered :", paste(time,collapse=","), "\n")
    return()
 }
 

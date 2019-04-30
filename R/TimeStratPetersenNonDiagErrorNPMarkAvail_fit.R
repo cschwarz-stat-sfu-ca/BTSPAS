@@ -253,24 +253,35 @@ sampfrac <- as.vector(sampfrac)
 
   ##  2. Check that rowsum of m2<= n1
   if(any(apply(m2,1,sum, na.rm=TRUE)>n1))
-    stop("***** ERROR ***** m2[i,+] must be <= n1[i]. The arguments are \n n1:",n1,"\n m2:",m2,"\n")
+    stop("***** ERROR ***** m2[i,+] must be <= n1[i]. The arguments are \n n1:",paste(n1,collapse=","),
+         "\n m2:",paste(m2,collapse=","),"\n")
 
   ##  3. Elements of bad.m2 and jump.after must belong to time
   if(!all(bad.n1 %in% time, na.rm=TRUE))
-    stop("***** ERROR ***** bad.n1 must be elements of strata identifiers. You entered \n bad.n1:",bad.n1,"\n Strata identifiers are \n time:",time, "\n")
+    stop("***** ERROR ***** bad.n1 must be elements of strata identifiers. You entered \n bad.n1:",
+         paste(bad.n1,collapse=","),"\n Strata identifiers are \n time:",
+         paste(time,collapse=","),"\n")
 
   if(!all(bad.m2 %in% time, na.rm=TRUE))
-    stop("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",bad.m2,"\n Strata identifiers are \n time:",time, "\n")
+    stop("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",
+         paste(bad.m2,collapse=","),"\n Strata identifiers are \n time:",
+         paste(time,collapse=","),"\n")
 
   if(!all(bad.u2 %in% time, na.rm=TRUE))
-    stop("***** ERROR ***** bad.u2 must be elements of strata identifiers. You entered \n bad.u2:",bad.u2,"\n Strata identifiers are \n time:",time, "\n")
+    stop("***** ERROR ***** bad.u2 must be elements of strata identifiers. You entered \n bad.u2:",
+         paste(bad.u2,collapse=","),"\n Strata identifiers are \n time:",
+         paste(time,collapse=","), "\n")
 
   if(!all(jump.after %in% time, na.rm=TRUE))
-    stop("***** ERROR ***** jump.after must be elements of strata identifiers. You entered \n jump.after:",jump.after,"\n Strata identifiers are \n time:",time, "\n")
+    stop("***** ERROR ***** jump.after must be elements of strata identifiers. You entered \n jump.after:",
+         paste(jump.after,collapse=","),"\n Strata identifiers are \n time:",
+         paste(time,collapse=","), "\n")
 
   #  4. check that index of logitP.fixed belong to time
   if(!all(logitP.fixed %in% time, na.rm=TRUE)){
-    cat("***** ERROR ***** logitP.fixed must be elements of strata identifiers. You entered \n logitP.fixed:",logitP.fixed,"\n Strata identifiers are \n time:",time, "\n")
+    cat("***** ERROR ***** logitP.fixed must be elements of strata identifiers. You entered \n logitP.fixed:",
+        paste(logitP.fixed,collapse=","),"\n Strata identifiers are \n time:",
+        paste(time,collapse=","), "\n")
     return()}
   if(length(logitP.fixed)!=length(logitP.fixed.values)){
     cat("***** ERROR ***** Lengths of logitP.fixed and logitP.fixed.values must all be equal. They are:",
@@ -279,7 +290,7 @@ sampfrac <- as.vector(sampfrac)
  
   # 5. Check that some basic information on marked availability is given
   if( is.na(marked_available_n) | is.na(marked_available_x) | marked_available_x > marked_available_n){
-    cat("***** ERROR ***** Bad marked_availability values. You entered:",marked_available_n,marked_available_x,"\n")
+    cat("***** ERROR ***** Bad marked_availability values. You entered:",marked_available_n," ",marked_available_x,"\n")
     return()}
 
   #7 check that the length of u2 

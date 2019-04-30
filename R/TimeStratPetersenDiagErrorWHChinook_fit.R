@@ -219,28 +219,40 @@ sampfrac  <- as.vector(sampfrac)
 #  1. Check that length of n1, m2, u2, sampfrac, time all match
 if(var(c(length(n1),length(m2),length(u2.A),length(u2.N),length(sampfrac),length(time)))>0){
    cat("***** ERROR ***** Lengths of n1, m2, u2.A, u2.N, sampfrac, time must all be equal. They are:",
-        length(n1),length(m2),length(u2.A),length(u2.N),length(sampfrac),length(time),"\n")
+        length(n1)," ",length(m2)," ",length(u2.A)," ",length(u2.N)," ",length(sampfrac)," ",length(time),"\n")
    return()}
 if(length(logitP.cov) %% length(n1) != 0){
    cat("***** ERROR ***** Dimension of covariate vector doesn't match length of n1 etc They are:",
-        length(n1),length(logitP.cov),dim(logitP.cov),"\n")
+        length(n1)," ",length(logitP.cov)," ",paste(dim(logitP.cov),collapse=","),"\n")
    return()}
+
 #  2. Check that m2<= n1
 if(any(m2>n1, na.rm=TRUE)){
-   cat("***** ERROR ***** m2 must be <= n1. The arguments are \n n1:",n1,"\n m2:",m2,"\n")
+   cat("***** ERROR ***** m2 must be <= n1. The arguments are \n n1:",
+       paste(n1,collapse=","),"\n m2:",
+       paste(m2,collapse=","),"\n")
    return()}
+
 #  3. Elements of bad.m2, bad.u2.A, and bad.u2.N, and hatch.after must belong to time
 if(!all(bad.m2 %in% time, na.rm=TRUE)){
-   cat("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",bad.m2,"\n Strata identifiers are \n time:",time, "\n")
+   cat("***** ERROR ***** bad.m2 must be elements of strata identifiers. You entered \n bad.m2:",
+       paste(bad.m2,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time  ,collapse=","), "\n")
    return()}
 if(!all(bad.u2.A %in% time, na.rm=TRUE)){
-   cat("***** ERROR ***** bad.u2.A must be elements of strata identifiers. You entered \n bad.u2.A:",bad.u2.A,"\n Strata identifiers are \n time:",time, "\n")
+   cat("***** ERROR ***** bad.u2.A must be elements of strata identifiers. You entered \n bad.u2.A:",
+       paste(bad.u2.A,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time,    collapse=","), "\n")
    return()}
 if(!all(bad.u2.N %in% time, na.rm=TRUE)){
-   cat("***** ERROR ***** bad.u2.N must be elements of strata identifiers. You entered \n bad.u2.N:",bad.u2.N,"\n Strata identifiers are \n time:",time, "\n")
+   cat("***** ERROR ***** bad.u2.N must be elements of strata identifiers. You entered \n bad.u2.N:",
+       paste(bad.u2.N, collapse=","),"\n Strata identifiers are \n time:",
+       paste(time,     collapse=","), "\n")
    return()}
 if(!all(hatch.after %in% time, na.rm=TRUE)){
-   cat("***** ERROR ***** hatch.after must be elements of strata identifiers. You entered \n hatch.after:",hatch.after,"\n Strata identifiers are \n time:",time, "\n")
+   cat("***** ERROR ***** hatch.after must be elements of strata identifiers. You entered \n hatch.after:",
+       paste(hatch.after,collapse=","),"\n Strata identifiers are \n time:",
+       paste(time,       collapse=","), "\n")
    return()}
 
 # Deprication of sampling fraction.
