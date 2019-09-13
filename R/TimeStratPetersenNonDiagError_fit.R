@@ -623,6 +623,7 @@ q <- RunTime(time=time, U=results$sims.list$U, prob=run.prob)
 temp <- rbind(apply(q,2,mean), apply(q,2,sd))
 rownames(temp) <- c("Mean", "Sd")
 print(round(temp,2))
+results$runTime <- (round(temp, 2))
 
 
 cat("\n\n")
