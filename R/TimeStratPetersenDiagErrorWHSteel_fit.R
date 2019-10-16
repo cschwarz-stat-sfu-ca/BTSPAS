@@ -789,6 +789,10 @@ temp <- rbind(apply(q,2,mean), apply(q,2,sd))
 rownames(temp) <- c("Mean", "Sd")
 print(round(temp,2))
 
+# Add the runtiming to the output object
+results$runTime <- temp
+
+
 cat("\n\n")
 cat(paste("*** end of fit *** ", date()))
 

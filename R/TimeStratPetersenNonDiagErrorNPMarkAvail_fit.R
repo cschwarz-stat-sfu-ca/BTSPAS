@@ -690,6 +690,9 @@ sampfrac <- as.vector(sampfrac)
   rownames(temp) <- c("Mean", "Sd")
   print(round(temp,2))
   
+  # Add the runtiming to the output object
+  results$runTime <- temp
+
   
   cat("\n\n")
   cat(paste("*** end of fit *** ", date()))
