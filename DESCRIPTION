@@ -1,6 +1,6 @@
 Package: BTSPAS
-Version: 2019.04.29
-Date: 2019-04-29
+Version: 2020.1
+Date: 2020-01-01
 Title: Bayesian Time-Strat. Population Analysis
 Author: Carl J Schwarz <cschwarz.stat.sfu.ca@gmail.com> and
 	Simon J Bonner <sbonner6@uwo.ca>
@@ -26,11 +26,10 @@ Description: Provides advanced Bayesian methods to estimate
 	     abundance and run-timing from temporally-stratified
 	     Petersen mark-recapture experiments. Methods include
 	     hierarchical modelling of the capture probabilities
-  	     and spline smoothing of the daily run size. This version 
-	     uses JAGS to sample from the posterior distribution.
+  	     and spline smoothing of the daily run size.
 License: GPL (>=2)
 URL: http://www.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.0
 Suggests: 
     knitr,
     rmarkdown

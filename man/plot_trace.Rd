@@ -5,8 +5,13 @@
 \title{Creates trace plots of specified parameters showing the multiple chains and
 the value of Rhat}
 \usage{
-plot_trace(title = " ", results = NULL, parms_to_plot = NULL,
-  nrow = 2, ncol = 2)
+plot_trace(
+  title = " ",
+  results = NULL,
+  parms_to_plot = NULL,
+  nrow = 2,
+  ncol = 2
+)
 }
 \arguments{
 \item{title}{A character string used for a title on reports and graphs}

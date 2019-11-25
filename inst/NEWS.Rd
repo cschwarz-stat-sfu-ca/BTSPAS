@@ -15,6 +15,16 @@
 %   }
 %}
 
+\section{CHANGES IN VERSION 2020.1}{
+  \subsection{USER-VISIBLE CHANGES}{
+    \itemize{
+      \item Runtimings now added to output object.
+      \item More testing of fall back options.
+     }
+   }
+}
+
+
 \section{CHANGES IN VERSION 2019.0101}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{

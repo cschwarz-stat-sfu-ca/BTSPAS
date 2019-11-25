@@ -10,12 +10,18 @@ output:
 vignette: >
   %\VignetteIndexEntry{04 - Non Diagonal Fall-Back Case}
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
 editor_options: 
   chunk_output_type: inline
 ---
 
 ```{r setup, include = FALSE,message=FALSE}
+# turn off evaluation during R CMD check etc
+# See https://stackoverflow.com/questions/28961431/computationally-heavy-r-vignettes
+is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
+             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
+knitr::opts_chunk$set(eval = !is_check)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"

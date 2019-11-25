@@ -14,11 +14,12 @@
 \alias{PredictivePosteriorPlot.TSPNDE}
 \alias{PredictivePosterior.TSPDE}
 \alias{PredictivePosterior_TSPDE_WHChinook}
-\alias{PredictivePosterior.TSPDE.WHCH}
 \alias{PredictivePosterior.TSPDE.WHCH2}
 \alias{PredictivePosterior.TSPDE.WHSteel}
 \alias{PredictivePosterior.TSPNDE}
 \alias{PredictivePosterior.TSPNDENP}
+\alias{PredictivePosteriorPlot.TSPDE.WHCH}
+\alias{PredictivePosterior.TSPDE.WHCH}
 \alias{PredictivePosterior.TSPNDENPMarkAvail}
 \title{Gemerate Predictive Posterior Plots (Bayesian p-values) for number of models.}
 \usage{
@@ -32,23 +33,75 @@ PredictivePosteriorPlot.TSPNDE(discrep)
 
 PredictivePosterior.TSPDE(n1, m2, u2, logitP.fixed, p, U)
 
-PredictivePosterior.TSPDE.WHCH(time, n1, m2, u2.A, u2.N, clip.frac.H, p,
-  U.W, U.H, hatch.after)
+PredictivePosterior.TSPDE.WHCH(
+  time,
+  n1,
+  m2,
+  u2.A,
+  u2.N,
+  clip.frac.H,
+  p,
+  U.W,
+  U.H,
+  hatch.after
+)
 
-PredictivePosterior.TSPDE.WHCH2(time, n1, m2, u2.A.YoY, u2.N.YoY, u2.A.1,
-  u2.N.1, clip.frac.H.YoY, clip.frac.H.1, p, U.W.YoY, U.H.YoY, U.W.1,
-  U.H.1, hatch.after.YoY)
+PredictivePosterior.TSPDE.WHCH2(
+  time,
+  n1,
+  m2,
+  u2.A.YoY,
+  u2.N.YoY,
+  u2.A.1,
+  u2.N.1,
+  clip.frac.H.YoY,
+  clip.frac.H.1,
+  p,
+  U.W.YoY,
+  U.H.YoY,
+  U.W.1,
+  U.H.1,
+  hatch.after.YoY
+)
 
-PredictivePosterior.TSPDE.WHSteel(time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1,
-  p, U.W.YoY, U.W.1, U.H.1, hatch.after)
+PredictivePosterior.TSPDE.WHSteel(
+  time,
+  n1,
+  m2,
+  u2.W.YoY,
+  u2.W.1,
+  u2.H.1,
+  p,
+  U.W.YoY,
+  U.W.1,
+  U.H.1,
+  hatch.after
+)
 
 PredictivePosterior.TSPNDE(n1, m2, u2, logitP.fixed, p, U, mu, sigma)
 
-PredictivePosterior.TSPNDENP(n1, m2.expanded, u2, logitP.fixed, p, U,
-  Theta, Delta.max)
+PredictivePosterior.TSPNDENP(
+  n1,
+  m2.expanded,
+  u2,
+  logitP.fixed,
+  p,
+  U,
+  Theta,
+  Delta.max
+)
 
-PredictivePosterior.TSPNDENPMarkAvail(n1, m2.expanded, u2, logitP.fixed, p,
-  U, Theta, ma.p, Delta.max)
+PredictivePosterior.TSPNDENPMarkAvail(
+  n1,
+  m2.expanded,
+  u2,
+  logitP.fixed,
+  p,
+  U,
+  Theta,
+  ma.p,
+  Delta.max
+)
 }
 \arguments{
 \item{ma.p}{Proporiton of marks available, i.e 1-fallback probability}

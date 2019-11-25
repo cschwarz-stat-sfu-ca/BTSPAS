@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{05 - Bias caused by incomplete sampling}
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
 editor_options: 
   chunk_output_type: inline
 ---
@@ -18,6 +18,12 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 set.seed(856765)
 max.width=200
+
+# turn off evaluation during R CMD check etc
+# See https://stackoverflow.com/questions/28961431/computationally-heavy-r-vignettes
+is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
+             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
+knitr::opts_chunk$set(eval = !is_check)
 
 library(ggplot2)
 library(plyr)
