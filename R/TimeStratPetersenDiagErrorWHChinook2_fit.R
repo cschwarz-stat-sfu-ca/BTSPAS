@@ -1,4 +1,4 @@
-# 2018-12-19 CJS deprication of sampling fraction
+# 2018-12-19 CJS deprecation of sampling fraction
 # 2018-12-06 CJS saved output to a textconnection that is saved
 # 2018-12-02 CJS converted trace plots to ggplot
 # 2018-12-01 CJS converted posterior plot to ggplot
@@ -39,7 +39,7 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
 # covariates for the the capture probabilities, and separating the YoY and Age1 wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2019-01-01'
+   version <- '2020-01-01'
    options(width=200)
 
 # Input parameters are

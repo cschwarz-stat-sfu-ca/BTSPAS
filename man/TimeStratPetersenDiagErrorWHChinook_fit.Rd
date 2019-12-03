@@ -225,11 +225,7 @@ Normally use the *_fit to pass the data to the fitting function.
 }
 \examples{
  
-##---- See the demo files for examples of how to use this package
-##
-##     demo("demo-TSPDE-WHchinook",     package='BTSPAS', ask=FALSE)  # the simplest usage
-##     demo("demo-TSPDE-WHchinook2",    package='BTSPAS', ask=FALSE)  # the simplest usage
-##
+##---- See the vignettes for examples on how to run this analysis.
 
 }
 \references{

@@ -142,10 +142,7 @@
 #' @keywords ~models ~smooth
 #' @examples
 #'  
-#' ##---- See the demo files for examples of how to use this package
-#' ##
-#' ##     demo("demo-TSPNDE",     package='BTSPAS', ask=FALSE)  # the simplest usage
-#' ##
+#' ##---- See the vignettes for examples of how to use this package
 #' 
 #' @export TimeStratPetersenNonDiagError_fit
 
@@ -171,7 +168,7 @@ TimeStratPetersenNonDiagError_fit <-
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- '2019-01-01'
+    version <- '2020-01-01'
     options(width=200)
 
 # Input parameters are

@@ -140,10 +140,7 @@
 #' @keywords ~models ~smooth
 #' @examples
 #'  
-#' ##---- See the demo files for examples of how to use this package
-#' ##
-#' ##     demo("demo-TSPNDE",     package='BTSPAS', ask=FALSE)  # the simplest usage
-#' ##
+#' ##---- See the vignettes  for examples of how to use this package
 #' 
 #' @export TimeStratPetersenNonDiagError_fit
 
@@ -176,7 +173,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- '2019-01-01'
+  version <- '2020-01-01'
   options(width=200)
   
   ## Input parameters are

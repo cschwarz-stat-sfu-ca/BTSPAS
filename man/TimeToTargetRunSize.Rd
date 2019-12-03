@@ -29,6 +29,7 @@ target value (targetU)
 \description{
 Takes a sim.list object from the MCMC runs, computes the posterior
 distribution of the time to the target runsize, plots the posterior
+#'
 }
 \examples{
  

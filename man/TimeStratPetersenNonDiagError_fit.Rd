@@ -184,10 +184,7 @@ mark availability because of fall back, immediate tagging mortality, etc.
 }
 \examples{
  
-##---- See the demo files for examples of how to use this package
-##
-##     demo("demo-TSPNDE",     package='BTSPAS', ask=FALSE)  # the simplest usage
-##
+##---- See the vignettes for examples of how to use this package
 
 }
 \references{

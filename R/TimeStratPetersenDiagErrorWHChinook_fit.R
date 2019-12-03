@@ -134,11 +134,7 @@
 #' @keywords ~models ~smooth
 #' @examples
 #'  
-#' ##---- See the demo files for examples of how to use this package
-#' ##
-#' ##     demo("demo-TSPDE-WHchinook",     package='BTSPAS', ask=FALSE)  # the simplest usage
-#' ##     demo("demo-TSPDE-WHchinook2",    package='BTSPAS', ask=FALSE)  # the simplest usage
-#' ##
+#' ##---- See the vignettes for examples on how to run this analysis.
 #' 
 #' @export TimeStratPetersenDiagErrorWHChinook_fit
 
@@ -161,7 +157,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2015-07-01'
+   version <- '2020-01-01'
    options(width=200)
 
 # Input parameters are

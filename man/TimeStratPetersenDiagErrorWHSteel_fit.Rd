@@ -166,10 +166,7 @@ function.
 }
 \examples{
  
-##---- See the demo files for examples of how to use this package
-##
-##     demo("demo-TSPDEWHSteel",     package='BTSPAS', ask=FALSE)  # the simplest usage
-##
+##---- See the vignettes for example on how to use this package.
 
 }
 \references{

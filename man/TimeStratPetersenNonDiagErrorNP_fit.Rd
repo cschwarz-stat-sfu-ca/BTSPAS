@@ -204,9 +204,7 @@ The *NP functions fit a non-parametric distribution for the travel times.
 }
 \examples{
  
-##---- See the demo files for examples of how to use this package
-##
-##     demo("demo-TSPNDEMNP",     package='BTSPAS', ask=FALSE)  # the simplest usage
+##---- See the vignette  for examples of how to use this package
 ##
 
 }

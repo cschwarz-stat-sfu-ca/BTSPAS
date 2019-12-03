@@ -117,10 +117,7 @@
 #' @keywords ~models ~smooth
 #' @examples
 #'  
-#' ##---- See the demo files for examples of how to use this package
-#' ##
-#' ##     demo("demo-TSPDEWHSteel",     package='BTSPAS', ask=FALSE)  # the simplest usage
-#' ##
+#' ##---- See the vignettes for example on how to use this package.
 #' 
 #' @export TimeStratPetersenDiagErrorWHSteel_fit
 TimeStratPetersenDiagErrorWHSteel_fit <-
@@ -143,7 +140,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
 # The steelhead are nice because 100% of hatchery fish are adipose fin clipped and no wild fish are adipose fin clipped
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2019-01-01'
+   version <- '2020-01-01'
    options(width=200)
 
 # Input parameters are

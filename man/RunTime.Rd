@@ -16,6 +16,8 @@ RunTime(time, U, prob = seq(0, 1, 0.1))
 \value{
 An MCMC object with samples from the posterior distribution. A
 series of graphs and text file are also created in the working directory.
+This information is now added to the fit object as well and so it is unlikely
+that you will use this function.
 }
 \description{
 Take the posterior sample of U[1,...nstrata] and compute the percentiles of the run

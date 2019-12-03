@@ -13,6 +13,8 @@
 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
+#' This information is now added to the fit object as well and so it is unlikely
+#' that you will use this function.
 #' @template author 
 #' @template references 
 #' @export RunTime
