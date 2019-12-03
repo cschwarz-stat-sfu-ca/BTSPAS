@@ -4,3 +4,5 @@
 .Ruserdata
 doc
 Meta
+man/*.Rd
+vignettes/*.html
