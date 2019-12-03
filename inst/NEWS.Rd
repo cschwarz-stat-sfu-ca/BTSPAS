@@ -15,7 +15,7 @@
 %   }
 %}
 
-\section{CHANGES IN VERSION 2020.1}{
+\section{CHANGES IN VERSION 2020.1.1}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
       \item Runtimings now added to output object.

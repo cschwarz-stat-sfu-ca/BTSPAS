@@ -21,7 +21,7 @@
 \alias{PredictivePosteriorPlot.TSPDE.WHCH}
 \alias{PredictivePosterior.TSPDE.WHCH}
 \alias{PredictivePosterior.TSPNDENPMarkAvail}
-\title{Gemerate Predictive Posterior Plots (Bayesian p-values) for number of models.}
+\title{Generate Predictive Posterior Plots (Bayesian p-values) for number of models.}
 \usage{
 PredictivePosteriorPlot.TSPDE(discrep)
 
@@ -104,7 +104,7 @@ PredictivePosterior.TSPNDENPMarkAvail(
 )
 }
 \arguments{
-\item{ma.p}{Proporiton of marks available, i.e 1-fallback probability}
+\item{ma.p}{Proportion of marks available, i.e 1-fallback probability}
 }
 \description{
 This is an internal function, not normally of use to users.

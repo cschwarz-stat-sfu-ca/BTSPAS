@@ -2,7 +2,7 @@
 % Please edit documentation in R/TimeStratPetersenDiagError_fit.R
 \name{TimeStratPetersenDiagError_fit}
 \alias{TimeStratPetersenDiagError_fit}
-\title{Wrapper (*_fit) to call the Time Statified Petersen Estimator
+\title{Wrapper (*_fit) to call the Time Stratified Petersen Estimator
 with Diagonal Entries function.}
 \usage{
 TimeStratPetersenDiagError_fit(
@@ -59,7 +59,7 @@ stratum of release.}
 stratum. These will be expanded by the capture efficiency to estimate the
 population size in each stratum.}
 
-\item{sampfrac}{\strong{Depricated} because it really doesn't work as intended.
+\item{sampfrac}{\strong{Deprecated} because it really doesn't work as intended.
 A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
@@ -92,7 +92,7 @@ logit(catchability). Default is a single intercept, i.e. all strata have the
 same mean logit(catchability).}
 
 \item{logitP.fixed}{A numeric vector (could be null) of the time strata
-where the logit(P) whould be fixed. Typically, this is used when the capture
+where the logit(P) would be fixed. Typically, this is used when the capture
 rates for some strata are 0 and logit(P) is set to -10 for these strata. The
 fixed values are given in \code{logitP.fixed.values}}
 

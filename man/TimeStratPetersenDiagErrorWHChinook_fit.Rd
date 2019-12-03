@@ -4,7 +4,7 @@
 \name{TimeStratPetersenDiagErrorWHChinook2_fit}
 \alias{TimeStratPetersenDiagErrorWHChinook2_fit}
 \alias{TimeStratPetersenDiagErrorWHChinook_fit}
-\title{Wrapper (*_fit) to fit the Time Statified Petersen Estimator
+\title{Wrapper (*_fit) to fit the Time Stratified Petersen Estimator
 with Diagonal Entries and separating Wild from Hatchery Chinook function.}
 \usage{
 TimeStratPetersenDiagErrorWHChinook2_fit(
@@ -112,7 +112,7 @@ So u2.A.1 MUST be hatchery fish.
 
 \item{clip.frac.H.YoY, clip.frac.H.1}{Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)}
 
-\item{sampfrac}{\strong{Depricated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Deprecated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}

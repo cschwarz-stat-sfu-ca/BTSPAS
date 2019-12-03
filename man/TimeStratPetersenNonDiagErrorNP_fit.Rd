@@ -2,7 +2,7 @@
 % Please edit documentation in R/TimeStratPetersenNonDiagErrorNP_fit.R
 \name{TimeStratPetersenNonDiagErrorNP_fit}
 \alias{TimeStratPetersenNonDiagErrorNP_fit}
-\title{Wrapper (*_fit)  to fit the Time Statified Petersen Estimator
+\title{Wrapper (*_fit)  to fit the Time Stratified Petersen Estimator
 with NON Diagonal Entries function and a non-parametric travel time estimator..}
 \usage{
 TimeStratPetersenNonDiagErrorNP_fit(
@@ -68,7 +68,7 @@ case.}
 stratum.  These will be expanded by the capture efficiency to estimate the
 population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1}
 
-\item{sampfrac}{\strong{Depricated.} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Deprecated.} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}
@@ -93,7 +93,7 @@ for these strata.}
 
 \item{bad.u2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of unmarked
-fish captred should be ignored.  The values of \code{u2} in the entire row
+fish captured should be ignored.  The values of \code{u2} in the entire row
 will be set to NA for these strata.}
 
 \item{logitP.cov}{A numeric matrix for covariates to fit the
@@ -101,7 +101,7 @@ logit(catchability).  Default is a single intercept, i.e. all strata have
 the same mean logit(catchability).}
 
 \item{logitP.fixed}{A numeric vector (could be null) of the time strata
-where the logit(P) whould be fixed. Typically, this is used when the capture
+where the logit(P) would be fixed. Typically, this is used when the capture
 rates for some strata are 0 and logit(P) is set to -10 for these strata. The
 fixed values are given in \code{logitP.fixed.values}}
 
@@ -148,7 +148,7 @@ logit(catchability) among strata}
 assumed to have moved by Delta.max unit of time}
 
 \item{prior.muTT}{- prior for movement rates.
- These are like a dirchelete type prior
+ These are like a dirchelet type prior
  where x are values representing belief in the travel times.
  For example, x=c(1,4,3,2) represents a system where the
 maximum travel time is 3 strata after release with

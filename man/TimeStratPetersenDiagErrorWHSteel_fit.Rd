@@ -2,7 +2,7 @@
 % Please edit documentation in R/TimeStratPetersenDiagErrorWHSteel_fit.R
 \name{TimeStratPetersenDiagErrorWHSteel_fit}
 \alias{TimeStratPetersenDiagErrorWHSteel_fit}
-\title{Wrapper (*_fit) and function to call the Time Statified Petersen Estimator
+\title{Wrapper (*_fit) and function to call the Time Stratified Petersen Estimator
 with Diagonal Entries and separating Wild from Hatchery Steelhead function.}
 \usage{
 TimeStratPetersenDiagErrorWHSteel_fit(
@@ -58,16 +58,16 @@ stratum of release. Use the \code{\link{TimeStratPetersenNonDiagError_fit}}
 function for cases where recaptures take place outside the stratum of
 release.}
 
-\item{u2.W.YoY}{A umeric vector of the number of unmarked wild Young-of-Year
+\item{u2.W.YoY}{A numeric vector of the number of unmarked wild Young-of-Year
 fish captured in each stratum.}
 
-\item{u2.W.1}{A umeric vector of the number of unmarked wild age 1+ fish
+\item{u2.W.1}{A numeric vector of the number of unmarked wild age 1+ fish
 captured in each stratum.}
 
-\item{u2.H.1}{A umeric vector of the number of unmarked hatchery age 1+ fish
+\item{u2.H.1}{A numeric vector of the number of unmarked hatchery age 1+ fish
 (i.e. adipose fin clipped) captured in each stratum.}
 
-\item{sampfrac}{\strong{Depricated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Deprecated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}

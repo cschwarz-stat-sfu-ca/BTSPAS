@@ -4,5 +4,4 @@
 .Ruserdata
 doc
 Meta
-man/*
 vignettes/*.html

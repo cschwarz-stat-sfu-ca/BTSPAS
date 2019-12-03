@@ -2,7 +2,7 @@
 % Please edit documentation in R/TimeStratPetersenNonDiagErrorNPMarkAvail_fit.R
 \name{TimeStratPetersenNonDiagErrorNPMarkAvail_fit}
 \alias{TimeStratPetersenNonDiagErrorNPMarkAvail_fit}
-\title{Wrapper (*_fit)  to call the function to fit a Time Statified Petersen Estimator
+\title{Wrapper (*_fit)  to call the function to fit a Time Stratified Petersen Estimator
 with NON Diagonal Entries with an non-parametric travel time and fall back}
 \usage{
 TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
@@ -69,7 +69,7 @@ case.}
 stratum.  These will be expanded by the capture efficiency to estimate the
 population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1}
 
-\item{sampfrac}{\strong{Depricated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
+\item{sampfrac}{\strong{Deprecated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
 what fraction of the stratum was sampled. For example, if strata are
 calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 value of \code{sampfrac} for that stratum would be 3/7.}
@@ -94,7 +94,7 @@ for these strata.}
 
 \item{bad.u2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of unmarked
-fish captred should be ignored.  The values of \code{u2} in the entire row
+fish captured should be ignored.  The values of \code{u2} in the entire row
 will be set to NA for these strata.}
 
 \item{logitP.cov}{A numeric matrix for covariates to fit the
@@ -102,7 +102,7 @@ logit(catchability).  Default is a single intercept, i.e. all strata have
 the same mean logit(catchability).}
 
 \item{logitP.fixed}{A numeric vector (could be null) of the time strata
-where the logit(P) whould be fixed. Typically, this is used when the capture
+where the logit(P) would be fixed. Typically, this is used when the capture
 rates for some strata are 0 and logit(P) is set to -10 for these strata. The
 fixed values are given in \code{logitP.fixed.values}}
 
@@ -116,7 +116,7 @@ as -50 because numerical problems could occur in WinBugs/OpenBugs.}
 fraction of marks that will be available. The *_n and *_x are used to create
 a "binomial" distribution for information on the marked availability. For
 example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\% of marks
-are available and 39\% have dropped out or falled back.}
+are available and 39\% have dropped out or fallen back.}
 
 \item{marked_available_x}{See marked_available_n}
 
