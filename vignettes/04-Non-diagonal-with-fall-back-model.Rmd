@@ -1,27 +1,21 @@
 ---
-title: "Non-Diagonal Fall-Back Case"
+title: "Non-Diagonal Fall-Back Model"
 author: "Carl James Schwarz"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette: 
+  html_vignette: 
     toc: true # table of content true
-    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    toc_depth: 3  # up to three depths of headings (specified by #, ## and ###)
     number_sections: true  ## if you want number sections at each table header
-vignette: >
-  %\VignetteIndexEntry{04 - Non Diagonal Fall-Back Case}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown_notangle}
+#vignette: >
+#  %\VignetteIndexEntry{04 - Non Diagonal Fall-Back Model}
+#  %\VignetteEncoding{UTF-8}
+#  %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: inline
 ---
 
 ```{r setup, include = FALSE,message=FALSE}
-# turn off evaluation during R CMD check etc
-# See https://stackoverflow.com/questions/28961431/computationally-heavy-r-vignettes
-is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
-             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
-knitr::opts_chunk$set(eval = !is_check)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -31,6 +25,15 @@ library(BTSPAS)
 library(ggplot2)
 max.width=70
 ```
+# Location of vignette source and code.
+Because of the length of time needed to run the vignettes, only
+static vignettes have been included with this package.
+
+The original of the vignettes and the code can be obtained from 
+the GitHub site at
+https://github.com/cschwarz-stat-sfu-ca/BTSPAS
+
+
 # Introduction
 
 ## Experimental set-up
@@ -44,7 +47,7 @@ Consider an experiment to estimate the number of outgoing smolts on a small rive
 run of smolts extends over several weeks. As smolts migrate, they are captured and marked
 with individually numbered tags and released at the first capture location using, for example, a
 fishwheel. The migration continues, and a second fishwheel takes a second sample several
-kilometers down stream. At the second fishwheel, the captures consist of a mixtue of marked
+kilometers down stream. At the second fishwheel, the captures consist of a mixture of marked
 (from the first fishwheel) and unmarked fish.
 
 The efficiency of the fishwheels varies over time in response to stream flow, run size passing
@@ -82,11 +85,11 @@ captured
 Here the tagging and recapture events have been stratified in to $k$ temporal strata.
 Marked fish from one stratum tend to spread out and are recaptured over multiple strata.
 Several additional recovery strata are needed at the end of the experiment to fully
-capture the final release strataum.
+capture the final release stratum.
 
 Because the lower diagonal of the recovery matrix is zero, the data can be entered
 in a shorthand fashion by showing the recoveries in the same stratum as release,
-the next stratum, etc, upto a maximum number of recovery strata per release.
+the next stratum, etc, up to a maximum number of recovery strata per release.
 
 ## Fall-back information
 This information is obtained by also marking radio-tagged fish whose ultimate fate
@@ -111,7 +114,7 @@ This model could also be used for mortality between the marking and recovery tra
 
 
 
-# Example of  non-diagonal with fall-back BTSPAS fit.
+# Example of  non-diagonal model with fall-back.
 ## Reading in the data
 Here is an example of some raw data that is read in:
 ```{r}
@@ -138,7 +141,7 @@ print(demo.data)
 ```
 There are `r nrow(demo.data)` release strata.
 In the first release stratum, a total of `r demo.data[1,"n1"]` fish were tagged and released.
-No recoveries occured.
+No recoveries occurred.
 
 Because the recoveries take place in more strata than releases, the $u2$ vector is read in separately. Note that is must be sufficiently long
 to account for the number of releases plus potential movement:
@@ -158,7 +161,7 @@ demo.mark.available.n <- 66
 demo.mark.available.x <- 40
 ```
 
-## Fitting the BTSPAS non-diagonal with fall-back model wth a non-parametric movement distribution. 
+## Fitting the BTSPAS non-diagonal model with fall-back model with a non-parametric movement distribution. 
 
 Schwarz and Bonner (2011) extended Bonner and Schwarz (2011) with a model with the following features.
 
@@ -182,14 +185,14 @@ missing stratum.
 probabilities for the missing strata.
 * the program allows you specify break points in the underlying spline to account
 for external events.
-* sometimes bad thing happend.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
+* sometimes bad thing happen.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
 number of recoveries in julian week 41 is far below expectations and leads to impossible
-Petersen estimate for julian week 41. Similrly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
+Petersen estimate for julian week 41. Similarly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
 In both cases, the suspect values of $m2$ and $u2$ are set to missing.
-Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input direcly.
+Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input directly.
 I arbitrarily chose the third julian week to demonstrate this feature.
 
-The $BTPAS$ function also allows you specifity
+The $BTSPAS$ function also allows you specify
 
 * The prefix is used to identify the output files for this run.
 * The title  is used to title the output.
@@ -214,7 +217,6 @@ demo.bad.u2     <- c()     # list sample times of bad u2 values
 demo.logitP.fixed <- NULL
 demo.logitP.fixed.values <- rep(-10,length(demo.logitP.fixed))
 
-##### Run Model #####
 demo.fit <- TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
                   title=      demo.title,
                   prefix=     demo.prefix,
@@ -232,7 +234,6 @@ demo.fit <- TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
                   marked_available_x=demo.mark.available.x,  # 40/66 fish did NOT fall back
                   debug=TRUE,
                   save.output.to.files=FALSE)
- 
 
 ```
  
@@ -298,7 +299,7 @@ So we expect that about `r round(probs[1,"mean"]*100,0)`% of fish will migrate t
 about `r round(probs[2,"mean"]*100,0)`% of fish will migrate to the second trap in the second day after release etc.
 
 The movement for each release stratum varies around this base distribution.
-It is also possible to see the probabiity of moving from release stratum $i$ to recovery stratum $j$ by looking
+It is also possible to see the probability of moving from release stratum $i$ to recovery stratum $j$ by looking
 at the $Theta[i,j]$ values. Here are the transition probabilities for the first release stratum:
 ```{r}
 round(demo.fit$summary[ grepl("Theta[1,", row.names(demo.fit$summary),fixed=TRUE),],3)

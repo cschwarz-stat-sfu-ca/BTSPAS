@@ -1,4 +1,4 @@
-# 2018-12-19 CJS depricated use of sampling fraction
+# 2018-12-19 CJS deprecated use of sampling fraction
 # 2018-12-06 CJS converted report to textConnection
 # 2018-12-06 CJS converted initial plot to ggplots
 # 2018-12-02 CJS converted trace plots to ggplots
@@ -19,7 +19,7 @@
 
 
 
-#' Wrapper (*_fit) and function to call the Time Statified Petersen Estimator
+#' Wrapper (*_fit) and function to call the Time Stratified Petersen Estimator
 #' with Diagonal Entries and separating Wild from Hatchery Steelhead function.
 #' 
 #' Takes the number of marked fish released, the number of recaptures, and the
@@ -45,13 +45,13 @@
 #' stratum of release. Use the \code{\link{TimeStratPetersenNonDiagError_fit}}
 #' function for cases where recaptures take place outside the stratum of
 #' release.
-#' @param u2.W.YoY A umeric vector of the number of unmarked wild Young-of-Year
+#' @param u2.W.YoY A numeric vector of the number of unmarked wild Young-of-Year
 #' fish captured in each stratum.
-#' @param u2.W.1 A umeric vector of the number of unmarked wild age 1+ fish
+#' @param u2.W.1 A numeric vector of the number of unmarked wild age 1+ fish
 #' captured in each stratum.
-#' @param u2.H.1 A umeric vector of the number of unmarked hatchery age 1+ fish
+#' @param u2.H.1 A numeric vector of the number of unmarked hatchery age 1+ fish
 #' (i.e. adipose fin clipped) captured in each stratum.
-#' @param sampfrac \strong{Depricated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Deprecated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -160,7 +160,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
 #    u2.W.YoY - number of wild YoY fish (no clips)
 #    u2.W.1   - number of wild age 1+ fish (no clips)
 #    u2.H.1   - number of hatchery age 1+ fish (ad fin clipped). 100% of hatchery production is fin clipped
-#    sampfrac - DEPRICATED. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
+#    sampfrac - DEPRECATED. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
 #              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
 #              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
 #              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -239,9 +239,9 @@ if(!all(hatch.after %in% time, na.rm=TRUE)){
        paste(time,       collapse=","), "\n")
    return()}
 
-# Deprication of sampling fraction.
+# Deprecation of sampling fraction.
 if(any(sampfrac != 1)){
-  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
   return()
 }
 

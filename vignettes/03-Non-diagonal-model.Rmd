@@ -3,25 +3,19 @@ title: "Non-Diagonal Case"
 author: "Carl James Schwarz"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette: 
+  html_vignette: 
     toc: true # table of content true
-    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    toc_depth: 3  # up to three depths of headings (specified by #, ## and ###)
     number_sections: true  ## if you want number sections at each table header
-vignette: >
-  %\VignetteIndexEntry{03 - Non Diagonal Case}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown_notangle}
+#vignette: >
+#  %\VignetteIndexEntry{03 - Non Diagonal Case}
+#  %\VignetteEncoding{UTF-8}
+#  %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: inline
 ---
 
 ```{r setup, include = FALSE,message=FALSE}
-# turn off evaluation during R CMD check etc
-# See https://stackoverflow.com/questions/28961431/computationally-heavy-r-vignettes
-is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
-             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
-knitr::opts_chunk$set(eval = !is_check)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -31,6 +25,14 @@ library(BTSPAS)
 library(ggplot2)
 max.width=70
 ```
+# Location of vignette source and code.
+Because of the length of time needed to run the vignettes, only
+static vignettes have been included with this package.
+
+The original of the vignettes and the code can be obtained from 
+the GitHub site at
+https://github.com/cschwarz-stat-sfu-ca/BTSPAS
+
 # Introduction
 
 This case represents a generalization of the diagonal case considered in a separate
@@ -41,7 +43,7 @@ Again, consider an experiment to estimate the number of outgoing smolts on a sma
 run of smolts extends over several weeks. As smolts migrate, they are captured and marked
 with individually numbered tags and released at the first capture location using, for example, a
 fishwheel. The migration continues, and a second fishwheel takes a second sample several
-kilometers down stream. At the second fishwheel, the captures consist of a mixtue of marked
+kilometers down stream. At the second fishwheel, the captures consist of a mixture of marked
 (from the first fishwheel) and unmarked fish.
 
 The efficiency of the fishwheels varies over time in response to stream flow, run size passing
@@ -79,11 +81,11 @@ captured
 Here the tagging and recapture events have been stratified in to $k$ temporal strata.
 Marked fish from one stratum tend to spread out and are recaptured over multiple strata.
 Several additional recovery strata are needed at the end of the experiment to fully
-capture the final release strataum.
+capture the final release stratum.
 
 Because the lower diagonal of the recovery matrix is zero, the data can be entered
 in a shorthand fashion by showing the recoveries in the same stratum as release,
-the next stratum, etc, upto a maximum number of recovery strata per release.
+the next stratum, etc, up to a maximum number of recovery strata per release.
 
 
 # Example of basic non-diagonal BTSPAS fit.
@@ -148,7 +150,7 @@ There are `r nrow(demo.data)` release strata, and tagged fish are recovered in t
 `r ncol(demo.data)-2` strata.
 
 In the first release stratum, a total of `r demo.data[1,"n1"]` fish were tagged and released.
-No recoveries occured until 4 days later.
+No recoveries occurred until 4 days later.
 
 Because the recoveries take place in more strata than releases, the $u2$ vector is read in separately. 
 Note that is must be sufficiently long
@@ -178,7 +180,7 @@ to give an estimate of `r formatC( round(Nhat$N.est), digits=0, width=20, format
 Let us look at the data in more detail:
 
 * In many of the release strata, there are small number of fish tagged and released.
-* Most the recoveries occur soon afte release, but there is longer right tail.
+* Most the recoveries occur soon after release, but there is longer right tail.
 * It is difficult to estimate capture efficiency directly because of the smearing of 
 releases over multiple recovery strata. 
 
@@ -199,7 +201,7 @@ ggplot(data=plotdata, aes(x=jday, y=log(u2)))+
 ```
 
 There appears to be a gradual rise and fall in the number of unmarked fish with no sudden jumps. 
-Something funny appears to have happened around julian day 160 -- I suspect that some pooling of data has occured here.
+Something funny appears to have happened around julian day 160 -- I suspect that some pooling of data has occurred here.
 
 *BTSPAS* provides two fitting routine:
 
@@ -209,7 +211,7 @@ Dempson and Schwarz (2009) and extended by Bonner and Schwarz (2011).
 Bonner and Schwarz (2011).
 
 
-# Fitting the BTSPAS non-diagonal model wth a log-normal movement distribution. 
+# Fitting the BTSPAS non-diagonal model with a log-normal movement distribution. 
 
 Bonner and Schwarz (2011) developed a model with the following features.
 
@@ -231,16 +233,16 @@ missing stratum.
 probabilities for the missing strata.
 * the program allows you specify break points in the underlying spline to account
 for external events.
-* sometimes bad thing happend.  The vector $bad.m2$ indicates which julian weeks something went wrong. 
+* sometimes bad thing happen.  The vector $bad.m2$ indicates which julian weeks something went wrong. 
 In the above example, the
 number of recoveries in julian week 41 is far below expectations and leads to impossible
 Petersen estimate for julian week 41. 
-Similrly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
+Similarly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
 In both cases, the suspect values of $m2$ and $u2$ are set to missing.
-Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input direcly.
+Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input directly.
 I arbitrarily chose the third julian week to demonstrate this feature.
 
-The $BTPAS$ function also allows you specifity
+The $BTSPAS$ function also allows you specify
 
 * The prefix is used to identify the output files for this run.
 * The title  is used to title the output.
@@ -332,7 +334,7 @@ and model diagnostic plots (goodness of fit (*gof.plot*), trace (*trace...plot*)
 These plots are all created using the $ggplot2$ packages, so the user can modify the plot (e.g. change titles etc).
 
 The $BTSPAS$ program also creates a report, which includes information about the data used in the fitting,
-the pooled- and stratified-Petersen estiamtes, a test for pooling, and summaries of the posterior. Only the first few lines
+the pooled- and stratified-Petersen estimates, a test for pooling, and summaries of the posterior. Only the first few lines
 are shown below:
 ```{r }
 head(demo.fit$report)
@@ -376,8 +378,8 @@ strata. The summary of the posterior distribution of its parameters for the log(
 round(demo.fit$summary[ row.names(demo.fit$summary) %in% c("baseMu","baseSd"),],3)
 ```
 
-Each release stratum is allowed to have a travel time distribution that differ from this base trvel time distribution,
-by allowing the individual release stratum parameters to be sampled from a distibution around the above vales.
+Each release stratum is allowed to have a travel time distribution that differ from this base travel time distribution,
+by allowing the individual release stratum parameters to be sampled from a distribution around the above vales.
 Posterior samples represent the mean and standard deviation of the log(travel time) between
 the release and recovery strata. Here are the results for the first 5 strata:
 ```{r}
@@ -385,7 +387,7 @@ round(demo.fit$summary[ grepl("muLogTT", row.names(demo.fit$summary)),][1:5,],3)
 round(demo.fit$summary[ grepl("sdLogTT", row.names(demo.fit$summary)),][1:5,],3)
 ```
 
-It is also possible to see the probabiity of moving from release stratum $i$ to recovery stratum $j$ by looking
+It is also possible to see the probability of moving from release stratum $i$ to recovery stratum $j$ by looking
 at the $Theta[i,j]$ values. Here are the transition probabilities for the first release stratum:
 ```{r}
 round(demo.fit$summary[ grepl("Theta[1,", row.names(demo.fit$summary),fixed=TRUE),][1:10,],3)
@@ -402,7 +404,7 @@ the goodness of fit, trace, and autocorrelation plots.
 
 
 
-# Fitting the BTSPAS non-diagonal model wth a non-parametric movement distribution. 
+# Fitting the BTSPAS non-diagonal model with a non-parametric movement distribution. 
 
 Bonner and Schwarz (2011) developed a model with the following features.
 
@@ -424,14 +426,14 @@ missing stratum.
 probabilities for the missing strata.
 * the program allows you specify break points in the underlying spline to account
 for external events.
-* sometimes bad thing happend.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
+* sometimes bad thing happen.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
 number of recoveries in julian week 41 is far below expectations and leads to impossible
-Petersen estimate for julian week 41. Similrly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
+Petersen estimate for julian week 41. Similarly, the vector $bad.u2$ indicates which julian weeks, the number of unmarked fish is suspect.
 In both cases, the suspect values of $m2$ and $u2$ are set to missing.
-Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input direcly.
-I arbitrarily chose the third julian week to demo2nstrate this feature.
+Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input directly.
+I arbitrarily chose the third julian week to demonstrate this feature.
 
-The $BTPAS$ function also allows you specifity
+The $BTSPAS$ function also allows you specify
 
 * The prefix is used to identify the output files for this run.
 * The title  is used to title the output.
@@ -447,8 +449,8 @@ demo2.jump.after <- c()  # julian weeks after which jump occurs
 
 # Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
 demo2.bad.m2     <- c()   # list julian weeks with bad m2 values. This is used in the Trinity Example
-demo2.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demo2strate the feature.]
-demo2.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demo2nstrate the feature.]
+demo2.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demostrate the feature.]
+demo2.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demonstrate the feature.]
 
 # The prefix for the output files:
 demo2.prefix <- "demo2-1987-Conne River-TSP NDE NP" 
@@ -533,7 +535,7 @@ So we expect that about `r round(probs[1,"mean"]*100,0)`% of fish will migrate t
 about `r round(probs[2,"mean"]*100,0)`% of fish will migrate to the second trap in the second day after release etc.
 
 The movement for each release stratum varies around this base distribution.
-It is also possible to see the probabiity of moving from release stratum $i$ to recovery stratum $j$ by looking
+It is also possible to see the probability of moving from release stratum $i$ to recovery stratum $j$ by looking
 at the $Theta[i,j]$ values. Here are the transition probabilities for the first release stratum:
 ```{r}
 round(demo2.fit$summary[ grepl("Theta[1,", row.names(demo2.fit$summary),fixed=TRUE),],3)
@@ -546,7 +548,7 @@ Please contact me for details on how to interpret
 the goodness of fit, trace, and autocorrelation plots. 
 
 
-# Prior information on the movement probabilties.
+# Prior information on the movement probabilities.
 It is possible to impose prior information on the movement probabilities in both cases. This would be useful
 in cases with VERY sparse data!
 
@@ -563,7 +565,7 @@ Here we will fit a fairly strong prior on the movement probabilities:
 ```{r }
 demo3.prior.muTT=c(10,50,30,5,5)
 ```
-where the probability of movement in the statum of release and subsequent strata is
+where the probability of movement in the stratum of release and subsequent strata is
 ```{r}
 round(demo3.prior.muTT/sum(demo3.prior.muTT),2)
 ```
@@ -578,8 +580,8 @@ demo3.jump.after <- c()  # julian weeks after which jump occurs
 
 # Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
 demo3.bad.m2     <- c()   # list julian weeks with bad m2 values. This is used in the Trinity Example
-demo3.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demo3strate the feature.]
-demo3.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demo3nstrate the feature.]
+demo3.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demonstrate the feature.]
+demo3.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demonstrate the feature.]
 
 # The prefix for the output files:
 demo3.prefix <- "demo3-1987-Conne River-TSP NDE NP- prior" 
@@ -665,7 +667,7 @@ So we expect that about `r round(probs[1,"mean"]*100,0)`% of fish will migrate t
 about `r round(probs[2,"mean"]*100,0)`% of fish will migrate to the second trap in the second day after release etc.
 
 The movement for each release stratum varies around this base distribution.
-It is also possible to see the probabiity of moving from release stratum $i$ to recovery stratum $j$ by looking
+It is also possible to see the probability of moving from release stratum $i$ to recovery stratum $j$ by looking
 at the $Theta[i,j]$ values. Here are the transition probabilities for the first release stratum:
 ```{r}
 round(demo3.fit$summary[ grepl("Theta[1,", row.names(demo3.fit$summary),fixed=TRUE),],3)

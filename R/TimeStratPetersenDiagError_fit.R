@@ -21,7 +21,7 @@
 # 2009-12-01 CJS Added some basic error checking; added OPENBUGS/WINBUGS to argument list
 
 
-#' Wrapper (*_fit) to call the Time Statified Petersen Estimator
+#' Wrapper (*_fit) to call the Time Stratified Petersen Estimator
 #' with Diagonal Entries function.
 #' 
 #' Takes the number of marked fish released, the number of recaptures, and the
@@ -51,7 +51,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum. These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum.
-#' @param sampfrac \strong{Depricated} because it really doesn't work as intended.
+#' @param sampfrac \strong{Deprecated} because it really doesn't work as intended.
 #' A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
@@ -78,7 +78,7 @@
 #' logit(catchability). Default is a single intercept, i.e. all strata have the
 #' same mean logit(catchability).
 #' @param logitP.fixed A numeric vector (could be null) of the time strata
-#' where the logit(P) whould be fixed. Typically, this is used when the capture
+#' where the logit(P) would be fixed. Typically, this is used when the capture
 #' rates for some strata are 0 and logit(P) is set to -10 for these strata. The
 #' fixed values are given in \code{logitP.fixed.values}
 #' @param logitP.fixed.values A numerical vector (could be null) of the fixed
@@ -243,9 +243,9 @@ if(length(logitP.fixed)!=length(logitP.fixed.values)){
         length(logitP.fixed),length(logitP.fixed.values),"\n")
    return()}
 
-# Deprication of sampling fraction.
+# Deprecation of sampling fraction.
 if(any(sampfrac != 1)){
-   cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+   cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
    return()
 }
 

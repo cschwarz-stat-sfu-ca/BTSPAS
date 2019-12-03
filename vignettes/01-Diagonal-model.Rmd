@@ -3,26 +3,19 @@ title: "Diagonal Case"
 author: "Carl James Schwarz"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette: 
+  html_vignette: 
     toc: true # table of content true
     toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
     number_sections: true  ## if you want number sections at each table header
-vignette: >
-  %\VignetteIndexEntry{01 - Diagonal Case}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown_notangle}
+#vignette: >
+#  %\VignetteIndexEntry{01 - Diagonal Case}
+#  %\VignetteEncoding{UTF-8}
+#  %\VignetteEngine{knitr::rmarkdown_notangle}
 editor_options: 
   chunk_output_type: inline
 ---
 
 ```{r setup, include = FALSE,message=FALSE}
-
-# turn off evaluation during R CMD check etc
-# See https://stackoverflow.com/questions/28961431/computationally-heavy-r-vignettes
-is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
-             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
-knitr::opts_chunk$set(eval = !is_check)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -32,11 +25,19 @@ library(BTSPAS)
 library(ggplot2)
 max.width=70
 ```
+# Location of vignette source and code.
+Because of the length of time needed to run the vignettes, only
+static vignettes have been included with this package.
+
+The original of the vignettes and the code can be obtained from 
+the GitHub site at
+https://github.com/cschwarz-stat-sfu-ca/BTSPAS
+
+
 # Introduction
 
-
 The two-sample capture-recapture experiment is one of the simplest possible studies 
-with a long history. The standad Lincoln-Petersen 
+with a long history. The standard Lincoln-Petersen 
 estimator  used to estimate abundance is
 $$ \widehat{N} = \frac{n_1 n_2}{m_2}$$
 where $n_1$ is the number of animals captured, marked and released at the first capture event; 
@@ -50,10 +51,10 @@ if the probability of capture is equal for all animals at either the first or se
 event.
 
 If capture probabilities are heterogeneous, then estimates can be biased. One way to 
-account for heterogenous capture-probabilities is through stratification. For example,
+account for heterogeneous capture-probabilities is through stratification. For example,
 if males and females have different catchabilities, then separate Lincoln-Petersen estimators
 can be computed for each sex, and the estimated abundance for the entire population
-is found by summing the two estimated abundances (one for eash sex).
+is found by summing the two estimated abundances (one for each sex).
 
 Stratification can be based on animal attributes (e.g. sex), geographic location (e.g. parts
 of a study area), or temporal (e.g. when captured). The $BTSPAS$ package deals with
@@ -64,7 +65,7 @@ Consider an experiment to estimate the number of outgoing smolts on a small rive
 run of smolts extends over several weeks. As smolts migrate, they are captured and marked
 with individually numbered tags and released at the first capture location using, for example, a
 fishwheel. The migration continues, and a second fishwheel takes a second sample several
-kilometers down stream. At the second fishwheel, the captures consist of a mixtue of marked
+kilometers down stream. At the second fishwheel, the captures consist of a mixture of marked
 (from the first fishwheel) and unmarked fish.
 
 The efficiency of the fishwheels varies over time in response to stream flow, run size passing
@@ -72,7 +73,7 @@ the wheel and other uncontrollable events. So it is unlikely that the capture pr
 equal over time at either location, i.e. are heterogeneous over time. 
 
 We suppose that we can temporally stratify the data into, for example, weeks, where the
-capture-probabilities are (mostly) homogeneous at each wheel in each week. Furthermore, suppsoe that
+capture-probabilities are (mostly) homogeneous at each wheel in each week. Furthermore, suppose that
 fish captured and marked in each week tend to migrate together so that they are
 captured in a single subsequent stratum. For example, 
 suppose that in each julian week $j$, $n1[j]$ fish are marked and released above the rotary screw trap.
@@ -201,14 +202,14 @@ There are several unusual features
 * No fish were tagged and released in the first stratum. So no information is available
 to estimate the capture efficiency at the second trap in the first week.
 * In at least two of the recovery strata, there were no recaptures and so the
-estimated recapture probabiiity will be zero. But the data shows that some unmarked
+estimated recapture probability will be zero. But the data shows that some unmarked
 fish were captured in these strata, so the actual efficiency must have been non-zero.
 * There appears to be heterogeneity in the capture probabilities.
 * In some julian weeks, the number of marked fish released and recaptured is very small which
 lead to estimates with poor precision.
 
 Similarly, let us look at the pattern of unmarked fish captured at the second trap:
-```{r umarked, echo=FALSE, fig.width=6, fig.height=4, include=TRUE, fig.align="center", fig.cap=c("Observed number of unmarked recaptures"), warning=FALSE}
+```{r unmarked, echo=FALSE, fig.width=6, fig.height=4, include=TRUE, fig.align="center", fig.cap=c("Observed number of unmarked recaptures"), warning=FALSE}
 ggplot(data=demo.data, aes(x=jweek, y=log(u2)))+
   ggtitle("Number of unmarked fish captured by julian week")+
   geom_point()+
@@ -218,12 +219,12 @@ ggplot(data=demo.data, aes(x=jweek, y=log(u2)))+
 
 ```
 
-There are two julian weeks where the number of umarked fish captured suddenly jumps by
+There are two julian weeks where the number of unmarked fish captured suddenly jumps by
 several orders of magnitude (remember the above plot is on the log() scale). These
 jumps correspond to releases of hatchery fish into the system.
 
 Finally, let us look at the individual estimates for each stratum found by 
-computing a Petersen estimator for the total number of unmarked fishfor each individual stratum:
+computing a Petersen estimator for the total number of unmarked fish for each individual stratum:
 
 ```{r Uplot, echo=FALSE,echo=FALSE,  include=TRUE, fig.align="center", fig.cap=c("Estimated log(total unmarked) by julian week"), fig.height=4, fig.width=6}
 demo.data$Uest <- BTSPAS::SimplePetersen( demo.data$n1, demo.data$m2, demo.data$u2)$U.est
@@ -245,7 +246,7 @@ followed by a steady decline.
 
 
 ## Fitting the basic BTSPAS diagonal model
-The $BTSPAS$ package attemps to strike a balance between the completely pooled Petersen estimator and the comletely stratified Petersen estimator.
+The $BTSPAS$ package attempts to strike a balance between the completely pooled Petersen estimator and the completely stratified Petersen estimator.
 In the former, capture probabilities are assumed to equal for all fish in all strata,
 while in the latter, capture probabilities are allowed to vary among strata in no structured way.
 Furthermore, fish populations often have a general structure to the run, rather than arbitrarily jumping around
@@ -275,12 +276,12 @@ in abundance. The $jump.after$ parameter gives the julian weeks just BEFORE the 
 i.e. the spline is allowed to jump AFTER the julian weeks in jump.after.
 * sometimes bad thing happen.  The vector $bad.m2$ indicates which julian weeks something went wrong. In the above example, the
 number of recoveries in julian week 41 is far below expectations and leads to an impossible
-Petersen estimate for julian week 41. Similrly, the vector $bad.u2$ indicates in which julian weeks, the number of unmarked fish is suspect.
+Petersen estimate for julian week 41. Similarly, the vector $bad.u2$ indicates in which julian weeks, the number of unmarked fish is suspect.
 In both cases, the suspect values of $m2$ and $u2$ are set to missing.
-Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input direcly.
+Alternatively, the user can set the $m2$ and $u2$ values to missing in the data input directly.
 I arbitrarily chose the third julian week to demonstrate this feature.
 
-The $BTPAS$ function also allows you specifity
+The $BTSPAS$ function also allows you specify
 
 * The prefix is used to identify the output files for this run.
 * The title  is used to title the output.
@@ -600,7 +601,7 @@ The estimated total abundance from $BTSPAS$ is
 It is not possible to use covariates to model the total number of unmarked fish.
 
 ## Reading in the data
-Here is an example of some raw data that incudes the covariate $log(flow)$: 
+Here is an example of some raw data that includes the covariate $log(flow)$: 
 ```{r}
 demo3.data.csv <- textConnection(
 'jweek, n1, m2,    u2, logflow
@@ -648,7 +649,7 @@ demo3.data <- read.csv(demo3.data.csv, header=TRUE, as.is=TRUE, strip.white=TRUE
 print(demo3.data)
 ```
 
-A prelimary plot of the empirical logit (exlcuding those weeks when the trap was not running) shows an approximate quadratic fit to $log(flow)$,
+A preliminary plot of the empirical logit (excluding those weeks when the trap was not running) shows an approximate quadratic fit to $log(flow)$,
 but the uncertainty in each week is enormous!
 ```{r  echo=FALSE, fig.height=4, fig.width=6, fig.caption="Logit(p) vs log(flow)", message=FALSE, warning=FALSE}
 demo3.data$elogitphat <- log(  (demo3.data$m2+.5)/(demo3.data$n1+1) / (1 - (demo3.data$m2+.5)/(demo3.data$n1+1)  ))
@@ -666,7 +667,7 @@ ggplot(data=plotdata, aes(x=logflow, y=elogitphat))+
 ## Fitting the BTSPAS diagonal model and fixing p and covariates for p.  
 
 We need to create a matrix with the covariate values. We will need three columns - one for the intercept, the value of log(flow) and the square of its values.
-In practise, it is often advisable to standardize covariates to prevent numerical difficulties, but in this case, the values are small enough that standardization
+In practice, it is often advisable to standardize covariates to prevent numerical difficulties, but in this case, the values are small enough that standardization
 is not really needed.
 
 ```{r }
@@ -853,7 +854,7 @@ demo4.data <- read.csv(demo4.data.csv, header=TRUE, as.is=TRUE, strip.white=TRUE
 print(demo4.data)
 ```
 
-A prelimary plot of the empirical logit (exlcuding those weeks when the trap was not running) shows some temporal structure:
+A preliminary plot of the empirical logit (excluding those weeks when the trap was not running) shows some temporal structure:
 ```{r  echo=FALSE, fig.height=4, fig.width=6, fig.caption="Logit(p) vs julian week", warning=FALSE, message=FALSE}
 demo4.data$elogitphat <- log(  (demo4.data$m2+.5)/(demo4.data$n1+1) / (1 - (demo4.data$m2+.5)/(demo4.data$n1+1)  ))
 plotdata <- demo4.data[ demo4.data$u2 >0, ]

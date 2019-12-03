@@ -1,5 +1,5 @@
 #' @rdname PredictivePosterior.TSPDE
-#' @param ma.p Proporiton of marks available, i.e 1-fallback probability
+#' @param ma.p Proportion of marks available, i.e 1-fallback probability
 #' @import stats 
 
 # 2018-12-14 CJS First edition based on PredictivePosterior.TSPNDENP

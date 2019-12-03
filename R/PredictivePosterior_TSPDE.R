@@ -1,4 +1,4 @@
-#' Gemerate Predictive Posterior Plots (Bayesian p-values) for number of models.
+#' Generate Predictive Posterior Plots (Bayesian p-values) for number of models.
 #' 
 #' This is an internal function, not normally of use to users.
 

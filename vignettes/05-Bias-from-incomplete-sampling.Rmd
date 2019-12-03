@@ -3,27 +3,20 @@ title: "Bias caused by incomplete sampling"
 author: "Carl James Schwarz"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette: 
+  html_vignette: 
     toc: true # table of content true
     toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
     number_sections: true  ## if you want number sections at each table header
-vignette: >
-  %\VignetteIndexEntry{05 - Bias caused by incomplete sampling}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown_notangle}
+#vignette: >
+#  %\VignetteIndexEntry{05 - Bias caused by incomplete sampling}
+#  %\VignetteEncoding{UTF-8}
+#  %\VignetteEngine{knitr::rmarkdown_notangle}
 editor_options: 
   chunk_output_type: inline
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 set.seed(856765)
 max.width=200
-
-# turn off evaluation during R CMD check etc
-# See https://stackoverflow.com/questions/28961431/computationally-heavy-r-vignettes
-is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
-             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
-knitr::opts_chunk$set(eval = !is_check)
 
 library(ggplot2)
 library(plyr)
@@ -33,13 +26,20 @@ logit <- function(p){log(p/(1-p))}
 expit <- function(theta){1/(1+exp(-theta))}
 ```
 
+# Location of vignette source and code.
+Because of the length of time needed to run the vignettes, only
+static vignettes have been included with this package.
+
+The original of the vignettes and the code can be obtained from 
+the GitHub site at
+https://github.com/cschwarz-stat-sfu-ca/BTSPAS
 
 # Introduction
 
 This document will illustrate the potential biases caused by incomplete sampling in the recovery strata. For example,
 suppose that stratification is at a weekly level. Fish are tagged and released continuously during the week.
-Recoveries occur from a commmerical fishery that only operating for 1/2 a week (the first half).
-This can potentiall cause bias in estimates of abundance because, for example, fish tagged at the end of a week,
+Recoveries occur from a commercial fishery that only operating for 1/2 a week (the first half).
+This may cause bias in estimates of abundance because, for example, fish tagged at the end of a week,
 may arrive at the commercial fishery in the second half of the recovery week and not be subject to capture.
 This causes heterogeneity in recovery probabilities that is not accounted 
 for in the mark-recapture analysis. 
@@ -48,16 +48,16 @@ A simulated population will be created and then analyzed in several ways to
 illustrate the potential extent of bias, and how to properly stratify the data to account for this problem.
 
 This scenario was originally envisioned to be handled with the *sampfrac* argument of the *BTSPAS* routines.
-However, the actual implementation is incorrect in *BTSPAS* and is depricated. This vignette shows the
+However, the actual implementation is incorrect in *BTSPAS* and is deprecated. This vignette shows the
 proper way to deal with this problem.
 
 ## Experimental setup
 This simulated population is modelled around a capture-capture experiment on the Taku River which flows
 between the US and Canada.
 
-Returing salmon arrive and are captured at a fish wheel during several weeks. Those fish
+Returning salmon arrive and are captured at a fish wheel during several weeks. Those fish
 captured at the fish wheel are tagged and released (daily). 
-They migrate upstream to a commercial fishery. The commerical fishery does not operate
+They migrate upstream to a commercial fishery. The commercial fishery does not operate
 on all days of the week - in particular, the fishery tends to operate during the first
 part of the week until the quota for catch is reached. Then the fishery stops
 until the next week.
@@ -91,7 +91,8 @@ The spikes at the start and end are where the arrival time has been truncated an
 of the run (for convenience).
 
 If the fish wheels had a constant probability of capture, then the pooled Petersen would be unbiased regardless of what happens in 
-the commercial fishery. Consequently, we simulate the probability of capture that varies around 0.05. The distribution of capture probilities at the wheel is:
+the commercial fishery. Consequently, we simulate the probability of capture that varies around 0.05. 
+The distribution of capture probabilities at the wheel is:
 
 ```{r fig.width=6,fig.height=4, include=TRUE, fig.align="center", fig.cap=c("Distribution of cature probabilities at wheel"), echo=FALSE, warning=FALSE, message=FALSE}
 # capture prob at wheel is normal on logit( .03 with a sd of .01) but a maximum of 400 fish per week
@@ -205,19 +206,19 @@ fishery.catch <- ggplot(data=pop[pop$recover,], aes(x=date.at.fishery))+
    geom_vline(xintercept=date.cutoff, color="red")+
    xlim(0,max(pop$date.at.fishery))+xlab("Date")
 ```
-The distribution of catchability in the commerical fishery is
+The distribution of catchability in the commercial fishery is
 ```{r fig.width=6, fig.height=4, include=TRUE, fig.align="center", fig.cap=c("Distribution of cature probabilities in fishery"), echo=FALSE, warning=FALSE, message=FALSE}
 fishery.prob
 ```
 
 The commercial fishery is assumed to run on a 3 day on/3 day off schedule throughout the season and
 terminates when about `r 100*run.cutoff`% of the run has passed the fishery (day `r round(date.cutoff)`).
-If the catchability in the commerical fishery equal for all fish, then the pooled Petersen will also be unbiased.
-This is clearly not the case because some fish has a probabiity of 0 of being captured when the fishery is not operating.
+If the catchability in the commercial fishery equal for all fish, then the pooled Petersen will also be unbiased.
+This is clearly not the case because some fish has a probability of 0 of being captured when the fishery is not operating.
 
 
-If the probability of capture in the commerical fishery is uncorrelated with the probability of capture by the tagging wheel,
-the pooled-Petersen is also unbiased. A plot of the probability of capture at the tagging wheels and in the commerical fishery is:
+If the probability of capture in the commercial fishery is uncorrelated with the probability of capture by the tagging wheel,
+the pooled-Petersen is also unbiased. A plot of the probability of capture at the tagging wheels and in the commercial fishery is:
 ```{r  fig.width=6, fig.height=4,include=TRUE, fig.align="center", fig.cap=c("Distribution of cature-probabilities at wheel"), echo=FALSE, warning=FALSE, message=FALSE}
 correlaton.plot
 ```
@@ -279,7 +280,7 @@ colnames(takuz) <- c("tagged",paste("S", 1:(ncol(takuz)-1),sep=""))
 takuz
 ```
 
-Notice that some columns that are all zero because of the commerical fishery.
+Notice that some columns that are all zero because of the commercial fishery.
 
 # Analysis of dataset stratified to the 3-day strata.
 We are now back to familiar territory.
@@ -362,7 +363,7 @@ You need to specify the statistical week number and the value of $p$ on the $log
 Because *BTSPAS* operates on the $logit$ scale and $logit(0)$ is $-\infty$, *BTSPAS* uses a 
 value of -10 (on the logit scale) to represent strata with no effort:
 ```{r zeroset}
-# are there any days where the capture probability is fixed in advance?, i.e. because no commerical fishery
+# are there any days where the capture probability is fixed in advance?, i.e. because no commercial fishery
 takuz.logitP.fixed        <- seq(2, length(takuz.u2), 2)
 takuz.logitP.fixed
 takuz.logitP.fixed.values <- rep(-10, length(takuz.logitP.fixed))
@@ -397,14 +398,16 @@ ex.3day.fit <- TimeStratPetersenNonDiagErrorNP_fit(
 ```
 
 ```{r clean.upz, include=FALSE, results='hide'}
-file.rename("data.txt",       paste(takuz.prefix,".data.txt",sep=""))
-file.rename("CODAindex.txt",  paste(takuz.prefix,".CODAindex.txt",sep=""))
-file.rename("CODAchain1.txt", paste(takuz.prefix,".CODAchain1.txt",sep=""))
-file.rename("CODAchain2.txt", paste(takuz.prefix,".CODAchain2.txt",sep=""))
-file.rename("CODAchain3.txt", paste(takuz.prefix,".CODAchain3.txt",sep=""))
-file.rename("inits1.txt",     paste(takuz.prefix,".inits1.txt",sep=""))
-file.rename("inits2.txt",     paste(takuz.prefix,".inits2.txt",sep=""))
-file.rename("inits3.txt",     paste(takuz.prefix,".inits3.txt",sep=""))
+# delete extra files that were created
+file.remove("data.txt"       )       
+file.remove("CODAindex.txt"  )
+file.remove("CODAchain1.txt" )
+file.remove("CODAchain2.txt" )
+file.remove("CODAchain3.txt" )
+file.remove("inits1.txt"     )
+file.remove("inits2.txt"     )
+file.remove("inits3.txt"     )
+file.remove("model.txt"      )
 ```
 
 ## Exploring the output
@@ -458,7 +461,7 @@ Many of the analyses stratify to the statistical week, so only part of the week 
 if the fish wheels sample a constant proportion of the run, then it doesn't matter how the recovery sample is obtained -- the Pooled Petersen
 estimator will still be unbiased.
 
-We simulate the coarser stratifcation by taking the previous simulated population and pool adjacent 3-day strata.
+We simulate the coarser stratification by taking the previous simulated population and pool adjacent 3-day strata.
 The pooled data is:
 
 ```{r takup.matrix, include=FALSE}
@@ -571,7 +574,7 @@ takuzp.bad.u2     <- c()     # list sample times of bad u2 values
 
 There were no (pooled) strata where there was no commercial fishery, so we don't restrict the $logit(p)$ to any value.
 ```{r zerosetp}
-# are there any days where the capture probability is fixed in advance?, i.e. because no commerical fishery
+# are there any days where the capture probability is fixed in advance?, i.e. because no commercial fishery
 takuzp.logitP.fixed        <- NULL
 takuzp.logitP.fixed.values <- NULL
 ```
@@ -602,14 +605,16 @@ ex.6day.fit <- TimeStratPetersenNonDiagErrorNP_fit(
 ```
 
 ```{r clean.upzp, include=FALSE, results='hide'}
-file.rename("data.txt",       paste(takuzp.prefix,".data.txt",sep=""))
-file.rename("CODAindex.txt",  paste(takuzp.prefix,".CODAindex.txt",sep=""))
-file.rename("CODAchain1.txt", paste(takuzp.prefix,".CODAchain1.txt",sep=""))
-file.rename("CODAchain2.txt", paste(takuzp.prefix,".CODAchain2.txt",sep=""))
-file.rename("CODAchain3.txt", paste(takuzp.prefix,".CODAchain3.txt",sep=""))
-file.rename("inits1.txt",     paste(takuzp.prefix,".inits1.txt",sep=""))
-file.rename("inits2.txt",     paste(takuzp.prefix,".inits2.txt",sep=""))
-file.rename("inits3.txt",     paste(takuzp.prefix,".inits3.txt",sep=""))
+# delete extra files that were created
+file.remove("data.txt"       )       
+file.remove("CODAindex.txt"  )
+file.remove("CODAchain1.txt" )
+file.remove("CODAchain2.txt" )
+file.remove("CODAchain3.txt" )
+file.remove("inits1.txt"     )
+file.remove("inits2.txt"     )
+file.remove("inits3.txt"     )
+file.remove("model.txt"      )
 ```
 
 ## Exploring the output
@@ -652,7 +657,7 @@ The revised individual estimates of the number of unmarked in each recovery stra
 round(ex.6day.fit$summary[ grepl("^U\\[", rownames(ex.6day.fit$summary)),],0)
 ```
 
-## References
+# References
 Bonner Simon, J., & Schwarz Carl, J. (2011). 
 Smoothing Population Size Estimates for Time-Stratified MarkRecapture Experiments Using Bayesian P-Splines. 
 Biometrics, 67, 1498–1507.

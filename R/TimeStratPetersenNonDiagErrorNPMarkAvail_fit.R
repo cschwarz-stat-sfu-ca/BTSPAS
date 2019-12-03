@@ -1,5 +1,5 @@
 ## 2018-12-22 CJS add code to estimate mean movement vector (movep)
-## 2018-12-19 CJS sampling fraction depricated
+## 2018-12-19 CJS sampling fraction deprecated
 ## 2018-12-14 CJS bayesian p-value plots added
 ## 2018-12-06 CJS convert report to textConnections
 ## 2018-12-02 CJS convert trace plots to ggplot
@@ -12,7 +12,7 @@
 ## 2011-02-21 CJS changed u2 to new.u2 in code for expanded.m2
 ## 2011-02-19 CJS First development
 
-#' Wrapper (*_fit)  to call the function to fit a Time Statified Petersen Estimator
+#' Wrapper (*_fit)  to call the function to fit a Time Stratified Petersen Estimator
 #' with NON Diagonal Entries with an non-parametric travel time and fall back
 #' 
 #' Takes the number of marked fish released, the number of recaptures, and the
@@ -51,7 +51,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum.  These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1
-#' @param sampfrac \strong{Depricated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Deprecated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -72,13 +72,13 @@
 #' for these strata.
 #' @param bad.u2 A numeric vector with elements belonging to \code{time}.  In
 #' some cases, something goes wrong in the stratum, and the number of unmarked
-#' fish captred should be ignored.  The values of \code{u2} in the entire row
+#' fish captured should be ignored.  The values of \code{u2} in the entire row
 #' will be set to NA for these strata.
 #' @param logitP.cov A numeric matrix for covariates to fit the
 #' logit(catchability).  Default is a single intercept, i.e. all strata have
 #' the same mean logit(catchability).
 #' @param logitP.fixed A numeric vector (could be null) of the time strata
-#' where the logit(P) whould be fixed. Typically, this is used when the capture
+#' where the logit(P) would be fixed. Typically, this is used when the capture
 #' rates for some strata are 0 and logit(P) is set to -10 for these strata. The
 #' fixed values are given in \code{logitP.fixed.values}
 #' @param logitP.fixed.values A numerical vector (could be null) of the fixed
@@ -90,7 +90,7 @@
 #' fraction of marks that will be available. The *_n and *_x are used to create
 #' a "binomial" distribution for information on the marked availability. For
 #' example, if *_n=66 and *_x=40, then you estimate that about 40/66=61\% of marks
-#' are available and 39\% have dropped out or falled back.
+#' are available and 39\% have dropped out or fallen back.
 #' @param marked_available_x See marked_available_n
 #' @param n.chains Number of parallel MCMC chains to fit.
 #' @param n.iter Total number of MCMC iterations in each chain.
@@ -195,7 +195,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ##             The vector u2 should be long enough to account for any fish that are recaptured later on
   ##             from releases late in the season. The bottom right diagonal of m2 may be all zeros - that is ok
   ##             Notice that length(u2) can be longer than length(n1)+nrow(m2).
-  ##    sampfrac - Depricated. DO NOT USE. sampling fraction to adjust for how many days of the week was the trap operating
+  ##    sampfrac - Deprecated. DO NOT USE. sampling fraction to adjust for how many days of the week was the trap operating
   ##              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
   ##              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
   ##              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -299,9 +299,9 @@ sampfrac <- as.vector(sampfrac)
     return()
   }
 
-  # Deprication of sampling fraction.
+  # Deprecation of sampling fraction.
   if(any(sampfrac != 1)){
-    cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+    cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
     return()
   }
 

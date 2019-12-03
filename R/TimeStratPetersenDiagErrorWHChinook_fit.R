@@ -1,4 +1,4 @@
-# 2018-12-19 CSJ depricated use of sampling fraction
+# 2018-12-19 CSJ deprecated use of sampling fraction
 # 2018-12-06 CJS saved report to a text connections
 # 2018-12-05 CJS converted final spline plot gggplot
 # 2018-12-02 CJS converted trace plots to ggplot
@@ -21,7 +21,7 @@
 
 
 
-#' Wrapper (*_fit) to fit the Time Statified Petersen Estimator
+#' Wrapper (*_fit) to fit the Time Stratified Petersen Estimator
 #' with Diagonal Entries and separating Wild from Hatchery Chinook function.
 #' 
 #' Takes the number of marked fish released, the number of recaptures, and the
@@ -64,7 +64,7 @@
 #' @param clip.frac.H.YoY,clip.frac.H.1 Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)
 #' @param clip.frac.H A numeric value for the fraction of the hatchery fish
 #' that have the adipose fin clipped (between 0 and 1).
-#' @param sampfrac \strong{Depricated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
+#' @param sampfrac \strong{Deprecated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
 #' what fraction of the stratum was sampled. For example, if strata are
 #' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
 #' value of \code{sampfrac} for that stratum would be 3/7.
@@ -182,7 +182,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
 #               So u2.A MUST be hatchery fish.
 #                  u2.N is a mixture of wild and hatchery fish.
 #    clip.frac.H - what fraction of the hatchery fish are clipped?
-#    sampfrac - Depricated. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
+#    sampfrac - Deprecated. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
 #              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
 #              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
 #              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
@@ -255,9 +255,9 @@ if(!all(hatch.after %in% time, na.rm=TRUE)){
        paste(time,       collapse=","), "\n")
    return()}
 
-# Deprication of sampling fraction.
+# Deprecation of sampling fraction.
 if(any(sampfrac != 1)){
-  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
   return()
 }
 

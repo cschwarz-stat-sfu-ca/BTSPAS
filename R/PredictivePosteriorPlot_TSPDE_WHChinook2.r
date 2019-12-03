@@ -53,7 +53,7 @@ PredictivePosteriorPlot.TSPDE.WHCH2 <- function( discrep, ncol=2, nrow=2 ) {
        data.frame(p.value)
   })
   p_values$label = paste("Bayesian GOF P:",formatC(p_values$p.value, digits=2, format="f"))
-  browser()
+  #browser()
   gof <- plyr::llply(1:2, function (page){
     ggplot(data=discrep.long, aes_(x=~Simulated, y=~Observed))+
        geom_point()+
