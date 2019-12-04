@@ -1,3 +1,8 @@
+## Resubmissiont
+   Invalid file names in inst/doc were generated from vignettes that start with a 01-, 02- etc.
+   These have now been fixed and begin with a-, b-, c-, etc.
+
+
 ## Static vignettes
 Due to the time it takes to run the vignettes, I've included
 them as static vignettes.
@@ -23,20 +28,5 @@ There were 3 NOTES:
 
 I have retired from SFU and now use my gmail.address.
 
-* excluding invalid files
-Subdirectory 'inst/doc' contains invalid file names:
-  ‘01-Diagonal-model.html.asis’
-  ‘02-Diagonal-model-with-multiple-ages.html.asis’
-  ‘03-Non-diagonal-model.html.asis’
-  ‘04-Non-diagonal-with-fall-back-model.html.asis’
-  ‘05-Bias-from-incomplete-sampling.html.asis’ ‘01-Diagonal-model.html’
-  ‘02-Diagonal-model-with-multiple-ages.html’
-  ‘03-Non-diagonal-model.html’
-  ‘04-Non-diagonal-with-fall-back-model.html’
-  ‘05-Bias-from-incomplete-sampling.html’
-  
-These were automatically created by the R.rsp::asis vignette builder, so I am unsure
-on how to deal with this note.
- 
 ## Reverse dependencies
 None.
