@@ -14,7 +14,7 @@ them as static vignettes.
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There were 3 NOTES:
+There were 2 NOTES:
 
 *Version contains large components (2020.1.1)
 
