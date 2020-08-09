@@ -493,14 +493,16 @@ if (debug)
    logUne<- results$summary[logUne.row.index,"mean"]
    plot.df$spline <- results$summary[logUne.row.index,"mean"]
 
-fit.plot <- ggplot(data=plot.df, aes_(x=~new.time))+
+   #browser()
+fit.plot <- ggplot(data=plot.df, aes_(x=~time))+
    ggtitle(title, subtitle="Fitted spline curve with 95% credible intervals for estimated log(U[i])")+
    geom_point(aes_(y=~logUi), color="red", shape=1)+  # open circle
    xlab("Time Index\nOpen/closed circles - initial and final estimates")+ylab("log(U[i])")+
    geom_point(aes_(y=~logU), color="black", shape=19)+
    geom_line (aes_(y=~logU), color="black")+
    geom_errorbar(aes_(ymin=~lcl, ymax=~ucl), width=.1)+
-   geom_line(aes_(y=~spline),linetype="dashed")
+   geom_line(aes_(y=~spline),linetype="dashed")+
+   scale_x_continuous(breaks=seq(min(plot.df$time, na.rm=TRUE),max(plot.df$time, na.rm=TRUE),2))
 
 if(save.output.to.files)ggsave(plot=fit.plot, filename=paste(prefix,"-fit.pdf",sep=""), height=6, width=10, units="in")
 results$plots$fit.plot <- fit.plot
@@ -547,7 +549,7 @@ varnames <- names(results$sims.array[1,1,])  # extract the names of the variable
 trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[grep("^logitP", varnames)])
 if(save.output.to.files){
    pdf(file=paste(prefix,"-trace-logitP.pdf",sep=""))
-   l_ply(trace.plot, function(x){plot(x)})
+   plyr::l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
 results$plots$trace.logitP.plot <- trace.plot
@@ -556,7 +558,7 @@ results$plots$trace.logitP.plot <- trace.plot
 trace.plot <- plot_trace(title=title, results=results, parms_to_plot=varnames[c(grep("Utot",varnames), grep("Ntot",varnames), grep("^etaU", varnames))])
 if(save.output.to.files){
    pdf(file=paste(prefix,"-trace-logU.pdf",sep=""))
-   l_ply(trace.plot, function(x){plot(x)})
+   plyr::l_ply(trace.plot, function(x){plot(x)})
    dev.off()
 }
 results$plots$trace.logU.plot <- trace.plot

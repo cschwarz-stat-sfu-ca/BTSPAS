@@ -110,7 +110,7 @@ fixed values are given in \code{logitP.fixed.values}}
 values for logit(P) at strata given by logitP.fixed. Typically this is used
 when certain strata have a 0 capture rate and the fixed value is set to -10
 which on the logit scale gives p[i] essentially 0. Don't specify values such
-as -50 because numerical problems could occur in WinBugs/OpenBugs.}
+as -50 because numerical problems could occur in JAGS.}
 
 \item{marked_available_n}{Information, usually from prior studies, on the
 fraction of marks that will be available. The *_n and *_x are used to create

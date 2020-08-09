@@ -6,7 +6,10 @@ library(rmarkdown)
 files <- dir()
 files <- files[ grepl("Rmd$", files)]
 
+
 plyr::l_ply(files, function(x){
   cat("Starting to render ", x, "\n")
     rmarkdown::render(x)
 })
+
+#rmarkdown::render(files[6])

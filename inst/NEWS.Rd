@@ -15,6 +15,21 @@
 %   }
 %}
 
+\section{CHANGES IN VERSION 2020.2.2}{
+  \subsection{USER-VISIBLE CHANGES}{
+    \itemize{
+      \item Fixed a bug in trace plots (from ggforce::facet_wrap_paginate) 
+       when the last page doesn't have a full set of plots. Dummy plots added..
+     }
+   }
+}
+\section{CHANGES IN VERSION 2020.2.1}{
+  \subsection{USER-VISIBLE CHANGES}{
+    \itemize{
+      \item Added a vignette about forcing the run to 0 at the start and end of the study.
+     }
+   }
+}
 \section{CHANGES IN VERSION 2020.1.1}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
