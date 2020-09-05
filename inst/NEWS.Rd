@@ -19,7 +19,8 @@
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
       \item Fixed a bug in trace plots (from ggforce::facet_wrap_paginate) 
-       when the last page doesn't have a full set of plots. Dummy plots added..
+       when the last page doesn't have a full set of plots. Dummy plots added.
+      \item Secondary axis added on right side of logit(P) fit and log(U) fit
      }
    }
 }

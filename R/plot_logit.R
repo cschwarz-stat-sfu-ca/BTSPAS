@@ -51,7 +51,8 @@ plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results){
     geom_point(size=3)+
     geom_line()+
     geom_errorbar(aes(ymin=lcl, ymax=ucl), width=.1)+
-    scale_x_continuous(breaks=min(logitP.res$time):max(logitP.res$time))
+    scale_x_continuous(breaks=min(logitP.res$time):max(logitP.res$time))+
+    scale_y_continuous(sec.axis = sec_axis(~ 1/(1+exp(-.)), name="p + 95% credible interval"))
 
   # If this is a non-diagonal case, also plot the raw logits
   if(!is.matrix(m2)){

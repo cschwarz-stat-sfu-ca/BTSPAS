@@ -621,10 +621,19 @@ if (debug)
      geom_line (aes_(y=~logU), position=position_dodge(width=.2))+
      geom_errorbar(aes_(ymin=~logUlcl, ymax=~logUucl), width=.1, position=position_dodge(width=.2))+
      geom_line(aes_(y=~spline),linetype="dashed", position=position_dodge(width=.2)) + 
-     xlab("Time Index\nFitted/Smoothed/Raw values plotted for W(black) and H(blue)")+ylab("log(U[i])")+
+     xlab("Time Index\nFitted/Smoothed/Raw values plotted for W(black) and H(blue)")+ylab("log(U[i]) + 95% credible interval")+
      theme(legend.justification = c(0, 0), legend.position = c(0, 0))+
      scale_color_discrete(name="Group")+
-     scale_x_continuous(breaks=seq(min(plot.data$time, na.rm=TRUE),max(plot.data$time, na.rm=TRUE),2))
+     scale_x_continuous(breaks=seq(min(plot.data$time, na.rm=TRUE),max(plot.data$time, na.rm=TRUE),2))+
+     scale_y_continuous(sec.axis = sec_axis(~ exp(.), name="U + 95% credible interval",
+                      breaks=c(1,10,20,50,
+                                 100,200,500,
+                                 1000,2000,5000,
+                                 10000,20000, 50000,
+                                 100000,200000, 500000,
+                                 1000000,2000000,5000000,10000000),
+                      labels = scales::comma))
+
 
 
 if(save.output.to.files)ggsave(plot=fit.plot, filename=paste(prefix,"-fit.pdf",sep=""), height=6, width=10, units="in")
