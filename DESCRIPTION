@@ -16,7 +16,8 @@ Imports:
     gridExtra,
     plyr, 
     reshape2,
-    R2jags, 
+    R2jags,
+    scales,
     splines, 
     stats, 
     utils

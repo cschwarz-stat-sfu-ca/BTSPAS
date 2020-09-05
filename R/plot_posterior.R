@@ -5,7 +5,7 @@
 #' @param ncol Number of columns in the plot (default=1).
 #' @return Posterior plot(s) as an ggplot2 object 
 #' @keywords internal
-#' @import plyr ggplot2
+#' @import plyr ggplot2 scales
 #'
 #'
 
