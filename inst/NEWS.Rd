@@ -15,7 +15,7 @@
 %   }
 %}
 
-\section{CHANGES IN VERSION 2020.2.2}{
+\section{CHANGES IN VERSION 2020.9.1}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
       \item Fixed a bug in trace plots (from ggforce::facet_wrap_paginate) 

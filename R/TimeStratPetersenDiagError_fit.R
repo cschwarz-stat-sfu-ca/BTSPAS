@@ -152,7 +152,7 @@ TimeStratPetersenDiagError_fit <-
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2020-01-01'
+   version <- '2020-09-01'
    options(width=200)
 
 # Input parameters are

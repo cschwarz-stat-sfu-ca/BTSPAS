@@ -14,7 +14,7 @@
 
 .onAttach <- function(libname,pkgname){
 
-  packageStartupMessage("***** BTSPAS: Bayesian Time Stratified Petersen Analysis System - Version 2020.2.2 (2020-08-31) ***** \n\n",
+  packageStartupMessage("***** BTSPAS: Bayesian Time Stratified Petersen Analysis System - Version 2020.9.1 (2020-09-01) ***** \n\n",
         "      Help available with  help(package='BTSPAS') \n",
         '      Several vignettes are available. See browseVignettes(package="BTSPAS") \n\n')
 }

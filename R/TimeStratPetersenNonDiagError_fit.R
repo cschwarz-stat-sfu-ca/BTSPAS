@@ -168,7 +168,7 @@ TimeStratPetersenNonDiagError_fit <-
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- '2020-01-01'
+    version <- '2020-09-01'
     options(width=200)
 
 # Input parameters are

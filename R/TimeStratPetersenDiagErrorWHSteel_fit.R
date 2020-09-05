@@ -140,7 +140,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
 # The steelhead are nice because 100% of hatchery fish are adipose fin clipped and no wild fish are adipose fin clipped
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2020-01-01'
+   version <- '2020-09-01'
    options(width=200)
 
 # Input parameters are

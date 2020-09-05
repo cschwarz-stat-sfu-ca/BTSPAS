@@ -12,7 +12,7 @@ There were no ERRORs or WARNINGs.
 
 There were 1 NOTES:
 
-*Version contains large components (2020.2.2)
+*Version contains large components (2020.9.1s)
 
   This is the minor bug fix for the 2020 release of the package.
  
