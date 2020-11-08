@@ -17,7 +17,7 @@ TimeStratPetersenDiagError_fit(
   bad.n1 = c(),
   bad.m2 = c(),
   bad.u2 = c(),
-  logitP.cov = rep(1, length(n1)),
+  logitP.cov = matrix(rep(1, length(n1)), ncol = 1),
   logitP.fixed = NULL,
   logitP.fixed.values = NULL,
   n.chains = 3,
@@ -28,8 +28,10 @@ TimeStratPetersenDiagError_fit(
   tauU.beta = 0.05,
   taueU.alpha = 1,
   taueU.beta = 0.05,
-  mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
-  tau_xiP = 1/var(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE),
+  prior.beta.logitP.mean = c(logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)), rep(0,
+    ncol(logitP.cov) - 1)),
+  prior.beta.logitP.sd = c(sd(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE), rep(10,
+    ncol(logitP.cov) - 1)),
   tauP.alpha = 0.001,
   tauP.beta = 0.001,
   run.prob = seq(0, 1, 0.1),
@@ -123,10 +125,10 @@ the prior for the variance of noise around the spline.}
 \item{taueU.beta}{One of the parameters along with \code{taueU.alpha} for
 the prior for the variance of noise around the spline.}
 
-\item{mu_xiP}{One of the parameters for the prior for the mean of the
+\item{prior.beta.logitP.mean}{Mean of the prior normal distribution for
 logit(catchability) across strata}
 
-\item{tau_xiP}{One of the parameter for the prior for the mean of the
+\item{prior.beta.logitP.sd}{SD of the prior normal distribution for
 logit(catchability) across strata}
 
 \item{tauP.alpha}{One of the parameters for the prior for the variance in

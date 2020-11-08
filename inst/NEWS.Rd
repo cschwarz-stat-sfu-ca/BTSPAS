@@ -15,6 +15,14 @@
 %   }
 %}
 
+\section{CHANGES IN VERSION 2020.12.1}{
+  \subsection{USER-VISIBLE CHANGES}{
+    \itemize{
+      \item User now able to specify prior for beta parameters of logitP vs covariates.
+      Refer to the vignette on covariates.
+     }
+   }
+}
 \section{CHANGES IN VERSION 2020.9.1}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{
