@@ -26,7 +26,8 @@ TimeStratPetersenDiagError <- function(
     m2,
     u2,
     jump.after=NULL,
-    logitP.cov, logitP.fixed, 
+    logitP.cov=as.matrix(rep(1,length(u2))),
+    logitP.fixed, 
     n.chains=3,
     n.iter=200000,
     n.burnin=100000,
@@ -120,7 +121,7 @@ model{
 #      n.b.notflat- number of b coefficients that do not have a flat prior
 #      tauU.alpha, tauU.beta - parameters for prior on tauU
 #      taueU.alpha, taueU.beta - parameters for prior on taueU
-#      prior.beta.logitP.mean, prior.beta.logitP.sd  - parameters for prior on mean logit(P)'s [The intercept term]
+#      prior.beta.logitP.mean, prior.beta.logitP.sd  - parameters for prior of coefficient of covariates for logitP
 #      tauP.alpha, tauP.beta - parameter for prior on tauP (residual variance of logit(P)'s after adjusting for
 #                         covariates)
 #
@@ -168,8 +169,7 @@ model{
    sigmaeU <- 1/sqrt(taueU)
 
    ## Capture probabilities covariates
-   beta.logitP[1] ~ dnorm(prior.beta.logitP.mean[1],1/prior.beta.logitP.sd[1]^2) # first term is usually an intercept
-   for(i in 2:NlogitP.cov){
+   for(i in 1:NlogitP.cov){
       beta.logitP[i] ~ dnorm(prior.beta.logitP.mean[i], 1/prior.beta.logitP.sd[i]^2)  # rest of beta terms are normal 0 and a large variance
    }
    beta.logitP[NlogitP.cov+1] ~ dnorm(0, .01) # dummy so that covariates of length 1 function properly

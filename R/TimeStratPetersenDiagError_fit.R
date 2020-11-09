@@ -138,7 +138,7 @@ TimeStratPetersenDiagError_fit <-
            time, n1, m2, u2, sampfrac=rep(1,length(u2)), 
            jump.after=NULL, 
            bad.n1=c(), bad.m2=c(), bad.u2=c(),
-           logitP.cov=matrix(rep(1,length(n1)), ncol=1),
+           logitP.cov=as.matrix(rep(1,length(n1))),
            logitP.fixed=NULL, logitP.fixed.values=NULL,
            n.chains=3, n.iter=200000, n.burnin=100000, n.sims=2000,
            tauU.alpha=1, tauU.beta=.05, taueU.alpha=1, taueU.beta=.05, 
@@ -153,7 +153,7 @@ TimeStratPetersenDiagError_fit <-
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2020-09-01'
+   version <- '2020-12-01'
    options(width=200)
 
 # Input parameters are
@@ -243,6 +243,18 @@ if(length(logitP.fixed)!=length(logitP.fixed.values)){
    cat("***** ERROR ***** Lengths of logitP.fixed and logitP.fixed.values must all be equal. They are:",
         length(logitP.fixed),length(logitP.fixed.values),"\n")
    return()}
+
+# Check that that the prior.beta.logitP.mean and prior.beta.logitP.sd length=number of columns of covariates
+logitP.cov <- as.matrix(logitP.cov)
+if(!is.vector(prior.beta.logitP.mean) | !is.vector(prior.beta.logitP.sd)){
+   stop("prior.beta.logitP.mean and prior.beta.logitP.sd must be vectors")
+}
+if(!is.numeric(prior.beta.logitP.mean) | !is.numeric(prior.beta.logitP.sd)){
+   stop("prior.beta.logitP.mean and prior.beta.logitP.sd must be numeric")
+}
+if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP.sd) != ncol(logitP.cov)){
+   stop("prior.beta.logitP.mean and prior.beta.logitP.sd must be same length as number columns in covariate matrix")
+}
 
 # Deprecation of sampling fraction.
 if(any(sampfrac != 1)){

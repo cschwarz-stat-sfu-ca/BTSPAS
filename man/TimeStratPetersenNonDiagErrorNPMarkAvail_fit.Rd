@@ -30,8 +30,9 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
   tauU.beta = 0.05,
   taueU.alpha = 1,
   taueU.beta = 0.05,
-  mu_xiP = logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)),
-  tau_xiP = 0.6666,
+  prior.beta.logitP.mean = c(logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)), rep(0,
+    ncol(as.matrix(logitP.cov)) - 1)),
+  prior.beta.logitP.sd = c(2, rep(10, ncol(as.matrix(logitP.cov)) - 1)),
   tauP.alpha = 0.001,
   tauP.beta = 0.001,
   Delta.max = NULL,
@@ -141,10 +142,10 @@ the prior for the variance of noise around the spline.}
 \item{taueU.beta}{One of the parameters along with \code{taueU.alpha} for
 the prior for the variance of noise around the spline.}
 
-\item{mu_xiP}{One of the parameters for the prior for the mean of the
+\item{prior.beta.logitP.mean}{Mean of the prior normal distribution for
 logit(catchability) across strata}
 
-\item{tau_xiP}{One of the parameter for the prior for the mean of the
+\item{prior.beta.logitP.sd}{SD of the prior normal distribution for
 logit(catchability) across strata}
 
 \item{tauP.alpha}{One of the parameters for the prior for the variance in

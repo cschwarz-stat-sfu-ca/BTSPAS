@@ -1,3 +1,4 @@
+# 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2108-12-19 CJS deprecate of use of sampling fraction
 # 2018-12-15 CJS converted the muTT and sdTT plots to ggplot objects
 # 2018-12-15 CJS tested fixing logitP to certain values especially at the end of the sampling chain
@@ -113,9 +114,9 @@
 #' the prior for the variance of noise around the spline.
 #' @param taueU.beta One of the parameters along with \code{taueU.alpha} for
 #' the prior for the variance of noise around the spline.
-#' @param mu_xiP One of the parameters for the prior for the mean of the
+#' @param prior.beta.logitP.mean Mean of the prior normal distribution for
 #' logit(catchability) across strata
-#' @param tau_xiP One of the parameter for the prior for the mean of the
+#' @param prior.beta.logitP.sd   SD of the prior normal distribution for
 #' logit(catchability) across strata
 #' @param tauP.alpha One of the parameters for the prior for the variance in
 #' logit(catchability) among strata
@@ -151,13 +152,13 @@ TimeStratPetersenNonDiagError_fit <-
            prefix="TSPNDE-", time, n1, m2, u2,
            sampfrac=rep(1,length(u2)), jump.after=NULL,
            bad.n1=c(), bad.m2=c(), bad.u2=c(),
-           logitP.cov=rep(1,length(u2)),
+           logitP.cov=as.matrix(rep(1,length(u2))),
            logitP.fixed=NULL, logitP.fixed.values=NULL, 
            n.chains=3, n.iter=200000, n.burnin=100000, n.sims=2000, 
            tauU.alpha=1,tauU.beta=.05,
            taueU.alpha=1, taueU.beta=.05,
-           mu_xiP=logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),
-           tau_xiP=.6666, # need a better initial value for variation in catchability
+           prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
+           prior.beta.logitP.sd   = c(2,                                           rep(10, ncol(as.matrix(logitP.cov))-1)), 
            tauP.alpha=.001,
            tauP.beta=.001,
            run.prob=seq(0,1,.1), # what percentiles of run timing are wanted
@@ -168,7 +169,7 @@ TimeStratPetersenNonDiagError_fit <-
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- '2020-09-01'
+    version <- '2020-12-01'
     options(width=200)
 
 # Input parameters are
@@ -211,8 +212,8 @@ TimeStratPetersenNonDiagError_fit <-
 #    logitP.fixed.values - vector of fixed values (on the logit scale). Use -10 for p[i] <- 0, and 10 for p[i] <- 1
 #    tauU.alpha, tauU.beta   - parameters for the prior on variance in spline coefficients
 #    taueU.alpha, taueU.beta - parameters for the prior on variance in log(U) around fitted spline
-#    mu_xiP, tau_xiP         - parameters for the prior on mean logit(P)'s [The intercept term]
-#                              The other covariates are assigned priors of a mean of 0 and a variance of 1000
+#    prior.beta.logitP.mean, prior.beta.logitP.sd   - parameters for the prior on mean logit(P)'s [The intercept term]
+#                              The other covariates are assigned priors of a mean of 0 and a sd of 30
 #    tauP.alpha, tauP.beta   - parameters for the prior on 1/var of residual error in logit(P)'s
 #    run.prob  - percentiles of run timing wanted
 #    debug  - if TRUE, then this is a test run with very small MCMC chains run to test out the data
@@ -277,6 +278,18 @@ if(length(logitP.fixed)!=length(logitP.fixed.values)){
    cat("***** ERROR ***** Lengths of logitP.fixed and logitP.fixed.values must all be equal. They are:",
         length(logitP.fixed)," ",length(logitP.fixed.values),"\n")
    return()}
+
+# Check that that the prior.beta.logitP.mean and prior.beta.logitP.sd length=number of columns of covariates
+logitP.cov <- as.matrix(logitP.cov)
+if(!is.vector(prior.beta.logitP.mean) | !is.vector(prior.beta.logitP.sd)){
+   stop("prior.beta.logitP.mean and prior.beta.logitP.sd must be vectors")
+}
+if(!is.numeric(prior.beta.logitP.mean) | !is.numeric(prior.beta.logitP.sd)){
+   stop("prior.beta.logitP.mean and prior.beta.logitP.sd must be numeric")
+}
+if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP.sd) != ncol(logitP.cov)){
+   stop("prior.beta.logitP.mean and prior.beta.logitP.sd must be same length as number columns in covariate matrix")
+}
 
 # Deprecation of sampling fraction.
 if(any(sampfrac != 1)){
@@ -416,8 +429,7 @@ cat("   Parameters for prior on tauU (variance in spline coefficients: ", tauU.a
 cat("   Parameters for prior on taueU (variance of log(U) about spline: ",taueU.alpha, taueU.beta,
     " which corresponds to a mean/std dev of 1/var of:",
     round(taueU.alpha/taueU.beta,2),round(sqrt(taueU.alpha/taueU.beta^2),2),"\n")
-cat("   Parameters for prior on beta.logitP[1] (intercept) (mean, 1/var):", round(mu_xiP,3), round(tau_xiP,5),
-    " which corresponds to a median P of ", round(expit(mu_xiP),3), "\n")
+cat("   Parameters for prior on beta.logitP[1] (intercept) (mean, sd): \n", cbind(round(prior.beta.logitP.mean,3), round(prior.beta.logitP.sd,5)),"\n")
 cat("   Parameters for prior on tauP (residual variance of logit(P) after adjusting for covariates: ",tauP.alpha, tauP.beta,
     " which corresponds to a mean/std dev of 1/var of:",
     round(tauP.alpha/tauP.beta,2),round(sqrt(tauP.alpha/tauP.beta^2),2),"\n")
@@ -433,22 +445,28 @@ if (debug2) {
 }
 
 if (debug)
-  {results <- TimeStratPetersenNonDiagError(title=title, prefix=prefix,
-                                            time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2,
-                                            jump.after=(1:length(u2))[time %in% jump.after],
-                                            logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
-                                            n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to small values for debugging only
-                                            tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-                                            debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
+  {results <- TimeStratPetersenNonDiagError(
+        title=title, prefix=prefix,
+        time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2,
+        jump.after=(1:length(u2))[time %in% jump.after],
+        logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
+        n.chains=3, n.iter=10000, n.burnin=5000, n.sims=500,  # set to small values for debugging only
+        prior.beta.logitP.mean=prior.beta.logitP.mean, 
+        prior.beta.logitP.sd  =prior.beta.logitP.sd,
+        tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+        debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
  }
 else #notice R syntax requires { before the else
-  {results <- TimeStratPetersenNonDiagError(title=title, prefix=prefix,
-                                            time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2,
-                                            jump.after=(1:length(u2))[time %in% jump.after],
-                                            logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
-                                            n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
-                                            tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
-                                            debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
+  {results <- TimeStratPetersenNonDiagError(
+        title=title, prefix=prefix,
+        time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2,
+        jump.after=(1:length(u2))[time %in% jump.after],
+        logitP.cov=new.logitP.cov, logitP.fixed=new.logitP.fixed,
+        n.chains=n.chains, n.iter=n.iter, n.burnin=n.burnin, n.sims=n.sims,
+        prior.beta.logitP.mean=prior.beta.logitP.mean, 
+        prior.beta.logitP.sd  =prior.beta.logitP.sd,
+        tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+        debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
  }
 
 # Now to create the various summary tables of the results
