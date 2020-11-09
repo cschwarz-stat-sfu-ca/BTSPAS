@@ -2,10 +2,12 @@
 
 library(plyr)
 library(rmarkdown)
-# navigate to the vignettes directory
+# navigate to the vignettes directory first, before running this job
+
+
 files <- dir()
 files <- files[ grepl("Rmd$", files)]
-
+files
 
 plyr::l_ply(files, function(x){
   cat("Starting to render ", x, "\n")

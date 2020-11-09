@@ -54,6 +54,7 @@ rec.matrix$SW36 <- 0
 ```
 
 # Introduction
+
 In some studies, harvest (recovery strata) start after the run has started and 
 terminate prior to the run ending. For example, consider the following
 recovery matrix where releases and recoveries have been stratified on
@@ -94,6 +95,7 @@ the run started earlier and ended later than the commerical harvest.
 ```
 
 ## Fit with the current data.
+
 We now fit the BTSPAS model using the current data
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -148,6 +150,7 @@ On the surface, the fit looks fine:
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
 red.fit$plots$fit.plot
 ```
+
 but the spline remains very large in the first 3 weeks leading to unrealistic estimates
 of the run in the first 3 weeks and an unrealistic estimate of the total run:
 
@@ -166,6 +169,7 @@ last 3 weeks isn't too bad -- the spline is already on a downwards trend and so 
 However, the interpolation back for the first 3 weeks is not very realistic
 
 ## Forcing the run curve to zero.
+
 It is possible to "force" BTSPAS to interpolate the first 3 and last 3 weeks down to zero
 by adding ``fake'' data. In particular, we pretend that in the first 3 and last 3 weeks, that
 a commercial catch of 1 fish occurred and it was tagged. You also need to ensure that
@@ -187,6 +191,7 @@ rec.matrix2[16,17] <- 1
 rec.matrix2[17,14:17] <- 1
 rec.matrix2
 ```
+
 Notice how "fake" recoveries were added to the diagonal entries for the first and final weeks
 of the data including "fake" harvest.
 
@@ -260,12 +265,16 @@ file.remove("model.txt"      )
 # need to delete the *.txt files
 
 ```
+
 Notice that in the revised fit, the run curve is forced to 0 at the start
 and end of the study:
+
 ```{r echo=FALSE,message=FALSE,warnings=FALSE}
 red.fit2$plots$fit.plot+coord_cartesian(ylim=c(-20,15))
 ```
+
 The estimates of total run size and the weekly estimates of the runsize are also more sensible:
+
 ```{r echo=FALSE}
 select <- grepl("Ntot",    row.names(red.fit2$summary)) |
           grepl("Utot",    row.names(red.fit2$summary)) |
