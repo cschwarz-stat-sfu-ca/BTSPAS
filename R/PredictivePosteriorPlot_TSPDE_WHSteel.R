@@ -1,6 +1,6 @@
 #' @rdname PredictivePosterior.TSPDE
 
-
+# 2020-12-15 CJS Fixed problem with u2==NA causing plots to fail
 # 2015-06-10 CJS converted to ggplot()
 # 2014-09-01 CJS Inf in discrep set to NA
 # 2012-01-22 CJS made X/Y axis limits the same so p-value prints properly
@@ -16,8 +16,8 @@ PredictivePosteriorPlot.TSPDE.WHSteel <- function( discrep  ) {
 #     (9-10) o,s combined Freeman-Tukey 
 
 # Change any Inf to NA
-temp <- discrep == Inf | discrep == -Inf
-if(sum(temp)>0){cat(sum(temp), " infinite discrepancy measures set to NA\n")}
+temp <- is.infinite(discrep) & !is.na(discrep)
+if(sum(temp, na.rm=TRUE)>0){cat(sum(temp, na.rm=TRUE), " infinite discrepancy measures set to NA\n")}
 discrep[ temp ] <- NA
 
 #browser()
@@ -30,8 +30,8 @@ titles <- c("Freeman-Tukey for m2",
 saved_p_values <- rep(NA, length(titles))
 
 discrep.df <- data.frame(discrep)
-plot.list<- llply(1:5, function(i){
-  p.value <- sum(discrep[,2*i-1]<discrep[,2*i],na.rm=TRUE)/nrow(discrep)
+plot.list<- plyr::llply(1:5, function(i){
+  p.value <- mean(discrep[,2*i-1]<discrep[,2*i],na.rm=TRUE)
   saved_p_values[i] <<- p.value
   
   bp.plot <- ggplot(data=discrep.df, aes_string(x=colnames(discrep.df)[2*i], y=colnames(discrep.df)[2*i-1]))+

@@ -274,7 +274,7 @@ library("BTSPAS")
 # After which weeks is the spline allowed to jump?
 demo.jump.after <- c()  # julian weeks after which jump occurs
 
-# Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
+# Which julian weeks have "bad" recapture values. These will be set to 0 or missing prior to the model fitting.
 demo.bad.m2     <- c(117)   # list julian weeks with bad m2 values. 
 demo.bad.u2     <- c()   # list julian weeks with bad u2 values. 
 demo.bad.n1     <- c(117)   # list julian weeks with bad n1 values. 
@@ -479,7 +479,7 @@ library("BTSPAS")
 # After which weeks is the spline allowed to jump?
 demo2.jump.after <- c()  # julian weeks after which jump occurs
 
-# Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
+# Which julian weeks have "bad" recapture values. These will be set to 0 or missing prior to the model fit.
 demo2.bad.m2     <- c()   # list julian weeks with bad m2 values. This is used in the Trinity Example
 demo2.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demostrate the feature.]
 demo2.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demonstrate the feature.]
@@ -624,7 +624,7 @@ library("BTSPAS")
 # After which weeks is the spline allowed to jump?
 demo3.jump.after <- c()  # julian weeks after which jump occurs
 
-# Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
+# Which julian weeks have "bad" recapture values. These will be set to 0 or missing as needed.
 demo3.bad.m2     <- c()   # list julian weeks with bad m2 values. This is used in the Trinity Example
 demo3.bad.u2     <- c()   # list julian weeks with bad u2 values. [This was arbitrary to demonstrate the feature.]
 demo3.bad.n1     <- c()   # list julian weeks with bad n1 values. [This was arbitrary to demonstrate the feature.]

@@ -75,11 +75,8 @@
 #' @param hatch.after.YoY A numeric vector with elements belonging to
 #' \code{time}.  At which point do YoY hatchery fish arrive? They arrive in the
 #' immediate stratum AFTER these entries.
-#' @param bad.m2 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of recovered
-#' fish should be ignored.  For example, poor handling is suspected to induce
-#' handling induced mortality in the marked fish and so only very few are
-#' recovered. The values of \code{m2} will be set to NA for these strata.
+#' @template bad.n1
+#' @template bad.m2 
 #' @param bad.u2.N A numeric vector with elements belonging to \code{time}.  In
 #' some cases, something goes wrong in the stratum, and the number of unmarked
 #' fish with NO adipose fin clip should be ignored.
@@ -143,7 +140,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
        function( title="TSPDE-WHChinook", prefix="TSPDE-WHChinook-", 
                  time, n1, m2, u2.A, u2.N, clip.frac.H, sampfrac=rep(1,length(u2.A)), 
                  hatch.after=NULL, 
-                 bad.m2=c(), bad.u2.A=c(), bad.u2.N=c(),
+                 bad.n1=c(), bad.m2=c(), bad.u2.A=c(), bad.u2.N=c(),
                  logitP.cov=as.matrix(rep(1,length(n1))),
                  n.chains=3, n.iter=200000, n.burnin=100000, n.sims=2000,
                  tauU.alpha=1, tauU.beta=.05, taueU.alpha=1, taueU.beta=.05, 
@@ -158,7 +155,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2020-12-01'
+   version <- '2021-01-01'
    options(width=200)
 
 # Input parameters are
@@ -218,6 +215,19 @@ if(var(c(length(n1),length(m2),length(u2.A),length(u2.N),length(sampfrac),length
    cat("***** ERROR ***** Lengths of n1, m2, u2.A, u2.N, sampfrac, time must all be equal. They are:",
         length(n1)," ",length(m2)," ",length(u2.A)," ",length(u2.N)," ",length(sampfrac)," ",length(time),"\n")
    return()}
+if(!is.numeric(n1)){
+   cat("***** ERROR ***** n1 must be numeric. You have:",
+        paste(n1,collapse=", "),"\n")
+   return()} 
+if(any(is.na(n1))){
+  cat("***** ERROR ***** All values of n1 must not be missing. You have: ",
+        paste(n1,collapse=", "),"\n")
+   return()}
+if(any(n1 < 0, na.rm=TRUE)){
+  cat("***** ERROR ***** All values of n1 must be non-negative. You have: ",
+        paste(n1,collapse=", "),"\n")
+   return()}
+
 if(length(logitP.cov) %% length(n1) != 0){
    cat("***** ERROR ***** Dimension of covariate vector doesn't match length of n1 etc They are:",
         length(n1)," ",length(logitP.cov)," ",paste(dim(logitP.cov),collapse=","),"\n")

@@ -50,6 +50,7 @@ TimeStratPetersenNonDiagErrorNP <- function(title,
                                             InitialSeed,
                                             save.output.to.files=TRUE){
 
+#   browser()
 set.seed(InitialSeed)  # set prior to initial value computations
 
 #

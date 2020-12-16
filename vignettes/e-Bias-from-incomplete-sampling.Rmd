@@ -371,7 +371,7 @@ takuz.title  <- "Example 3-day stratification - TSPND NP"
 # are there any jumps in the abundance?
 takuz.jump.after <- NULL    # list sample times after which jump in number occurs
 
-# are there any bad values that need to be adjusted?
+# are there any bad values that need to be set to 0 or missing prior to the model fit?
 takuz.bad.n1     <- c()     # list sample times of bad n1 values
 takuz.bad.m2     <- c()     # list sample times of bad m2 values
 takuz.bad.u2     <- c()     # list sample times of bad u2 values

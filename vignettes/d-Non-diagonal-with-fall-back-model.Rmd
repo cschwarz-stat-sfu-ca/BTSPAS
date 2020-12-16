@@ -225,7 +225,7 @@ demo.title  <- "Fall-back demo"
 
 demo.jump.after <- NULL 
 
-## Identify spurious values in n1, m2, and u2 that should be removed
+## Identify spurious values in n1, m2, and u2 that should be set to 0 or missing as needed.
 demo.bad.n1     <- c()     # list sample times of bad n1 values
 demo.bad.m2     <- c()     # list sample times of bad m2 values
 demo.bad.u2     <- c()     # list sample times of bad u2 values

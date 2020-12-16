@@ -73,21 +73,23 @@ to jump. For example, the population size could take a jump when hatchery
 released fish suddenly arrive at the trap. The jumps occur AFTER the strata
 listed in this argument.}
 
-\item{bad.n1}{A numeric vector with elements belonging to \code{time}. In
+\item{bad.n1}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of marked
-fish released should be ignored.  The values of \code{m2} for this stratum
-will also be set to NA for these strata.}
+fish releases should be discarded.  The values of \code{n1} and \code{m2} will be set to
+0 for these strata.}
 
-\item{bad.m2}{A numeric vector with elements belonging to \code{time}. In
+\item{bad.m2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of recovered
-fish should be ignored. For example, poor handling is suspected to induce
-handling induced mortality in the marked fish and so only very few are
-recovered. The values of \code{m2} will be set to NA for these strata.}
+marked fish should be ignored. For example, poor handling is suspected to
+induce handling induced mortality in the marked fish and so only very few
+are recovered.  The values of \code{n1} and \code{m2} will be set to 0
+for these strata.}
 
-\item{bad.u2}{A numeric vector with elements belonging to \code{time}. In
+\item{bad.u2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of unmarked
-fish should be ignored. For example, the trap didn't work properly in this
-stratum.  The values of \code{u2} will be set to NA for these strata.}
+fish captured should be ignored.  The values of \code{u2} in the entire row
+will be set to NA for these strata. DO NOT SET the value of u2 to 0 because
+this indicates that the trap was operating and captured no fish.}
 
 \item{logitP.cov}{A numeric matrix for covariates to fit the
 logit(catchability). Default is a single intercept, i.e. all strata have the

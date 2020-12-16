@@ -1,3 +1,5 @@
+# 2020-12-14 CJS All bad.n1 or bad.m2 are set to 0. No NA allows for n1 or m2
+#                Fixed problem with some u2=NA in the GOF computations and plots
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2108-12-19 CJS deprecate of use of sampling fraction
 # 2018-12-15 CJS converted the muTT and sdTT plots to ggplot objects
@@ -75,20 +77,9 @@
 #' to jump.  For example, the population size could take a jump when hatchery
 #' released fish suddenly arrive at the trap.  The jumps occur AFTER the strata
 #' listed in this argument.
-#' @param bad.n1 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of marked
-#' fish releases should be discarded.  The values of \code{n1} will be set to
-#' NA for these strata.
-#' @param bad.m2 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of recovered
-#' marked fish should be ignored. For example, poor handling is suspected to
-#' induce handling induced mortality in the marked fish and so only very few
-#' are recovered.  The values of \code{m2} in the entire row will be set to NA
-#' for these strata.
-#' @param bad.u2 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of unmarked
-#' fish captured should be ignored.  The values of \code{u2} in the entire row
-#' will be set to NA for these strata.
+#' @template bad.n1
+#' @template bad.m2 
+#' @template bad.u2 
 #' @param logitP.cov A numeric matrix for covariates to fit the
 #' logit(catchability).  Default is a single intercept, i.e. all strata have
 #' the same mean logit(catchability).
@@ -169,7 +160,7 @@ TimeStratPetersenNonDiagError_fit <-
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- '2020-12-01'
+    version <- '2021-01-01'
     options(width=200)
 
 # Input parameters are
@@ -231,6 +222,18 @@ sampfrac <- as.vector(sampfrac)
 if(length(n1)!=nrow(m2)){
    cat("***** ERROR ***** Length of n1 and number of rows of m2 must be equal. They are:",
         length(n1)," ",nrow(u2),"\n")
+   return()}
+if(!is.numeric(n1)){
+   cat("***** ERROR ***** n1 must be numeric. You have:",
+        paste(n1,collapse=", "),"\n")
+   return()} 
+if(any(is.na(n1))){
+  cat("***** ERROR ***** All values of n1 must not be missing. You have: ",
+        paste(n1,collapse=", "),"\n")
+   return()}
+if(any(n1 < 0, na.rm=TRUE)){
+  cat("***** ERROR ***** All values of n1 must be non-negative. You have: ",
+        paste(n1,collapse=", "),"\n")
    return()}
 if(var(c(length(u2),length(sampfrac),length(time)))>0){
    cat("***** ERROR ***** Lengths of u2, sampfrac, time must all be equal. They are:",
@@ -329,7 +332,7 @@ if(length(logitP.fixed)==0) cat("none - NO fixed values")
 
 
 # Obtain the Pooled Petersen estimator prior to fixup of bad.n1, bad.m2, and bad.u2 values
-cat("\n\n*** Pooled Petersen Estimate prior to fixing bad n1, m2, or u2 values  CHECK - CHECK - CHECK - CHECK ***\n\n")
+cat("\n\n*** Pooled Petersen Estimate prior to fixing bad n1, m2, or u2 values ***\n\n")
 temp.n1 <- n1
 temp.m2 <- m2
 temp.u2 <- u2
@@ -339,16 +342,19 @@ pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.
 cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 .
-# Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
-# select <- !(time %in% bad.n1 | time %in% bad.m2 | time %in% bad.u2)
-select <- (temp.n1>0) & (!is.na(n1)) & (!apply(is.na(temp.m2),1,any)) & (!is.na(temp.u2[1:length(n1)]))
-cat("\n\n*** Pooled Petersen Estimate after fixing bad m2 values  CHECK - CHECK - CHECK - CHECK ***\n\n")
-cat("The following strata were excluded:",
-     if(length(time[!select])>0){time[!select]} else {" NONE"}, "\n")
 
-temp.n1 <- n1[select]
-temp.m2 <- m2[select]
-temp.u2 <- u2[select]
+# Obtain the Pooled Petersen estimator after removal of entries with bad.n1, m2, or u2 values
+select.rel <- !(time[1:length(n1)] %in% bad.n1 | time[1:length(n1)] %in% bad.m2 )
+select.rec <- ! time %in% bad.u2
+cat("\n\n*** Pooled Petersen Estimate after removing release and recovery strata flagged as bad ***\n\n")
+cat("The following release strata were excluded:",
+     if(length(time[!select.rel])>0){time[!select.rel]} else {" NONE"}, "\n")
+cat("The following recovery strata were excluded:",
+     if(length(time[!select.rec])>0){time[!select.rec]} else {" NONE"}, "\n")
+
+temp.n1 <- n1[select.rel]
+temp.m2 <- m2[select.rel]
+temp.u2 <- u2[select.rec]
 
 cat("Total n1=", sum(temp.n1,na.rm=TRUE),";  m2=",sum(temp.m2,na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
 pp <- SimplePetersen(sum(temp.n1,na.rm=TRUE), sum(temp.m2,na.rm=TRUE), sum(temp.u2,na.rm=TRUE))
@@ -359,12 +365,14 @@ cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round
 
 
 # Test if pooling can be done
+# We only do the release strata that are not flagged as bad and have no missing values
 
-cat("*** Test if pooled Petersen is allowable. [Check if equal recovery from each stratum] ***\n\n")
-select <- (n1>0) & (!is.na(n1)) & (!is.na(apply(m2,1,sum)))
-temp.n1 <- n1[select]
-temp.m2 <- m2[select,]
-test <- TestIfPool( temp.n1, apply(temp.m2,1,sum))
+cat("*** Test if pooled Petersen is allowable. [Check if equal recovery from each stratum not flagged and without missing recoveries] ***\n\n")
+#browser()
+select <- select.rel  & (!is.na(apply(m2,1,sum)))
+temp.n1 <- n1[select.rel]
+temp.m2 <- m2[select.rel,]
+test <- TestIfPool( temp.n1, apply(temp.m2,1,sum, na.rm=TRUE))
 cat("(Large Sample) Chi-square test statistic ", test$chi$statistic," has p-value", test$chi$p.value,"\n\n")
 temp <- cbind(time[1:length(n1)][select],test$chi$observed, round(test$chi$expected,1), round(test$chi$residuals^2,1))
 colnames(temp) <- c('time','n1-m2','m2','E[n1-m2]','E[m2]','X2[n1-m2]','X2[m2]')
@@ -372,7 +380,7 @@ print(temp)
 cat("\n Be cautious of using this test in cases of small expected values. \n\n")
 
 
-# Adjust the data for the explicity bad values or other problems
+# Adjust the data for the explicitly bad values or other problems
 new.time <- time
 new.n1   <- n1
 new.m2   <- m2
@@ -389,7 +397,7 @@ new.m2[time[1:length(n1)] %in% c(bad.m2,bad.n1),]  <- 0
 new.u2[time %in% bad.u2]                <- NA
 
 # Print out the revised data
-cat("\n\n*** Revised data *** \n")
+cat("\n\n*** Revised data after setting flagged strata to 0 (releases) or NA (recoveries) *** \n")
 jump.indicator <- rep('   ', length(u2))
 jump.indicator[time %in% jump.after]<- '***'
 ex.n1 <- c(new.n1, rep(NA, length(new.u2)-length(new.n1)))

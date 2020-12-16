@@ -16,6 +16,7 @@ TimeStratPetersenDiagErrorWHSteel_fit(
   u2.H.1,
   sampfrac = rep(1, length(u2.W.YoY)),
   hatch.after = NULL,
+  bad.n1 = c(),
   bad.m2 = c(),
   bad.u2.W.YoY = c(),
   bad.u2.W.1 = c(),
@@ -78,11 +79,17 @@ value of \code{sampfrac} for that stratum would be 3/7.}
 At which point do hatchery fish arrive? They arrive in the immediate stratum
 AFTER these entries.}
 
+\item{bad.n1}{A numeric vector with elements belonging to \code{time}.  In
+some cases, something goes wrong in the stratum, and the number of marked
+fish releases should be discarded.  The values of \code{n1} and \code{m2} will be set to
+0 for these strata.}
+
 \item{bad.m2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of recovered
-fish should be ignored.  For example, poor handling is suspected to induce
-handling induced mortality in the marked fish and so only very few are
-recovered. The values of \code{m2} will be set to NA for these strata.}
+marked fish should be ignored. For example, poor handling is suspected to
+induce handling induced mortality in the marked fish and so only very few
+are recovered.  The values of \code{n1} and \code{m2} will be set to 0
+for these strata.}
 
 \item{bad.u2.W.YoY}{A numeric vector with elements belonging to \code{time}.
 In some cases, something goes wrong in the stratum, and the number of wild

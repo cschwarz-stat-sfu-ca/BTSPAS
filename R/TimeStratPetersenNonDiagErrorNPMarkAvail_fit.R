@@ -1,3 +1,4 @@
+## 2020-12-15 CJS Fixed problem when specifyin u2==NA
 ## 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 ## 2018-12-22 CJS add code to estimate mean movement vector (movep)
 ## 2018-12-19 CJS sampling fraction deprecated
@@ -61,20 +62,9 @@
 #' to jump.  For example, the population size could take a jump when hatchery
 #' released fish suddenly arrive at the trap.  The jumps occur AFTER the strata
 #' listed in this argument.
-#' @param bad.n1 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of marked
-#' fish releases should be discarded.  The values of \code{n1} will be set to
-#' NA for these strata.
-#' @param bad.m2 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of recovered
-#' marked fish should be ignored. For example, poor handling is suspected to
-#' induce handling induced mortality in the marked fish and so only very few
-#' are recovered.  The values of \code{m2} in the entire row will be set to NA
-#' for these strata.
-#' @param bad.u2 A numeric vector with elements belonging to \code{time}.  In
-#' some cases, something goes wrong in the stratum, and the number of unmarked
-#' fish captured should be ignored.  The values of \code{u2} in the entire row
-#' will be set to NA for these strata.
+#' @template bad.n1
+#' @template bad.m2
+#' @template bad.u2
 #' @param logitP.cov A numeric matrix for covariates to fit the
 #' logit(catchability).  Default is a single intercept, i.e. all strata have
 #' the same mean logit(catchability).
@@ -174,7 +164,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- '2020-12-01'
+  version <- '2021-01-01'
   options(width=200)
   
   ## Input parameters are
@@ -237,9 +227,21 @@ sampfrac <- as.vector(sampfrac)
   ##  Do some basic error checking
   ##  1. Check that length of n1, m2, u2, sampfrac, time are consistent with each other.
   ##  In the non-diagonal case, they don't have to match
-  if(length(n1)!=nrow(m2))
+if(length(n1)!=nrow(m2))
     stop("***** ERROR ***** Length of n1 and number of rows of m2 must be equal. They are:",
         length(n1)," ",nrow(u2),"\n")
+if(!is.numeric(n1)){
+   cat("***** ERROR ***** n1 must be numeric. You have:",
+        paste(n1,collapse=", "),"\n")
+   return()} 
+if(any(is.na(n1))){
+  cat("***** ERROR ***** All values of n1 must not be missing. You have: ",
+        paste(n1,collapse=", "),"\n")
+   return()}
+if(any(n1 < 0, na.rm=TRUE)){
+  cat("***** ERROR ***** All values of n1 must be non-negative. You have: ",
+        paste(n1,collapse=", "),"\n")
+   return()}
 
   if(var(c(length(u2),length(sampfrac),length(time)))>0)
     stop("***** ERROR ***** Lengths of u2, sampfrac, time must all be equal. They are:",
@@ -418,9 +420,9 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
   
 
   ## Set the bad values to missing 
-  new.n1[time[1:length(n1)] %in% bad.n1]  <- NA
-  new.m2[time[1:length(n1)] %in% bad.m2,] <- NA
-  new.u2[time %in% bad.u2]                <- NA
+  new.n1[time[1:length(n1)] %in% c(bad.n1, bad.m2)] <- 0
+  new.m2[time[1:length(n1)] %in% c(bad.m2, bad.n1)] <- 0
+  new.u2[time %in% bad.u2]                          <- NA
   
   ## Print out the revised data
   cat("\n\n*** Revised data *** \n")
@@ -485,7 +487,7 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
 
   ## We do need to add the column of not recaptured counts to the m2
   ## array.
-  new.m2 <- cbind(new.m2,n1-apply(new.m2,1,sum))
+  new.m2 <- cbind(new.m2,new.n1-apply(new.m2,1,sum))
 
   ## We construct a prior probability on the P(marks available) based on the information provided
   ## by assuming a beta prior that would give the binomial results

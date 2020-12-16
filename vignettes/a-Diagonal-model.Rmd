@@ -1447,7 +1447,7 @@ library("BTSPAS")
 # After which weeks is the spline allowed to jump?
 demo4.jump.after <- c(22,39)  # julian weeks after which jump occurs
 
-# Which julian weeks have "bad" recapture values. These will be set to missing and estimated.
+# Which julian weeks have "bad" recapture values. These will be set to 0 or missing prior to the run.
 demo4.bad.m2     <- c(41)   # list julian weeks with bad m2 values. This is used in the Trinity Example
 demo4.bad.u2     <- c(11)   # list julian weeks with bad u2 values. [This was arbitrary to demostrate the feature.]
 demo4.bad.n1     <- c(38)   # list julian weeks with bad n1 values. [This was arbitrary to demonstrate the feature.]

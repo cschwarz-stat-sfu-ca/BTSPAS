@@ -59,6 +59,7 @@ TimeStratPetersenDiagErrorWHChinook_fit(
   clip.frac.H,
   sampfrac = rep(1, length(u2.A)),
   hatch.after = NULL,
+  bad.n1 = c(),
   bad.m2 = c(),
   bad.u2.A = c(),
   bad.u2.N = c(),
@@ -127,9 +128,10 @@ immediate stratum AFTER these entries.}
 
 \item{bad.m2}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of recovered
-fish should be ignored.  For example, poor handling is suspected to induce
-handling induced mortality in the marked fish and so only very few are
-recovered. The values of \code{m2} will be set to NA for these strata.}
+marked fish should be ignored. For example, poor handling is suspected to
+induce handling induced mortality in the marked fish and so only very few
+are recovered.  The values of \code{n1} and \code{m2} will be set to 0
+for these strata.}
 
 \item{bad.u2.A.YoY, bad.u2.N.YoY}{List of julian weeks where the value of u2.A.YoY/u2.N.YoY is suspect. 
 These are set to NA prior to the fit.}
@@ -204,6 +206,11 @@ that have the adipose fin clipped (between 0 and 1).}
 \item{hatch.after}{A numeric vector with elements belonging to \code{time}.
 At which point do hatchery fish arrive? They arrive in the immediate stratum
 AFTER these entries.}
+
+\item{bad.n1}{A numeric vector with elements belonging to \code{time}.  In
+some cases, something goes wrong in the stratum, and the number of marked
+fish releases should be discarded.  The values of \code{n1} and \code{m2} will be set to
+0 for these strata.}
 
 \item{bad.u2.A}{A numeric vector with elements belonging to \code{time}.  In
 some cases, something goes wrong in the stratum, and the number of unmarked
