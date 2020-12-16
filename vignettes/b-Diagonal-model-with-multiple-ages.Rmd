@@ -56,7 +56,7 @@ releases and recoveries is diagonal.
 The $n1[j]$ and $m2[j]$ establish the capture efficiency of the trap.
  
 At the same time, $u2[j]$ unmarked fish are captured at the screw trap.
-These fish are a mixture of wild and hatchery raised chinook salmon.
+These fish are a mixture of wild and hatchery raised Chinook Salmon.
 A portion (*clip.rate*) of the hatchery raised fish are adipose fin clipped and can be recognized as hatchery raised.
 The unclipped fish are a mixture of wild and hatchery fish which must be separated.
 Hence the $u2[j]$ are separated into:
@@ -222,7 +222,7 @@ demo.fit$summary[ row.names(demo.fit$summary) %in% c("Ntot","Utot","Utot.H","Uto
 # Wild and Hatchery Chinook with YoY and Age 1 fish.
 
 In this example, *BTSPAS* allows for
-separating wild from hatchery Chinook salmon when Age-1 chinook are present (residualized) from last year.
+separating wild from hatchery Chinook salmon when Age-1 Chinook Salmon are present (residualized) from last year.
 
 
 In each stratum $j$, $n1[j]$ fish are marked and released above a rotary screw trap.
@@ -231,7 +231,7 @@ releases and recoveries is diagonal.
 The $n1[j]$ and $m2[j]$ establish the capture efficiency of the trap.
  
 At the same time, $u2[j]$ unmarked fish are captured at the screw trap.
-These fish are a mixture of YoY and Age-1 wild and hatchery raised chinook salmon. 
+These fish are a mixture of YoY and Age-1 wild and hatchery raised Chinook Salmon. 
 A portion (*clip.rate.H.YoY*, *clip.rate.H.1*) of the YoY and Age1 hatchery raised fish 
 are adipose fin clipped and can be recognized as hatchery raised.
 The unclipped fish are a mixture of wild and hatchery fish which must be separated.

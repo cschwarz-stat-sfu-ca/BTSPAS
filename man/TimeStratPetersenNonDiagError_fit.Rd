@@ -65,10 +65,9 @@ case.}
 stratum.  These will be expanded by the capture efficiency to estimate the
 population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1}
 
-\item{sampfrac}{\strong{Deprecated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
-what fraction of the stratum was sampled. For example, if strata are
-calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-value of \code{sampfrac} for that stratum would be 3/7.}
+\item{sampfrac}{\strong{Deprecated} because it really doesn't work as intended.
+You must remove all references to sampfrac from your code. Contact \email{cschwarz.stat.sfu.ca@gmail.com}
+for more information.}
 
 \item{jump.after}{A numeric vector with elements belonging to \code{time}.
 In some cases, the spline fitting the population numbers should be allowed

@@ -1,3 +1,4 @@
+# 2020-12-15 CJS Removed all uses of sampfrac in the code
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2018-12-19 CSJ deprecated use of sampling fraction
 # 2018-12-06 CJS saved report to a text connections
@@ -65,10 +66,7 @@
 #' @param clip.frac.H.YoY,clip.frac.H.1 Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)
 #' @param clip.frac.H A numeric value for the fraction of the hatchery fish
 #' that have the adipose fin clipped (between 0 and 1).
-#' @param sampfrac \strong{Deprecated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
-#' what fraction of the stratum was sampled. For example, if strata are
-#' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-#' value of \code{sampfrac} for that stratum would be 3/7.
+#' @template sampfrac
 #' @param hatch.after A numeric vector with elements belonging to \code{time}.
 #' At which point do hatchery fish arrive? They arrive in the immediate stratum
 #' AFTER these entries.
@@ -176,11 +174,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
 #               So u2.A MUST be hatchery fish.
 #                  u2.N is a mixture of wild and hatchery fish.
 #    clip.frac.H - what fraction of the hatchery fish are clipped?
-#    sampfrac - Deprecated. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
-#              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
-#              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
-#              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
-#              back to a 7 day week as well.
+#    sampfrac - Deprecated. DO NOT USE ANYMORE. 
 #    hatch.after - julian week AFTER which hatchery fish are released 
 #    bad.m2  - list of julian numbers where the value of m2 is suspect.
 #              For example, the capture rate could be extremely low.
@@ -293,8 +287,8 @@ cat("\n\n", title, "Results \n\n")
 
 
 cat("*** Raw data *** \n")
-temp<- cbind(time, n1, m2, u2.A, u2.N, round(sampfrac,digits=2), logitP.cov)
-colnames(temp)<- c('time', 'n1','m2','u2.A', 'u2.N','SampFrac', paste("logitPcov[", 1:ncol(as.matrix(logitP.cov)),"]",sep="") )
+temp<- cbind(time, n1, m2, u2.A, u2.N, logitP.cov)
+colnames(temp)<- c('time', 'n1','m2','u2.A', 'u2.N', paste("logitPcov[", 1:ncol(as.matrix(logitP.cov)),"]",sep="") )
 print(temp) 
 cat("\n\n")
 cat("Hatchery fish are released AFTER strata: ", hatch.after,"\n\n")
@@ -311,20 +305,20 @@ cat("The following strata had u2.N set to missing: ",
 # Pooled Petersen estimator over ALL of the data including when no releases take place, bad m2, bad.u2.A or bad.u2.N values.
 cat("\n\n*** Pooled Petersen Estimate based on pooling over ALL strata adjusting for sampling fraction***\n\n")
 cat("Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",
-     sum(u2.A/sampfrac, na.rm=TRUE)+sum(u2.N/sampfrac, na.rm=TRUE),"\n\n")
-pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.A/sampfrac, na.rm=TRUE)+sum(u2.N/sampfrac, na.rm=TRUE))
+     sum(u2.A, na.rm=TRUE)+sum(u2.N, na.rm=TRUE),"\n\n")
+pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.A, na.rm=TRUE)+sum(u2.N, na.rm=TRUE))
 cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 # estimate for clipped fish (hatchery) and expand by the clip fraction
-cat("Total n1=", sum(n1, na.rm=TRUE),
-    ";  m2=",    sum(m2, na.rm=TRUE),
-    ";  u2.A=",  sum(u2.A/sampfrac, na.rm=TRUE),"\n")
+cat("Total n1=", sum(n1,   na.rm=TRUE),
+    ";  m2=",    sum(m2,   na.rm=TRUE),
+    ";  u2.A=",  sum(u2.A, na.rm=TRUE),"\n")
 cat("Clip fraction :", clip.frac.H, "\n\n")
 pp <- SimplePetersen(
-     sum(n1, na.rm=TRUE), 
-     sum(m2, na.rm=TRUE), 
-     sum(u2.A/sampfrac, na.rm=TRUE))
+     sum(n1,   na.rm=TRUE), 
+     sum(m2,   na.rm=TRUE), 
+     sum(u2.A, na.rm=TRUE))
 cat("Est U.H(total) ", format(round(pp$U.est)/clip.frac.H,big.mark=","),
     "  (SE ",          format(round(pp$U.se) /clip.frac.H,big.mark=","), ")\n")
 cat("Est N.H(total) ", format(round(pp$N.est)/clip.frac.H,big.mark=","),
@@ -334,13 +328,13 @@ cat("Est N.H(total) ", format(round(pp$N.est)/clip.frac.H,big.mark=","),
 # estimate for wild YoY fish found by subtraction
 cat("Total n1=", sum(n1, na.rm=TRUE),
     ";  m2=",    sum(m2, na.rm=TRUE),
-    ";  u2.W=",  sum((u2.N+u2.A-u2.A/clip.frac.H)/sampfrac, na.rm=TRUE),
+    ";  u2.W=",  sum((u2.N+u2.A-u2.A/clip.frac.H), na.rm=TRUE),
     "[Formed by interpolation based on clip rate]\n")
 cat("Clip fraction :", clip.frac.H, "\n\n")
 pp <- SimplePetersen(
      sum(n1, na.rm=TRUE), 
      sum(m2, na.rm=TRUE), 
-     sum((u2.N+u2.A-u2.A/clip.frac.H)/sampfrac, na.rm=TRUE))
+     sum((u2.N+u2.A-u2.A/clip.frac.H), na.rm=TRUE))
 cat("Est U.W(total) ", format(round(pp$U.est),big.mark=","),
     "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE\n")
 cat("Est N.W(total) ", format(round(pp$N.est),big.mark=","),
@@ -357,22 +351,21 @@ temp.n1 <-      n1      [select]
 temp.m2 <-      m2      [select]
 temp.u2.A <-    u2.A    [select]
 temp.u2.N <-    u2.N    [select]
-temp.sampfrac<- sampfrac[select]
 
-cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.A/temp.sampfrac+temp.u2.N/temp.sampfrac),"\n\n")
-pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.A/temp.sampfrac+temp.u2.N/temp.sampfrac))
+cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.A+temp.u2.N),"\n\n")
+pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.A+temp.u2.N))
 cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
 # estimate for clipped fish (hatchery) and expand by the clip fraction
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
     ";  m2=",    sum(temp.m2, na.rm=TRUE),
-    ";  u2.A=",  sum(temp.u2.A/temp.sampfrac, na.rm=TRUE),"\n")
+    ";  u2.A=",  sum(temp.u2.A, na.rm=TRUE),"\n")
 cat("Clip fraction :", clip.frac.H, "\n\n")
 pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
-     sum(temp.u2.A/temp.sampfrac, na.rm=TRUE))
+     sum(temp.u2.A, na.rm=TRUE))
 cat("Est U.H(total) ", format(round(pp$U.est)/clip.frac.H,big.mark=","),
     "  (SE ",          format(round(pp$U.se) /clip.frac.H,big.mark=","), ")\n")
 cat("Est N.H(total) ", format(round(pp$N.est)/clip.frac.H,big.mark=","),
@@ -382,13 +375,13 @@ cat("Est N.H(total) ", format(round(pp$N.est)/clip.frac.H,big.mark=","),
 # estimate for wild YoY fish
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
     ";  m2=",    sum(temp.m2, na.rm=TRUE),
-    ";  u2.W=",  sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H)/temp.sampfrac, na.rm=TRUE),
+    ";  u2.W=",  sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H), na.rm=TRUE),
     "[Formed by interpolation based on clip rate]\n")
 cat("Clip fraction :", clip.frac.H, "\n\n")
 pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
-     sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H)/temp.sampfrac, na.rm=TRUE))
+     sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H), na.rm=TRUE))
 cat("Est U.W(total) ", format(round(pp$U.est),big.mark=","),
     "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE \n")
 cat("Est N.W(total) ", format(round(pp$N.est),big.mark=","),
@@ -421,10 +414,9 @@ temp.n1       <- n1      [select]
 temp.m2       <- m2      [select]
 temp.u2.A     <- u2.A    [select]
 temp.u2.N     <- u2.N    [select]
-temp.sampfrac <- sampfrac[select]
 
-cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.A/temp.sampfrac+temp.u2.N/temp.sampfrac),"\n\n")
-pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.A/temp.sampfrac+temp.u2.N/temp.sampfrac))
+cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.A+temp.u2.N),"\n\n")
+pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.A+temp.u2.N))
 cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
@@ -432,12 +424,12 @@ cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round
 # estimate for clipped fish (hatchery) and expand by the clip fraction
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
     ";  m2=",    sum(temp.m2, na.rm=TRUE),
-    ";  u2.A=",  sum(temp.u2.A/temp.sampfrac, na.rm=TRUE),"\n")
+    ";  u2.A=",  sum(temp.u2.A, na.rm=TRUE),"\n")
 cat("Clip fraction :", clip.frac.H, "\n\n")
 pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
-     sum(temp.u2.A/temp.sampfrac, na.rm=TRUE))
+     sum(temp.u2.A, na.rm=TRUE))
 cat("Est U.H(total) ", format(round(pp$U.est)/clip.frac.H,big.mark=","),
     "  (SE ",          format(round(pp$U.se) /clip.frac.H,big.mark=","), ")\n")
 cat("Est N.H(total) ", format(round(pp$N.est)/clip.frac.H,big.mark=","),
@@ -446,13 +438,13 @@ cat("Est N.H(total) ", format(round(pp$N.est)/clip.frac.H,big.mark=","),
 # estimate for wild YoY fish
 cat("Total n1=", sum(temp.n1, na.rm=TRUE),
     ";  m2=",    sum(temp.m2, na.rm=TRUE),
-    ";  u2.W=",  sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H)/temp.sampfrac, na.rm=TRUE),
+    ";  u2.W=",  sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H), na.rm=TRUE),
     "[Formed by interpolation based on clip rate]\n")
 cat("Clip fraction :", clip.frac.H, "\n\n")
 pp <- SimplePetersen(
      sum(temp.n1, na.rm=TRUE), 
      sum(temp.m2, na.rm=TRUE), 
-     sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H)/temp.sampfrac, na.rm=TRUE))
+     sum((temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H), na.rm=TRUE))
 cat("Est U.W(total) ", format(round(pp$U.est),big.mark=","),
     "  (SE ",          format(round(pp$U.se) ,big.mark=","), ") APPROXIMATE\n")
 cat("Est N.W(total) ", format(round(pp$N.est),big.mark=","),
@@ -464,7 +456,7 @@ cat("Est N.W(total) ", format(round(pp$N.est),big.mark=","),
 cat("*** Stratified Petersen Estimator for each stratum PRIOR to removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.n1 <- n1
 temp.m2 <- m2
-temp.u2 <- (u2.A + u2.N)/sampfrac
+temp.u2 <- (u2.A + u2.N)
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
 temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','(u2.A+u2.N)*adj', 'U[i]', 'SE(U[i])')
@@ -476,7 +468,7 @@ cat("Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
 cat("*** Stratified Petersen Estimator for each stratum Hatchery YoY PRIOR to removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.n1 <- n1
 temp.m2 <- m2
-temp.u2 <- u2.A/sampfrac
+temp.u2 <- u2.A
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
 temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.A*adj', 'U[i]', 'SE(U[i])')
@@ -488,7 +480,7 @@ cat("Est U.H(total) ", format(round(sum(sp$U.est, na.rm=TRUE)/clip.frac.H),big.m
 cat("*** Stratified Petersen Estimator for each stratum Wild YoY  PRIOR to removing bad m2 values after adjusting for sampling fration ***\n\n")
 temp.n1 <- n1
 temp.m2 <- m2
-temp.u2 <- pmax(0,(u2.N+u2.A-u2.A/clip.frac.H)/sampfrac)
+temp.u2 <- pmax(0,(u2.N+u2.A-u2.A/clip.frac.H))
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
 temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W-est', 'U[i]', 'SE(U[i])')
@@ -501,7 +493,7 @@ cat("Est U.W(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
 
 
 # Obtain Stratified-Petersen estimator for each stratum after removing bad m2, u2.A, or u2.N values
-cat("*** Stratified Petersen Estimator for each stratum AFTER removing bad m2, u2.A, u2.N values adjusting for sampling fraction***\n\n")
+cat("*** Stratified Petersen Estimator for each stratum AFTER removing bad m2, u2.A, u2.N values***\n\n")
 temp.n1 <- n1
 temp.m2 <- m2
 temp.m2[index.bad.m2] <- NA
@@ -509,17 +501,17 @@ temp.u2.A <- u2.A
 temp.u2.A[index.bad.u2.A] <- NA
 temp.u2.N <- u2.N
 temp.u2.N[index.bad.u2.N] <- NA
-sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.A/sampfrac+temp.u2.N/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, (temp.u2.A+temp.u2.N)/sampfrac, round(sp$U.est), round(sp$U.se))
+sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.A+temp.u2.N)
+temp <- cbind(time, temp.n1, temp.m2, (temp.u2.A+temp.u2.N), round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','(u2.a+u2.N)*adj', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
 cat("Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=","),
     "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
-cat("*** Stratified Petersen Estimator for each stratum YoY hatchery PRIOR to removing bad m2 values after adjusting for sampling fration ***\n\n")
-sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.A/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, round(temp.u2.A/sampfrac), round(sp$U.est), round(sp$U.se))
+cat("*** Stratified Petersen Estimator for each stratum YoY hatchery PRIOR to removing bad m2 values ***\n\n")
+sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.A)
+temp <- cbind(time, temp.n1, temp.m2, round(temp.u2.A), round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.A*adj', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("** Estimates not adjusted for clip fraction above \n")
@@ -527,7 +519,7 @@ cat("Est U.H(total) ", format(round(sum(sp$U.est, na.rm=TRUE)/clip.frac.H),big.m
     "  (SE ",          format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))/clip.frac.H), big.mark=","), ")\n\n\n")
 
 cat("*** Stratified Petersen Estimator for each stratum Wild YoY  PRIOR to removing bad m2 values after adjusting for sampling fration ***\n\n")
-temp.u2.W <- pmax(0,(temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H)/sampfrac)
+temp.u2.W <- pmax(0,(temp.u2.N+temp.u2.A-temp.u2.A/clip.frac.H))
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W)
 temp <- cbind(time, temp.n1, temp.m2, round(temp.u2.W), round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W-est', 'U[i]', 'SE(U[i])')
@@ -565,7 +557,6 @@ new.n1         <- rep(0, max(time)-min(time)+1)
 new.m2         <- rep(0, max(time)-min(time)+1)
 new.u2.A       <- rep(0, max(time)-min(time)+1)
 new.u2.N       <- rep(0, max(time)-min(time)+1)
-new.sampfrac   <- rep(0, max(time)-min(time)+1)
 new.logitP.cov <- matrix(NA, nrow=max(time)-min(time)+1, ncol=ncol(as.matrix(logitP.cov)))
 new.time       <- min(time):max(time)
 
@@ -577,7 +568,6 @@ new.u2.A[time-min(time)+1]         <- u2.A
 new.u2.A[bad.u2.A-min(time)+1]     <- NA    # wipe out strata where u2.A is known to be bad
 new.u2.N[time-min(time)+1]         <- u2.N
 new.u2.N[bad.u2.N-min(time)+1]     <- NA    # wipe out strata where u2.N is known to be bad
-new.sampfrac[time-min(time)+1]   <- sampfrac
 new.logitP.cov[time-min(time)+1,]<- as.matrix(logitP.cov)
 new.logitP.cov[ is.na(new.logitP.cov[,1]), 1] <- 1  # insert a 1 into first columns where not specified
 new.logitP.cov[ is.na(new.logitP.cov)] <- 0         # other covariates are forced to zero not in column 1
@@ -594,13 +584,8 @@ new.n1[new.n1==0] <- 1
 # In reality, there should be a slight adjustment
 # to the precision to account for this change, but this is not done.
 # Similarly, if the sampling fraction is more than 1, the adjustment forces the total unmarked catch back to a single week.
-new.u2.A <- round(new.u2.A/new.sampfrac)
-new.u2.N <- round(new.u2.N/new.sampfrac)
-
-# Adjust for strata where sampling fraction=0. On these strata
-# u2.A and u2.N is set to NA so that there is NO information on U2 for this stratum
-new.u2.A[new.sampfrac<.001] <- NA
-new.u2.N[new.sampfrac<.001] <- NA
+new.u2.A <- round(new.u2.A)
+new.u2.N <- round(new.u2.N)
 
 # Print out the revised data
 hatch.indicator <- rep('   ', max(time)-min(time)+1)
@@ -608,7 +593,7 @@ hatch.indicator[hatch.after-min(time)+1]<- '***'
 
 cat("\n\n*** Revised data *** \n")
 temp<- data.frame(time=new.time, n1=new.n1, m2=new.m2, u2.A=new.u2.A, u2.N=new.u2.N, 
-       sampfrac=round(new.sampfrac,digits=2), new.logitP.cov=new.logitP.cov, 
+       new.logitP.cov=new.logitP.cov, 
        hatch.indicator=hatch.indicator)
 print(temp) 
 cat("\n\n")
@@ -876,7 +861,6 @@ results$report <- stdout
 
 # add some of the raw data to the bugs object for simplicity in referencing it later
 results$data <- list( time=time, n1=n1, m2=m2, u2.A=u2.A, u2.N=u2.N, clip.frac.H=clip.frac.H,
-                      sampfrac=sampfrac, 
                       hatch.after=hatch.after, 
                       bad.m2=bad.m2, bad.u2.A=bad.u2.A, bad.u2.N=bad.u2.N, 
                       logitP.cov=logitP.cov,

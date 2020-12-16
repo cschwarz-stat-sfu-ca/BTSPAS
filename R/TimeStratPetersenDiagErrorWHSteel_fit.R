@@ -1,3 +1,4 @@
+# 2020-12-15 CJS Remove sampfrac from code
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2018-12-19 CJS deprecated use of sampling fraction
 # 2018-12-06 CJS converted report to textConnection
@@ -52,10 +53,7 @@
 #' captured in each stratum.
 #' @param u2.H.1 A numeric vector of the number of unmarked hatchery age 1+ fish
 #' (i.e. adipose fin clipped) captured in each stratum.
-#' @param sampfrac \strong{Deprecated} DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
-#' what fraction of the stratum was sampled. For example, if strata are
-#' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-#' value of \code{sampfrac} for that stratum would be 3/7.
+#' @template sampfrac
 #' @param hatch.after A numeric vector with elements belonging to \code{time}.
 #' At which point do hatchery fish arrive? They arrive in the immediate stratum
 #' AFTER these entries.
@@ -155,11 +153,7 @@ TimeStratPetersenDiagErrorWHSteel_fit <-
 #    u2.W.YoY - number of wild YoY fish (no clips)
 #    u2.W.1   - number of wild age 1+ fish (no clips)
 #    u2.H.1   - number of hatchery age 1+ fish (ad fin clipped). 100% of hatchery production is fin clipped
-#    sampfrac - DEPRECATED. DO NOT USE ANYMORE. sampling fraction to adjust for how many days of the week was the trap operating
-#              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
-#              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
-#              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
-#              back to a 7 day week as well.
+#    sampfrac - DEPRECATED. DO NOT USE ANYMORE. 
 #    hatch.after - julian week AFTER which hatchery fish are released 
 #    bad.m2  - list of julian numbers where the value of m2 is suspect.
 #              For example, the capture rate could be extremely low.
@@ -279,8 +273,8 @@ cat("\n\n", title, "Results \n\n")
 
 
 cat("*** Raw data *** \n")
-temp<- cbind(time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1, round(sampfrac,digits=2), logitP.cov)
-colnames(temp)<- c('time', 'n1','m2','u2.W.YoY', 'u2.W.1', 'u2.H.1','SampFrac', paste("logitPcov[", 1:ncol(as.matrix(logitP.cov)),"]",sep="") )
+temp<- cbind(time, n1, m2, u2.W.YoY, u2.W.1, u2.H.1, logitP.cov)
+colnames(temp)<- c('time', 'n1','m2','u2.W.YoY', 'u2.W.1', 'u2.H.1', paste("logitPcov[", 1:ncol(as.matrix(logitP.cov)),"]",sep="") )
 print(temp) 
 cat("\n\n")
 cat("Hatchery fish are released AFTER strata: ", hatch.after,"\n\n")
@@ -295,19 +289,19 @@ cat("The following strata had u2.H.1   set to missing: ",
 
 
 # Pooled Petersen estimator over ALL of the data including when no releases take place, bad m2, bad.u2.* values.
-cat("\n\n*** Pooled Petersen Estimates based on pooling over ALL strata adjusting for sampling fractions ***\n\n")
-cat("W.YoY  Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2.W.YoY/sampfrac, na.rm=TRUE),"\n")
-pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.W.YoY/sampfrac, na.rm=TRUE))
+cat("\n\n*** Pooled Petersen Estimates based on pooling over ALL strata ***\n\n")
+cat("W.YoY  Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2.W.YoY, na.rm=TRUE),"\n")
+pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.W.YoY, na.rm=TRUE))
 cat("W.YoY  Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("W.YoY  Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
-cat("W.1    Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=", sum(u2.W.1/sampfrac, na.rm=TRUE),"\n")
-pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.W.1/sampfrac, na.rm=TRUE))
+cat("W.1    Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=", sum(u2.W.1, na.rm=TRUE),"\n")
+pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.W.1, na.rm=TRUE))
 cat("W.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("W.1    Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
-cat("H.1    Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2.H.1/sampfrac, na.rm=TRUE),"\n")
-pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.H.1/sampfrac, na.rm=TRUE))
+cat("H.1    Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2.H.1, na.rm=TRUE),"\n")
+pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2.H.1, na.rm=TRUE))
 cat("H.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("H.1    Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
@@ -322,20 +316,19 @@ temp.m2       <- m2      [select]
 temp.u2.W.YoY <- u2.W.YoY[select]
 temp.u2.W.1   <- u2.W.1  [select]
 temp.u2.H.1   <- u2.H.1  [select]
-temp.sampfrac <- sampfrac[select]
 
-cat("W.YoY  Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2.W.YoY/temp.sampfrac, na.rm=TRUE),"\n")
-pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.W.YoY/temp.sampfrac, na.rm=TRUE))
+cat("W.YoY  Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2.W.YoY, na.rm=TRUE),"\n")
+pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.W.YoY, na.rm=TRUE))
 cat("W.YoY  Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("W.YoY  Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
-cat("W.1    Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=", sum(temp.u2.W.1/temp.sampfrac, na.rm=TRUE),"\n")
-pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.W.1/temp.sampfrac, na.rm=TRUE))
+cat("W.1    Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=", sum(temp.u2.W.1, na.rm=TRUE),"\n")
+pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.W.1, na.rm=TRUE))
 cat("W.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("W.1    Est U(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
-cat("H.1    Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2.H.1/temp.sampfrac, na.rm=TRUE),"\n")
-pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.H.1/sampfrac, na.rm=TRUE))
+cat("H.1    Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2.H.1, na.rm=TRUE),"\n")
+pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2.H.1, na.rm=TRUE))
 cat("H.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("H.1    Est U(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
@@ -375,20 +368,19 @@ temp.m2        <- m2      [select]
 temp.u2.W.YoY  <- u2.W.YoY[select]
 temp.u2.W.1    <- u2.W.1  [select]
 temp.u2.H.1    <- u2.H.1  [select]
-temp.sampfrac  <- sampfrac[select]
 
-cat("W.YoY  Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.W.YoY/temp.sampfrac),"\n")
-pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.W.YoY/temp.sampfrac))
+cat("W.YoY  Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.W.YoY),"\n")
+pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.W.YoY))
 cat("W.YoY  Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("W.YoY  Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
-cat("W.1    Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.W.1/temp.sampfrac),"\n")
-pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.W.1/temp.sampfrac))
+cat("W.1    Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.W.1),"\n")
+pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.W.1))
 cat("W.1    Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("W.1    Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
-cat("H.1   Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.H.1/temp.sampfrac),"\n")
-pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.H.1/temp.sampfrac))
+cat("H.1   Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2.H.1),"\n")
+pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2.H.1))
 cat("H.1   Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("H.1   Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
@@ -452,8 +444,8 @@ temp.u2.H.1 <- u2.H.1
 temp.u2.H.1[index.bad.u2.H.1] <- NA
 
 cat("\nW.YoY raw data\n")
-sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W.YoY/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.YoY/sampfrac, round(sp$U.est), round(sp$U.se))
+sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W.YoY)
+temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.YoY, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.YoY(adj)', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
@@ -461,8 +453,8 @@ cat("W.YoY Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=",")
     "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 cat("\nW.1   raw data\n")
-sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W.1/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.1/sampfrac, round(sp$U.est), round(sp$U.se))
+sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.W.1)
+temp <- cbind(time, temp.n1, temp.m2, temp.u2.W.1, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.W.1(adj)', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
@@ -470,8 +462,8 @@ cat("W.1   Est U(total) ", format(round(sum(sp$U.est, na.rm=TRUE)),big.mark=",")
     "  (SE ", format(round(sqrt(sum(sp$U.se^2, na.rm=TRUE))), big.mark=","), ")\n\n\n")
 
 cat("\nH.1   raw data\n")
-sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.H.1/sampfrac)
-temp <- cbind(time, temp.n1, temp.m2, temp.u2.H.1/sampfrac, round(sp$U.est), round(sp$U.se))
+sp <- SimplePetersen(temp.n1, temp.m2, temp.u2.H.1)
+temp <- cbind(time, temp.n1, temp.m2, temp.u2.H.1, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2.H.1(adj)', 'U[i]', 'SE(U[i])')
 print(temp)
 cat("\n")
@@ -502,7 +494,6 @@ new.m2         <- rep(0, max(time)-min(time)+1)
 new.u2.W.YoY   <- rep(0, max(time)-min(time)+1)
 new.u2.W.1     <- rep(0, max(time)-min(time)+1)
 new.u2.H.1     <- rep(0, max(time)-min(time)+1)
-new.sampfrac   <- rep(0, max(time)-min(time)+1)
 new.logitP.cov <- matrix(NA, nrow=max(time)-min(time)+1, ncol=ncol(as.matrix(logitP.cov)))
 new.time       <- min(time):max(time)
 
@@ -521,7 +512,6 @@ new.u2.H.1  [time-min(time)+1]             <- u2.H.1
 new.u2.H.1  [bad.u2.H.1-min(time)+1]       <- NA    # wipe out strata where u2.W.1 is known to be bad
 
 
-new.sampfrac[time-min(time)+1]   <- sampfrac
 new.logitP.cov[time-min(time)+1,]<- as.matrix(logitP.cov)
 new.logitP.cov[ is.na(new.logitP.cov[,1]), 1] <- 1  # insert a 1 into first columns where not specified
 new.logitP.cov[ is.na(new.logitP.cov)] <- 0         # other covariates are forced to zero not in column 1
@@ -532,31 +522,13 @@ new.logitP.cov[ is.na(new.logitP.cov)] <- 0         # other covariates are force
 new.m2[new.n1==0] <- NA
 new.n1[new.n1==0] <- 1
 
-# Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
-# of unmarked fish that were captured. It is not necessary to adjust the n1 and m2 values 
-# as these are used ONLY to estimate the capture efficiency. 
-# In reality, there should be a slight adjustment
-# to the precision to account for this change, but this is not done.
-# Similarly, if the sampling fraction is more than 1, the adjustment forces the total unmarked catch back to a single week.
-new.u2.W.YoY <- round(new.u2.W.YoY/new.sampfrac)
-new.u2.W.1   <- round(new.u2.W.1  /new.sampfrac)
-new.u2.H.1   <- round(new.u2.H.1  /new.sampfrac)
-
-
-# Adjust for strata where sampling fraction=0. On these strata
-# u2.* is set to NA so that there is NO information on U2 for this stratum
-new.u2.W.YoY[new.sampfrac<.001] <- NA
-new.u2.W.1  [new.sampfrac<.001] <- NA
-new.u2.H.1  [new.sampfrac<.001] <- NA
-
-
 # Print out the revised data
 hatch.indicator <- rep('   ', max(time)-min(time)+1)
 hatch.indicator[hatch.after-min(time)+1]<- '***'
 
 cat("\n\n*** Revised data *** \n")
 temp<- data.frame(time=new.time, n1=new.n1, m2=new.m2, u2.W.YoY=new.u2.W.YoY, u2.W.1=new.u2.W.1, u2.H.1=new.u2.H.1, 
-       sampfrac=round(new.sampfrac,digits=2), new.logitP.cov=new.logitP.cov, 
+       new.logitP.cov=new.logitP.cov, 
        hatch.indicator=hatch.indicator)
 print(temp) 
 cat("\n\n")
@@ -840,7 +812,6 @@ results$report <- stdout
 
 # add some of the raw data to the bugs object for simplicity in referencing it later
 results$data <- list( time=time, n1=n1, m2=m2, u2.W.YoY=u2.W.YoY, u2.W.1=u2.W.1, u2.H.1=u2.H.1,
-                      sampfrac=sampfrac, 
                       hatch.after=hatch.after, 
                       bad.m2=bad.m2, bad.u2.W.YoY=bad.u2.W.YoY, bad.u2.W.1=bad.u2.W.1, bad.u2.H.1=bad.u2.H.1, 
                       logitP.cov=logitP.cov,

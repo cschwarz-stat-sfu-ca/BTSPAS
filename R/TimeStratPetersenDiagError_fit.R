@@ -1,3 +1,4 @@
+# 2020-12-15 CJS removed sampfrac from code but left argument with warning message
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2018-12-19 CJS Deprecated use of sampling.fraction
 # 2018-12-15 CJS Added ability to fix some logitP values
@@ -5,7 +6,7 @@
 # 2018-12-01 CJS COnvert posterior plots to ggplot
 # 2018-11-30 CJS Convert acf plot to ggplot
 # 2018-11-28 CJS Fixed problem where printing results got cutoff
-# 2018-11-25 CJS Removed all OpenBugs stuff
+# 2018-11-25 CJS Removed all WinBugs/OpenBugs stuff
 # 2015-06-10 CJS Change gof plot to ggplot()
 # 2014-09-01 CJS Converted to JAGS engine from OpenBugs
 # 2013-09-04 CJS Initialized n1, m2, u2 that are NA to sensible values.
@@ -52,11 +53,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum. These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum.
-#' @param sampfrac \strong{Deprecated} because it really doesn't work as intended.
-#' A numeric vector with entries between 0 and 1 indicating
-#' what fraction of the stratum was sampled. For example, if strata are
-#' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-#' value of \code{sampfrac} for that stratum would be 3/7. 
+#' @template sampfrac
 #' @param jump.after A numeric vector with elements belonging to \code{time}.
 #' In some cases, the spline fitting the population numbers should be allowed
 #' to jump. For example, the population size could take a jump when hatchery
@@ -156,11 +153,7 @@ TimeStratPetersenDiagError_fit <-
 #             e.g. time=10 not present, this indicates sampling did not take place this
 #             week. The data are expanded and interpolation for the missing week takes place
 #    n1, m2, u2 - the input data consisting of fish marked and released, recapture, and unmarked captured
-#    sampfrac - sampling fraction to adjust for how many days of the week was the trap operating
-#              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
-#              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
-#              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
-#              back to a 7 day week as well.
+#    sampfrac - sampling fraction - depricated because never did work properly
 #    jump.after - in some cases, a single spline is still not flexible enough to cope with rapid
 #                 changes in the run curve. For example, in the Trinity River project, a larger
 #                 hatchery release occurs around stratum 14. This is a vector indicating the
@@ -281,8 +274,8 @@ cat("\n\n", title, "Results \n\n")
 
 
 cat("*** Raw data *** \n")
-temp<- cbind(time, n1, m2, u2, round(sampfrac,digits=2), logitP.cov)
-colnames(temp)<- c('time', 'n1','m2','u2','SampFrac', paste("logitPcov[", 1:ncol(as.matrix(logitP.cov)),"]",sep="") )
+temp<- cbind(time, n1, m2, u2, logitP.cov)
+colnames(temp)<- c('time', 'n1','m2','u2', paste0("logitPcov[", 1:ncol(as.matrix(logitP.cov)),"]") )
 print(temp) 
 cat("\n\n")
 cat("Jump point are after strata: ", jump.after)
@@ -303,8 +296,8 @@ if(length(bad.u2)==0) cat("none.")
 # Pooled Petersen estimator over ALL of the data including when no releases take place, bad.n1, bad.m2, bad.u2 and missing values.
 cat("\n\n*** Pooled Petersen Estimate based on pooling over ALL strata")
 cat("\nValues of u2 are adjusting for sampling fraction \n\n")
-cat("Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2/sampfrac, na.rm=TRUE),"\n\n")
-pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2/sampfrac, na.rm=TRUE))
+cat("Total n1=", sum(n1, na.rm=TRUE),";  m2=",sum(m2, na.rm=TRUE),";  u2=",sum(u2, na.rm=TRUE),"\n\n")
+pp <- SimplePetersen(sum(n1, na.rm=TRUE), sum(m2, na.rm=TRUE), sum(u2, na.rm=TRUE))
 cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
@@ -325,10 +318,9 @@ cat("The following strata are excluded because n1=0, NA values in m2 or u2, or f
 temp.n1 <-       n1[select]
 temp.m2 <-       m2[select]
 temp.u2 <-       u2[select]
-temp.sampfrac <- sampfrac[select]
 
-cat("Total n1=", sum(temp.n1),";  m2=",sum(temp.m2),";  u2=",sum(temp.u2/temp.sampfrac),"\n\n")
-pp <- SimplePetersen(sum(temp.n1), sum(temp.m2), sum(temp.u2/temp.sampfrac))
+cat("Total n1=", sum(temp.n1, na.rm=TRUE),";  m2=",sum(temp.m2, na.rm=TRUE),";  u2=",sum(temp.u2, na.rm=TRUE),"\n\n")
+pp <- SimplePetersen(sum(temp.n1, na.rm=TRUE), sum(temp.m2, na.rm=TRUE), sum(temp.u2, na.rm=TRUE))
 cat("Est U(total) ", format(round(pp$U.est),big.mark=","),"  (SE ", format(round(pp$U.se), big.mark=","), ")\n")
 cat("Est N(total) ", format(round(pp$N.est),big.mark=","),"  (SE ", format(round(pp$N.se), big.mark=","), ")\n\n\n")
 
@@ -338,7 +330,8 @@ cat(  "*** Stratified Petersen Estimator for each stratum PRIOR to removing stra
 cat("\n    Values of u2 are adjusted for sampling fraction ***\n\n")
 temp.n1 <- n1
 temp.m2 <- m2
-temp.u2 <- u2/sampfrac
+temp.u2 <- u2
+
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
 temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
@@ -364,7 +357,7 @@ temp.u2 <- u2
 temp.u2[match(bad.n1,time)] <- NA  # if any value is bad, exclude this entire stratum
 temp.u2[match(bad.m2,time)] <- NA
 temp.u2[match(bad.u2,time)] <- NA
-temp.u2 <- temp.u2/sampfrac
+
 sp <- SimplePetersen(temp.n1, temp.m2, temp.u2)
 temp <- cbind(time, temp.n1, temp.m2, temp.u2, round(sp$U.est), round(sp$U.se))
 colnames(temp) <- c('time', 'n1','m2','u2', 'U[i]', 'SE(U[i])')
@@ -394,7 +387,6 @@ cat("\n Be cautious of using this test in cases of small expected values. \n\n")
 new.n1         <- rep(0, max(time)-min(time)+1)
 new.m2         <- rep(0, max(time)-min(time)+1)
 new.u2         <- rep(0, max(time)-min(time)+1)
-new.sampfrac   <- rep(0, max(time)-min(time)+1)
 new.logitP.cov <- matrix(NA, nrow=max(time)-min(time)+1, ncol=ncol(as.matrix(logitP.cov)))
 new.time       <- min(time):max(time)
 
@@ -403,7 +395,6 @@ new.m2[time-min(new.time)+1]         <- m2
 new.m2[match(bad.m2,new.time)]       <- NA  # wipe out where m2 is flagged as bad
 new.u2[time-min(new.time)+1]         <- u2
 new.u2[match(bad.u2,new.time)]       <- NA  # wipe out where u2 is flagged as bad
-new.sampfrac[time-min(new.time)+1]   <- sampfrac
 new.logitP.cov[time-min(new.time)+1,]<- as.matrix(logitP.cov)
 new.logitP.cov[ is.na(new.logitP.cov[,1]), 1] <- 1  # insert a 1 into first columns where not specified
 new.logitP.cov[ is.na(new.logitP.cov)] <- 0         # other covariates are forced to zero not in column 1
@@ -417,25 +408,13 @@ new.n1[new.n1==0] <- 1
 new.n1[match(bad.n1,new.time)] <- 1
 new.m2[match(bad.n1,new.time)] <- NA 
 
-# Adjust data when a stratum has less than 100% sampling fraction to "estimate" the number
-# of unmarked fish that were captured. It is not necessary to adjust the n1 and m2 values 
-# as these are used ONLY to estimate the capture efficiency. 
-# In reality, there should be a slight adjustment
-# to the precision to account for this change, but this is not done.
-# Similarly, if the sampling fraction is more than 1, the adjustment is made back to a standard week.
-new.u2 <- round(new.u2/new.sampfrac)
-
-# Adjust for strata where sampling fraction=0. On these strata
-# u2 is set to NA so that there is NO information on U2 for this stratum
-new.u2[new.sampfrac<.001] <- NA
-
 # Print out the revised data
 jump.indicator <- rep('   ', max(time)-min(time)+1)
 jump.indicator[jump.after-min(time)+1]<- '***'
 
 cat("\n\n*** Revised data *** \n")
 temp<- data.frame(time=new.time, n1=new.n1, m2=new.m2, u2=new.u2, 
-       sampfrac=round(new.sampfrac,digits=2), new.logitP.cov=new.logitP.cov, 
+       new.logitP.cov=new.logitP.cov, 
        jump.indicator=jump.indicator)
 print(temp) 
 cat("\n\n")
@@ -653,7 +632,7 @@ if(save.output.to.files)writeLines(stdout, results.filename)
 results$report <- stdout
 
 # add some of the raw data to the bugs object for simplicity in referencing it later
-results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac, 
+results$data <- list( time=time, n1=n1, m2=m2, u2=u2, 
                       jump.after=jump.after, 
                       bad.n1=bad.n1, bad.m2=bad.m2, bad.u2=bad.u2, 
                       logitP.cov=logitP.cov, version=version, date_run=date(),

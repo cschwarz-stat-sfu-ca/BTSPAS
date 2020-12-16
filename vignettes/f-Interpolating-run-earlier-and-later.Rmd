@@ -65,9 +65,9 @@ rec.matrix
 ```
 
 The bottom line is the total recoveries (tagged and untagged) from a commercial harvest.
-In this case, the commerical harvest did not start until 
+In this case, the commercial harvest did not start until 
 statistical week SW25 and ended in SW33 but
-the run started earlier and ended later than the commerical harvest.
+the run started earlier and ended later than the commercial harvest.
 
 
 ```{r echo=FALSE}
@@ -173,7 +173,7 @@ However, the interpolation back for the first 3 weeks is not very realistic
 It is possible to "force" BTSPAS to interpolate the first 3 and last 3 weeks down to zero
 by adding ``fake'' data. In particular, we pretend that in the first 3 and last 3 weeks, that
 a commercial catch of 1 fish occurred and it was tagged. You also need to ensure that
-enough fish were tagged and released to accomodate the fake data.
+enough fish were tagged and released to accommodate the fake data.
 
 The revised recovery matrix is:
 
@@ -196,7 +196,7 @@ Notice how "fake" recoveries were added to the diagonal entries for the first an
 of the data including "fake" harvest.
 
 Because the fake data values are very small, it has little impact on the total run size,
-but a recovery of 1 tagged fish in a commerical harvest of 1 fish is not consistent 
+but a recovery of 1 tagged fish in a commercial harvest of 1 fish is not consistent 
 with a very large run size and so this forces the run curve down at these points as 
 seen in the revised fit:
 

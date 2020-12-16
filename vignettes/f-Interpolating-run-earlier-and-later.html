@@ -312,7 +312,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 15      SW36    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0      26
 ## 16      SW37    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0       3
 ## 17 CatchComm    0    0    0 1869 5394 5131 5668 6733 1780 1828 2493  157    0    0    0    0      NA</code></pre>
-<p>The bottom line is the total recoveries (tagged and untagged) from a commercial harvest. In this case, the commerical harvest did not start until statistical week SW25 and ended in SW33 but the run started earlier and ended later than the commerical harvest.</p>
+<p>The bottom line is the total recoveries (tagged and untagged) from a commercial harvest. In this case, the commercial harvest did not start until statistical week SW25 and ended in SW33 but the run started earlier and ended later than the commercial harvest.</p>
 <div id="fit-with-the-current-data." class="section level2">
 <h2><span class="header-section-number">1.1</span> Fit with the current data.</h2>
 <p>We now fit the BTSPAS model using the current data</p>
@@ -478,7 +478,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="forcing-the-run-curve-to-zero." class="section level2">
 <h2><span class="header-section-number">1.2</span> Forcing the run curve to zero.</h2>
-<p>It is possible to “force” BTSPAS to interpolate the first 3 and last 3 weeks down to zero by adding ``fake’’ data. In particular, we pretend that in the first 3 and last 3 weeks, that a commercial catch of 1 fish occurred and it was tagged. You also need to ensure that enough fish were tagged and released to accomodate the fake data.</p>
+<p>It is possible to “force” BTSPAS to interpolate the first 3 and last 3 weeks down to zero by adding ``fake’’ data. In particular, we pretend that in the first 3 and last 3 weeks, that a commercial catch of 1 fish occurred and it was tagged. You also need to ensure that enough fish were tagged and released to accommodate the fake data.</p>
 <p>The revised recovery matrix is:</p>
 <pre><code>##      Tagging SW22 SW23 SW24 SW25 SW26 SW27 SW28 SW29 SW30 SW31 SW32 SW33 SW34 SW35 SW36 SW37 Applied
 ## 1       SW22    1    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0      10
@@ -499,7 +499,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 16      SW37    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    1       3
 ## 17 CatchComm    1    1    1 1869 5394 5131 5668 6733 1780 1828 2493  157    1    1    1    1      NA</code></pre>
 <p>Notice how “fake” recoveries were added to the diagonal entries for the first and final weeks of the data including “fake” harvest.</p>
-<p>Because the fake data values are very small, it has little impact on the total run size, but a recovery of 1 tagged fish in a commerical harvest of 1 fish is not consistent with a very large run size and so this forces the run curve down at these points as seen in the revised fit:</p>
+<p>Because the fake data values are very small, it has little impact on the total run size, but a recovery of 1 tagged fish in a commercial harvest of 1 fish is not consistent with a very large run size and so this forces the run curve down at these points as seen in the revised fit:</p>
 <pre><code>## 
 ## 
 ## *** Start of call to JAGS 

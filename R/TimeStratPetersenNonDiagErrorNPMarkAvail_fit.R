@@ -1,3 +1,4 @@
+## 2020-12-15 CJS removed sampfrac from body of code
 ## 2020-12-15 CJS Fixed problem when specifyin u2==NA
 ## 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 ## 2018-12-22 CJS add code to estimate mean movement vector (movep)
@@ -53,10 +54,7 @@
 #' @param u2 A numeric vector of the number of unmarked fish captured in each
 #' stratum.  These will be expanded by the capture efficiency to estimate the
 #' population size in each stratum. The length of u2 should be between the length of n1 and length n1 + number of columns in m2 -1
-#' @param sampfrac \strong{Deprecated} DO NOT USE. A numeric vector with entries between 0 and 1 indicating
-#' what fraction of the stratum was sampled. For example, if strata are
-#' calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-#' value of \code{sampfrac} for that stratum would be 3/7.
+#' @template sampfrac
 #' @param jump.after A numeric vector with elements belonging to \code{time}.
 #' In some cases, the spline fitting the population numbers should be allowed
 #' to jump.  For example, the population size could take a jump when hatchery
@@ -183,11 +181,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ##             The vector u2 should be long enough to account for any fish that are recaptured later on
   ##             from releases late in the season. The bottom right diagonal of m2 may be all zeros - that is ok
   ##             Notice that length(u2) can be longer than length(n1)+nrow(m2).
-  ##    sampfrac - Deprecated. DO NOT USE. sampling fraction to adjust for how many days of the week was the trap operating
-  ##              This is expressed as fraction i.e. 3 days out of 7 is expressed as 3/7=.42 etc.
-  ##              If the trap was operating ALL days, then the SampFrac = 1. It is possible for the sampling
-  ##              fraction to be > 1 (e.g. a mark is used for 8 days instead of 7. The data are adjusted
-  ##              back to a 7 day week as well.  This is vector of length(u2)
+  ##    sampfrac - Deprecated. DO NOT USE.
   ##    jump.after - in some cases, a single spline is still not flexible enough to cope with rapid
   ##                 changes in the run curve. For example, in the Trinity River project, a larger
   ##                 hatchery release occurs around stratum 14. This is a vector indicating the
@@ -333,16 +327,14 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
   
   cat("\n\n", title, "Results \n\n")
   
-  ## length(sampfrac) =length(u2)
   ## m2(i,+) < n1(i)
-  ## 0 < sampfrac < 1
-  
+
   cat("*** Raw data *** (padded to match length of u2) \n")
   jump.indicator <- rep('   ', length(u2))
   jump.indicator[time %in% jump.after]<- '***'
   ex.n1 <- c(n1, rep(NA, length(u2)-length(n1)))
   ex.m2 <- rbind(m2,matrix(NA, nrow=length(u2)-length(n1), ncol=ncol(m2))) 
-  temp<- data.frame(time=time, n1=ex.n1, m2=ex.m2, u2=u2, sampfrac=round(sampfrac,digits=2), logitP.cov=logitP.cov, jump=jump.indicator)
+  temp<- data.frame(time=time, n1=ex.n1, m2=ex.m2, u2=u2, logitP.cov=logitP.cov, jump=jump.indicator)
   print(temp) 
   cat("\n\n")
 
@@ -415,7 +407,6 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
   new.n1   <- n1
   new.m2   <- m2
   new.u2   <- u2
-  new.sampfrac <- sampfrac
   new.logitP.cov <- logitP.cov
   
 
@@ -430,7 +421,7 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
   jump.indicator[time %in% jump.after]<- '***'
   ex.n1 <- c(new.n1, rep(NA, length(new.u2)-length(new.n1)))
   ex.m2 <- rbind(new.m2,matrix(NA, nrow=length(new.u2)-length(new.n1), ncol=ncol(new.m2))) 
-  temp<- data.frame(time=new.time, n1=ex.n1, m2=ex.m2, u2=new.u2, sampfrac=round(new.sampfrac,digits=2), logitP.cov=new.logitP.cov,
+  temp<- data.frame(time=new.time, n1=ex.n1, m2=ex.m2, u2=new.u2, logitP.cov=new.logitP.cov,
                     jump.after=jump.indicator)
   print(temp) 
   cat("\n\n")
@@ -734,7 +725,7 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
 
   
   ## add some of the raw data to the bugs object for simplicity in referencing it later
-  results$data <- list( time=time, n1=n1, m2=m2, u2=u2, sampfrac=sampfrac, 
+  results$data <- list( time=time, n1=n1, m2=m2, u2=u2, 
                        jump.after=jump.after, 
                        bad.n1=bad.n1, bad.m2=bad.m2, bad.u2=bad.u2, 
                        logitP.cov=logitP.cov,

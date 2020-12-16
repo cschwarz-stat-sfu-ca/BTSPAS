@@ -117,10 +117,9 @@ So u2.A.1 MUST be hatchery fish.
 
 \item{clip.frac.H.YoY, clip.frac.H.1}{Fraction of the YoY hatchery/Age1 (from last year's releases) hatchery fish are clipped?\ (between 0 and 1)}
 
-\item{sampfrac}{\strong{Deprecated}. DO NOT USE ANYMORE. A numeric vector with entries between 0 and 1 indicating
-what fraction of the stratum was sampled. For example, if strata are
-calendar weeks, and sampling occurred only on 3 of the 7 days, then the
-value of \code{sampfrac} for that stratum would be 3/7.}
+\item{sampfrac}{\strong{Deprecated} because it really doesn't work as intended.
+You must remove all references to sampfrac from your code. Contact \email{cschwarz.stat.sfu.ca@gmail.com}
+for more information.}
 
 \item{hatch.after.YoY}{A numeric vector with elements belonging to
 \code{time}.  At which point do YoY hatchery fish arrive? They arrive in the

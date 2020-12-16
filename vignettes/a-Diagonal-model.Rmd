@@ -856,7 +856,7 @@ may not be able to capture in a single year because of lack of contrast (i.e.
 the flow within a year does not vary enough) or because of smallish sample sizes.
 
 *BTSPAS* allows you to specify prior information on the coefficients of the
-relationship between *logit(catcability)* and covariates.
+relationship between *logit(catchability)* and covariates.
 
 We will show an example where four models are fit to the same data
 
@@ -870,7 +870,7 @@ the prior information conflicts with the fit),
 
 ## Reading in the data
 
-Here is an example of some (ficticious) raw data that includes the covariate $log(flow)$: 
+Here is an example of some (fictitious) raw data that includes the covariate $log(flow)$: 
 
 ```{r}
 demo5.data.csv <- textConnection(
@@ -1152,7 +1152,7 @@ ggplot(data=plotdata4, aes(x=logFlow, y=logitP))+
 ```
 
 Notice that the (strong) prior is now in conflict with the data. The model
-now believes that the variation around the line must be lare, which allows 
+now believes that the variation around the line must be large, which allows 
 it to move estimates of *logit(catchability)* below the line.
 
 ## Comparing the results of the fits
