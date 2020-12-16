@@ -18,30 +18,33 @@ if(sum(temp, na.rm=TRUE)>0){cat(sum(temp, na.rm=TRUE), " infinite discrepancy me
 discrep[ temp ] <- NA
 
 #browser()
-titles <- c("Freeman-Tukey for m2", 
+discrep.long <- data.table::melt( data.table::as.data.table(discrep), 
+                                    measure.vars=list(seq(1,ncol(discrep),2), seq(2,ncol(discrep),2)),
+                                    value.name=c("Observed","Simulated"),
+                                    variable.name="Statistic",
+                                    variable.factor=FALSE)
+
+titles <- data.frame(Statistic=as.character(1:(ncol(discrep/2))), Title=c( 
+            "Freeman-Tukey for m2", 
             "Freeman-Tukey for u2.A", 
             "Freeman-Tukey for u2.N", 
-            "Total Freeman-Tukey")
+            "Total Freeman-Tukey"), stringsAsFactors=FALSE)
 
-saved_p_values <- rep(NA, length(titles))
+discrep.long <- merge(discrep.long, titles)
 
-discrep.df <- data.frame(discrep)
-plot.list<- plyr::llply(1:4, function(i){
-  p.value <- mean(discrep[,2*i-1]<discrep[,2*i],na.rm=TRUE)
-  saved_p_values[i] <<- p.value
-  
-  bp.plot <- ggplot(data=discrep.df, aes_string(x=colnames(discrep.df)[2*i], y=colnames(discrep.df)[2*i-1]))+
-    ggtitle(titles[i])+
-    geom_point()+
-    xlab("Simulated")+ylab("Observed")+
-    geom_abline(intercept=0, slope=1)+
-    annotate("text", x=Inf,y=-Inf, hjust=1, vjust=0,
-               label=paste("Bayesian GOF P:",formatC(p.value, digits=2, format="f")))
-  bp.plot 
+# compute the bayesian p-values
+p_values <-plyr::ddply(discrep.long, c("Statistic","Title"), function(x){
+       p.value=mean(x$Observed < x$Simulated, na.rm=TRUE)
+       data.frame(p.value=p.value)
 })
-
-bigplot <- do.call(arrangeGrob, c(plot.list, list(ncol=2)))
-
-gof <- list(bp.plot=bigplot,  bp.values=data.frame(test.names=titles, p.value=saved_p_values, stringsAsFactors=FALSE))
+p_values$label = paste("Bayesian GOF P:",formatC(p_values$p.value, digits=2, format="f"))
+  
+gof.plot <-ggplot(data=discrep.long, aes_(x=~Simulated, y=~Observed))+
+       geom_point()+
+       geom_abline(intercept=0, slope=1)+
+       geom_text(data=p_values, x=Inf,y=-Inf, hjust=1.05, vjust=-0.2, label=p_values$label)+
+       facet_wrap(~Title, ncol=2, nrow=3, scales="free")
+ 
+gof <- list(bp.plot=gof.plot,  bp.values=data.frame(test.names=titles, p.value=p_values, stringsAsFactors=FALSE))
 gof
 }
