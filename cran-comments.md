@@ -10,11 +10,22 @@ them as static vignettes.
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There were 1 NOTES:
+There were 3 NOTES:
 
-> checking for future file timestamps ... NOTE
-  unable to verify current time
+* Version contains large components (2021.1.1)
 
+* checking installed package size ... NOTE
+  installed size is  5.3Mb
+  sub-directories of 1Mb or more:
+    doc   4.8Mb
 
+* Found the following (possibly) invalid URLs:
+  URL: https://www.jstor.org/stable/2332748
+    From: inst/doc/e-Bias-from-incomplete-sampling.html
+    Status: 403
+    Message: Forbidden
+    
+    ***CJS*** URL is valid.
+    
 ## Reverse dependencies
 None.
