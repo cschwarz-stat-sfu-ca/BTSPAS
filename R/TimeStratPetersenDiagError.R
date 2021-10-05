@@ -49,13 +49,6 @@ set.seed(InitialSeed)  # set prior to initial value computations
 #  Fit the smoothed time-Stratified Petersen estimator with Diagonal recoveries (i.e. no recoveries
 #  outside stratum of release) and error in the smoothed U curve
 #
-#  Packages Required - must be installed BEFORE calling this functin
-#
-#    rjags       - only needed if using JAGS
-#    Coda
-#    actuar
-#    splines
-#
 #  This routine assumes that the strata are time (e.g. weeks).
 #  In each stratum n1 fish are released (with marks). These are ususall
 #     captured fish that are marked, transported upstream, and released.

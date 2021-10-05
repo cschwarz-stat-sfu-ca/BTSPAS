@@ -21,10 +21,6 @@
 #' @import plyr
 #' @importFrom actuar grouped.data
 #' @importFrom stats quantile
-# The actuar pacakge cm() function conflicts with another package.
-# The following excludes is
-# See https://stackoverflow.com/questions/51899220/import-all-the-functions-of-a-package-except-one-when-building-a-package
-#' @rawNamespace import(actuar, except = cm) 
 
 # 2018-12-14 CJS converted from a for() loop to adply()
 
