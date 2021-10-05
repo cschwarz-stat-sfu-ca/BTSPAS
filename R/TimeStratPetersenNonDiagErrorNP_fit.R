@@ -375,9 +375,9 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
 
   ## Print information about delta max
   cat("\nMaximum travel time (Delta.max): ",Delta.max)
-  cat("\nFixed logitP indices are:", logitP.fixed)
+  cat("\nFixed logitP indices are: ", logitP.fixed)
   if(length(logitP.fixed)==0) cat("none - NO fixed values")
-  cat("\nFixed logitP values  are:", logitP.fixed.values)
+  cat("\nFixed logitP values  are: ", logitP.fixed.values)
   if(length(logitP.fixed)==0) cat("none - NO fixed values")
 
   ## Obtain the Pooled Petersen estimator prior to fixup of bad.n1, bad.m2, and bad.u2 values
@@ -395,9 +395,9 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
   select.rel <- !(time[1:length(n1)] %in% bad.n1 | time[1:length(n1)] %in% bad.m2 )
   select.rec <- ! time %in% bad.u2
   cat("\n\n*** Pooled Petersen Estimate after removing release and recovery strata flagged as bad ***\n\n")
-  cat("The following release strata were excluded:",
+  cat("The following release strata were excluded: ",
      if(length(time[!select.rel])>0){time[!select.rel]} else {" NONE"}, "\n")
-  cat("The following recovery strata were excluded:",
+  cat("The following recovery strata were excluded: ",
      if(length(time[!select.rec])>0){time[!select.rec]} else {" NONE"}, "\n")
 
   temp.n1 <- n1[select.rel]

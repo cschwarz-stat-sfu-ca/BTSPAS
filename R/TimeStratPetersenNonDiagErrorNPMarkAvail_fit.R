@@ -348,9 +348,9 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
 
   ## Print information about delta max
   cat("\nMaximum travel time (Delta.max): ",Delta.max)
-  cat("\nFixed logitP indices are:", logitP.fixed)
+  cat("\nFixed logitP indices are: ", logitP.fixed)
   if(length(logitP.fixed)==0) cat("none - NO fixed values")
-  cat("\nFixed logitP values  are:", logitP.fixed.values)
+  cat("\nFixed logitP values  are: ", logitP.fixed.values)
   if(length(logitP.fixed)==0) cat("none - NO fixed values")
   
   ## Obtain the Pooled Petersen estimator prior to fixup of bad.n1, bad.m2, and bad.u2 values

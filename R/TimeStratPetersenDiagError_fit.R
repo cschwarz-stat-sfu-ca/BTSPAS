@@ -287,11 +287,11 @@ if(length(logitP.fixed)==0) cat("none - NO fixed values")
 cat("\nFixed logitP values  are:", logitP.fixed.values)
 if(length(logitP.fixed)==0) cat("none - NO fixed values")
 
-cat("\n\nValues of bad.n1 are : ", bad.n1, ". The value of n1 will be set to 1 and m2 to NA for these strata")
+cat("\n\nValues of bad.n1 are : ", bad.n1, ". The value of n1 will be set to 1 and m2 to NA for these strata: ")
 if(length(bad.n1)==0) cat("none.")
-cat(  "\nValues of bad.m2 are : ", bad.m2, ". The value of m2 will be set to NA for these strata")
+cat(  "\nValues of bad.m2 are : ", bad.m2, ". The value of m2 will be set to NA for these strata: ")
 if(length(bad.m2)==0) cat("none.")
-cat(  "\nValues of bad.u2 are : ", bad.u2, ". The value of u2 will be set to NA for these strata")
+cat(  "\nValues of bad.u2 are : ", bad.u2, ". The value of u2 will be set to NA for these strata: ")
 if(length(bad.u2)==0) cat("none.")
 
 # Pooled Petersen estimator over ALL of the data including when no releases take place, bad.n1, bad.m2, bad.u2 and missing values.

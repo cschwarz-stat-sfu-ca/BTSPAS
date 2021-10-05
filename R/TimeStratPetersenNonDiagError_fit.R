@@ -317,9 +317,9 @@ print(temp)
 cat("\n\n")
 cat("Jump point are after strata: ", jump.after)
 if(length(jump.after)==0) cat("none - A single spline is fit")
-cat("\nFixed logitP indices are:", logitP.fixed)
+cat("\nFixed logitP indices are: ", logitP.fixed)
 if(length(logitP.fixed)==0) cat("none - NO fixed values")
-cat("\nFixed logitP values  are:", logitP.fixed.values)
+cat("\nFixed logitP values  are: ", logitP.fixed.values)
 if(length(logitP.fixed)==0) cat("none - NO fixed values")
 
 

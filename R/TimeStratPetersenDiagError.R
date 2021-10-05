@@ -248,7 +248,8 @@ Nfixed.logitP      <- length(fixed.logitP.index)
 
 # create a copy of the u2 to improve mixing in the MCMC model
 u2copy <- exp(stats::spline(x = 1:Nstrata, y = log(u2+1), xout = 1:Nstrata)$y)-1 # on log scale to avoid negative values
-u2copy <- round(u2copy)  # round to integersbrowser()
+u2copy <- pmax(0,round(u2copy))  # round to integers and avoid negative values
+#browser()
 
 datalist <- list("Nstrata", "n1", "m2", "u2", "u2copy", 
                  "logitP", "Nfree.logitP", "free.logitP.index", "Nfixed.logitP", "fixed.logitP.index", "fixed.logitP.value",   # those indices that are fixed and free to vary

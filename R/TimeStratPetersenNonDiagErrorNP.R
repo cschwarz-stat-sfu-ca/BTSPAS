@@ -316,7 +316,7 @@ tau.muTT <- 1/sd.muTT**2  # convert from sd to precision = 1/variance
 
 # make a copy of u2 to improve mixing
 u2copy <- exp(stats::spline(x = 1:length(u2), y = log(u2+1), xout = 1:length(u2))$y)-1 # on log scale to avoid negative values
-u2copy <- round(u2copy) # round to integers
+u2copy <- pmax(0,round(u2copy)) # round to integers
 
 datalist <- list("Nstrata.rel", "Nstrata.cap","Extra.strata.cap",
                  "Delta.max","n1", "m2", "u2", "u2copy",
