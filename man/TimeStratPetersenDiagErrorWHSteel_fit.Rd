@@ -103,8 +103,8 @@ In some cases, something goes wrong in the stratum, and the number of
 hatchery unmarked (but adipose fin clipped) age 1+ fish should be ignored.}
 
 \item{logitP.cov}{A numeric matrix for covariates to fit the
-logit(catchability).  Default is a single intercept, i.e. all strata have
-the same mean logit(catchability).}
+logit(catchability). Default is a single intercept, i.e. all strata have the
+same mean logit(catchability).}
 
 \item{n.chains}{Number of parallel MCMC chains to fit.}
 

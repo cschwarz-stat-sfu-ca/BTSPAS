@@ -4,9 +4,10 @@
 #' timing. 
 #' This uses the quantile() function from the "actuar" package which is designed to compute
 #' quantiles of grouped data.
-#' 
-#' @param time List of sample weeks. It is assumed that there are no salmon prior to the first value
-#            in time, and after the last value in time
+#' It is assumed that there are no fish in the system prior to the first point
+#            in time, and after the last point in time
+
+#' @template time 
 #' @param U matrix of posterior samples. Each row is a sample from the posterior.
 #          Columns correspond to U[1]...U[nstrata]
 #' @param prob Quantiles of the run timing to estimate. 

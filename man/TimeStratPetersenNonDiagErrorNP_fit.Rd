@@ -98,8 +98,8 @@ will be set to NA for these strata. DO NOT SET the value of u2 to 0 because
 this indicates that the trap was operating and captured no fish.}
 
 \item{logitP.cov}{A numeric matrix for covariates to fit the
-logit(catchability).  Default is a single intercept, i.e. all strata have
-the same mean logit(catchability).}
+logit(catchability). Default is a single intercept, i.e. all strata have the
+same mean logit(catchability).}
 
 \item{logitP.fixed}{A numeric vector (could be null) of the time strata
 where the logit(P) would be fixed. Typically, this is used when the capture

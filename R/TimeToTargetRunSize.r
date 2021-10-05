@@ -7,7 +7,7 @@
 #' 
 #' @param U Elements of sim.list from MCMC object for U - the estimate runsize
 #' in each stratum
-#' @param time Vector of stratum time indices
+#' @template time
 #' @param targetU The targeted cumulative run size. E.g. 10,000
 #' @param file_prefix Character string giving prefix for plot. A plot will be
 #' produced of the posterior in the filename

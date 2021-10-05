@@ -37,13 +37,10 @@
 #' 
 #' @aliases TimeStratPetersenDiagErrorWHChinook_fit TimeStratPetersenDiagErrorWHChinook2_fit
 #' 
-#' @param title A character string used for a title on reports and graphs
-#' @param prefix A character string used as the prefix for created files. All
-#' created graph files are of the form prefix-xxxxx.pdf.
-#' @param time A numeric vector of time used to label the strata. For example,
-#' this could be julian week for data stratified at a weekly level.
-#' @param n1 A numeric vector of the number of marked fish released in each
-#' time stratum.
+#' @template title
+#' @template prefix
+#' @template time
+#' @template n1
 #' @param m2 A numeric vector of the number of marked fish from n1 that are
 #' recaptured in each time stratum. All recaptures take place within the
 #' stratum of release. Use the \code{\link{TimeStratPetersenNonDiagError_fit}}
@@ -85,14 +82,8 @@
 #' fish with an adipose fin clip should be ignored.
 #' @param bad.u2.A.1,bad.u2.N.1   List of julian weeks where the value of u2.A.1/u2.N.1 is suspect. 
 #'               These are set to NA prior to the fit.
-#' @param logitP.cov A numeric matrix for covariates to fit the
-#' logit(catchability). Default is a single intercept, i.e. all strata have the
-#' same mean logit(catchability).
-#' @param n.chains Number of parallel MCMC chains to fit.
-#' @param n.iter Total number of MCMC iterations in each chain.
-#' @param n.burnin Number of burn-in iterations.
-#' @param n.sims Number of simulated values to keeps for posterior
-#' distribution.
+#' @template logitP.cov
+#' @template mcmc-parms
 #' @param tauU.alpha One of the parameters along with \code{tauU.beta} for the
 #' prior for the variance of the random noise for the smoothing spline.
 #' @param tauU.beta One of the parameters along with \code{tauU.alpha} for the
@@ -118,10 +109,8 @@
 #' produced. Normally the functions will halt at \code{browser()} calls to
 #' allow the user to peek into the internal variables. Not useful except to
 #' package developers.
-#' @param InitialSeed Numeric value used to initialize the random numbers used
-#' in the MCMC iterations.
-#' @param save.output.to.files Should the plots and text output be save to the files
-#' in addition to being stored in the MCMC object? 
+#' @template InitialSeed
+#' @template save.output.to.files
 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
@@ -158,7 +147,6 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
    options(width=200)
 
 # Input parameters are
-#    title - title for the analysis
 #    prefix - prefix used for files created with the analysis results
 #             this should be in standard Window's format, eg. JC-2002-ST-TSPDE
 #             to which is appended various suffixes for plots etc
