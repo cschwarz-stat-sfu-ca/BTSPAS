@@ -15,6 +15,14 @@
 %   }
 %}
 
+
+\section{CHANGES IN VERSION 2021.11.1}{
+  \subsection{USER-VISIBLE CHANGES}{
+    \itemize{
+       \item Fixed importing sd() from stat package that conflicts with revised sd() in actuar package
+     }
+   }
+}
 \section{CHANGES IN VERSION 2021.1.1}{
   \subsection{USER-VISIBLE CHANGES}{
     \itemize{

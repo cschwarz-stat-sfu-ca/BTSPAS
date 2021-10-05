@@ -32,14 +32,14 @@ TimeStratPetersenDiagErrorWHSteel_fit(
   taueU.beta = 0.05,
   prior.beta.logitP.mean = c(logit(sum(m2, na.rm = TRUE)/sum(n1, na.rm = TRUE)), rep(0,
     ncol(as.matrix(logitP.cov)) - 1)),
-  prior.beta.logitP.sd = c(sd(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE), rep(10,
+  prior.beta.logitP.sd = c(stats::sd(logit((m2 + 0.5)/(n1 + 1)), na.rm = TRUE), rep(10,
     ncol(as.matrix(logitP.cov)) - 1)),
   tauP.alpha = 0.001,
   tauP.beta = 0.001,
   run.prob = seq(0, 1, 0.1),
   debug = FALSE,
   debug2 = FALSE,
-  InitialSeed = ceiling(runif(1, min = 0, 1e+06)),
+  InitialSeed = ceiling(stats::runif(1, min = 0, 1e+06)),
   save.output.to.files = TRUE
 )
 }

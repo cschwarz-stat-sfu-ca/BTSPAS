@@ -41,7 +41,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
   run.prob = seq(0, 1, 0.1),
   debug = FALSE,
   debug2 = FALSE,
-  InitialSeed = ceiling(runif(1, min = 0, max = 1e+06)),
+  InitialSeed = ceiling(stats::runif(1, min = 0, max = 1e+06)),
   save.output.to.files = TRUE
 )
 }

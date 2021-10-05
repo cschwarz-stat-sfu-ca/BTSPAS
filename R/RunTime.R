@@ -20,6 +20,7 @@
 #' @export RunTime
 #' @import plyr
 #' @importFrom actuar grouped.data
+#' @importFrom stats quantile
 # The actuar pacakge cm() function conflicts with another package.
 # The following excludes is
 # See https://stackoverflow.com/questions/51899220/import-all-the-functions-of-a-package-except-one-when-building-a-package
@@ -30,7 +31,7 @@
 RunTime <- function(time, U, prob=seq(0,1,.1)) {
   timing <- c(min(time):(1+max(time)))
   q.U <- plyr::adply(U, 1, function(U.sample, timing){
-       quant <- quantile(grouped.data(Group=timing, Frequency=U.sample), prob=prob)
+       quant <- stats::quantile(grouped.data(Group=timing, Frequency=U.sample), prob=prob)
        quant
   }, timing=timing, .id=NULL)
   q.U

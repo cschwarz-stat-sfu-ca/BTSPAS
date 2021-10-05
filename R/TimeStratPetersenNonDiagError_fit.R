@@ -135,6 +135,7 @@
 #' ##---- See the vignettes for examples of how to use this package
 #' 
 #' @export TimeStratPetersenNonDiagError_fit
+#' @importFrom stats runif var sd
 
 TimeStratPetersenNonDiagError_fit <-
   function( title="TSPNDE",
@@ -152,13 +153,13 @@ TimeStratPetersenNonDiagError_fit <-
            tauP.beta=.001,
            run.prob=seq(0,1,.1), # what percentiles of run timing are wanted
            debug=FALSE, debug2=FALSE,
-           InitialSeed=ceiling(runif(1,min=0,1000000)),
+           InitialSeed=ceiling(stats::runif(1,min=0,1000000)),
            save.output.to.files=TRUE) {
 # Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- '2021-01-01'
+    version <- '2021-11-01'
     options(width=200)
 
 # Input parameters are
@@ -229,7 +230,7 @@ if(any(n1 < 0, na.rm=TRUE)){
   cat("***** ERROR ***** All values of n1 must be non-negative. You have: ",
         paste(n1,collapse=", "),"\n")
    return()}
-if(var(c(length(u2),length(sampfrac),length(time)))>0){
+if(stats::var(c(length(u2),length(sampfrac),length(time)))>0){
    cat("***** ERROR ***** Lengths of u2, sampfrac, time must all be equal. They are:",
         length(u2)," ",length(sampfrac)," ",length(time),"\n")
    return()}

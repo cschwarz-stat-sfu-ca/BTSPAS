@@ -132,6 +132,7 @@
 #' ##---- See the vignettes  for examples of how to use this package
 #' 
 #' @export TimeStratPetersenNonDiagError_fit
+#' @importFrom stats runif var sd
 
 
 #' @export TimeStratPetersenNonDiagErrorNPMarkAvail_fit
@@ -150,7 +151,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
                          Delta.max=NULL,tauTT.alpha=.1,tauTT.beta=.1,
                          run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                          debug=FALSE, debug2=FALSE,
-                         InitialSeed=ceiling(runif(1,min=0, max=1000000)),
+                         InitialSeed=ceiling(stats::runif(1,min=0, max=1000000)),
                          save.output.to.files=TRUE) {
   ## Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
   ## and fall back after tagging. This is based on the Skeena River study, where only 40/66 (60%) acoustically tagged fish
@@ -162,7 +163,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- '2021-01-01'
+  version <- '2021-11-01'
   options(width=200)
   
   ## Input parameters are
@@ -237,7 +238,7 @@ if(any(n1 < 0, na.rm=TRUE)){
         paste(n1,collapse=", "),"\n")
    return()}
 
-  if(var(c(length(u2),length(sampfrac),length(time)))>0)
+  if(stats::var(c(length(u2),length(sampfrac),length(time)))>0)
     stop("***** ERROR ***** Lengths of u2, sampfrac, time must all be equal. They are:",
          length(u2),' ',length(sampfrac),' ',length(time),"\n")
 

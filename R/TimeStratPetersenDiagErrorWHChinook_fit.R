@@ -133,6 +133,7 @@
 #' ##---- See the vignettes for examples on how to run this analysis.
 #' 
 #' @export TimeStratPetersenDiagErrorWHChinook_fit
+#' @importFrom stats runif var sd
 
 TimeStratPetersenDiagErrorWHChinook_fit<- 
        function( title="TSPDE-WHChinook", prefix="TSPDE-WHChinook-", 
@@ -143,17 +144,17 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
                  n.chains=3, n.iter=200000, n.burnin=100000, n.sims=2000,
                  tauU.alpha=1, tauU.beta=.05, taueU.alpha=1, taueU.beta=.05, 
                  prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
-                 prior.beta.logitP.sd   = c(sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
+                 prior.beta.logitP.sd   = c(stats::sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
                  tauP.alpha=.001, tauP.beta=.001,
                  run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                  debug=FALSE, debug2=FALSE,
-                 InitialSeed=ceiling(runif(1,min=0, max=1000000)),
+                 InitialSeed=ceiling(stats::runif(1,min=0, max=1000000)),
                  save.output.to.files=TRUE) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- '2021-01-01'
+   version <- '2021-11-01'
    options(width=200)
 
 # Input parameters are
@@ -205,7 +206,7 @@ sampfrac  <- as.vector(sampfrac)
 
 #  Do some basic error checking
 #  1. Check that length of n1, m2, u2, sampfrac, time all match
-if(var(c(length(n1),length(m2),length(u2.A),length(u2.N),length(sampfrac),length(time)))>0){
+if(stats::var(c(length(n1),length(m2),length(u2.A),length(u2.N),length(sampfrac),length(time)))>0){
    cat("***** ERROR ***** Lengths of n1, m2, u2.A, u2.N, sampfrac, time must all be equal. They are:",
         length(n1)," ",length(m2)," ",length(u2.A)," ",length(u2.N)," ",length(sampfrac)," ",length(time),"\n")
    return()}
