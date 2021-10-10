@@ -31,7 +31,7 @@ It is assumed that there are no fish in the system prior to the first point
 Bonner, S. J., & Schwarz, C. J. (2011). 
 Smoothing population size estimates for Time-Stratified Mark-Recapture experiments Using Bayesian P-Splines. 
 Biometrics, 67, 1498-1507. 
-\url{https://doi.org/10.1111/j.1541-0420.2011.01599.x}
+\doi{10.1111/j.1541-0420.2011.01599.x}
 
 Schwarz, C. J., & Dempson, J. B. (1994).
 Mark-recapture estimation of a salmon smolt population. 
