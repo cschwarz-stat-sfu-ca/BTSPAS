@@ -248,7 +248,7 @@ The $BTSPAS$ package also has additional features and options:
 fish in the population for the
 missing stratum.
 * if $n1$ and the entire corresponding row of $m2$ are 0, the program will use the hierarchical model to interpolate the capture
-probabilities for the missing strata because there is no information about recapture proabilities when $n1=0$.
+probabilities for the missing strata because there is no information about recapture probabilities when $n1=0$.
 * the program allows you specify break points in the underlying spline to account
 for external events.
 * sometimes bad thing happen.  The vector $bad.m2$ indicates which julian weeks something went wrong. 
