@@ -14,16 +14,12 @@ There were no ERRORs or WARNINGs.
 
 There were 1 NOTES:
 
-* checking installed package size ... NOTE
-  installed size is  5.3Mb
-  sub-directories of 1Mb or more:
-    doc   4.9Mb
-
 * Found the following (possibly) invalid URLs:
-  URL: https://www.jstor.org/stable/2332748
+  URL: https://doi.org/10.2307/2533994
     From: inst/doc/e-Bias-from-incomplete-sampling.html
     Status: 403
     Message: Forbidden
+
     
     ***CJS*** URL is valid.
     
