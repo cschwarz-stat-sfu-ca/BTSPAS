@@ -20,7 +20,7 @@ files <- dir()
 files <- files[ grepl("Rmd$", files)]
 files
 
-plyr::l_ply(files[5], function(x){
+plyr::l_ply(files, function(x){
   cat("Starting to render ", x, "\n")
     rmarkdown::render(x)
 },  .parallel=run.parallel)

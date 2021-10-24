@@ -1,9 +1,8 @@
 
 ## Major change
 
-* Fixed issue with reverse dependency on actuar package with sd() and var() functions as
-notified by R team.
-
+* Fixed issue with error in ggplot when plotting logitP with extreme value and secondary axis is no longer
+monotonic (issue #30)
 
 ## Test environments
 * local OS X install, R 4.1.1
