@@ -1,26 +1,21 @@
 
 ## Major change
 
-* Fixed issue with error in ggplot when plotting logitP with extreme value and secondary axis is no longer
-monotonic (issue #30)
+* None. CRAN check correction. Documentation and vignette updates.
 
 ## Test environments
-* local OS X install, R 4.1.1
-* local Windoze 10, R 4.1.1
+* local OS X install, R 4.3.2
+* Windows, Windows development, RHub
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
 There were 1 NOTES:
 
-* Found the following (possibly) invalid URLs:
-  URL: https://doi.org/10.2307/2533994
-    From: inst/doc/e-Bias-from-incomplete-sampling.html
-    Status: 403
-    Message: Forbidden
-
-    
-    ***CJS*** URL is valid.
+❯ checking installed package size ... NOTE
+    installed size is  5.3Mb
+    sub-directories of 1Mb or more:
+      doc   4.9Mb
     
 ## Reverse dependencies
 None.
