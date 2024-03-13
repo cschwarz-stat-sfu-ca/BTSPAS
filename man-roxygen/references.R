@@ -10,5 +10,5 @@
 #' Schwarz, C.J., D. Pickard, K. Marine and S.J. Bonner. 2009. Juvenile Salmonid Outmigrant
 #' Monitoring Evaluation, Phase II - December 2009. Final Technical Memorandum for the Trinity River
 #' Restoration Program, Weaverville, CA. 155 pp. + appendices available at
-#' \url{https://www.fws.gov/arcata/fisheries/reports/technical/TR_Final_Report.pdf}
+#' \url{https://www.trrp.net/library/document/?id=369}
  

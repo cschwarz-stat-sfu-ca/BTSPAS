@@ -5,7 +5,9 @@
 
 ## Test environments
 * local OS X install, R 4.3.2
-* Windows, Windows development, RHub
+* devtools::check_win_release()
+* devtools::check_win_devel()
+* devtools::check_rhub()
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
