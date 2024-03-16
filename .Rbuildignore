@@ -6,3 +6,4 @@ man-roxygen
 cran-comments*
 render-vignettes.R
 ^CRAN-RELEASE$
+revdep
