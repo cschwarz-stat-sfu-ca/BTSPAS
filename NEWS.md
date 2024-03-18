@@ -1,5 +1,5 @@
 
-# BTSPAS 2024=04-01
+# BTSPAS 2024-04-01
 
 * CRAN fixups to correct error in example. No change in functionality.
 
