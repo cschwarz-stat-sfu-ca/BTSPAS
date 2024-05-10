@@ -1,10 +1,10 @@
 
 ## Major change
 
-* None. CRAN check correction. Documentation and vignette updates.
+* None. Bug fix to deal with single release group.
 
 ## Test environments
-* local OS X install, R 4.3.2
+* local OS X install, R 4.4.0
 * devtools::check_win_release()
 * devtools::check_win_devel()
 
@@ -19,4 +19,11 @@ There were 1 NOTES:
       doc   4.9Mb
     
 ## Reverse dependencies
-None.
+### revdepcheck results
+
+We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+ 
+
