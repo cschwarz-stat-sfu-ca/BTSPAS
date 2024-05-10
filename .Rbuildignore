@@ -8,3 +8,4 @@ render-vignettes.R
 ^CRAN-RELEASE$
 revdep
 ^CRAN-SUBMISSION$
+^.github
