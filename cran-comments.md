@@ -1,13 +1,14 @@
 
 ## Major change
 
-* None. Bug fix to deal with single release group.
+* None. Bug fix to deal with issue in Petersen package which was traced to 
+an bug in the R2jags::jags() function when pD=TRUE but pD=0, it is not included
+in the BUGSoutput object.
 
 ## Test environments
 * local OS X install, R 4.4.1
 * devtools::check_win_release()
 * devtools::check_win_devel()
-* rhub::rhub_check() (Version 2)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
