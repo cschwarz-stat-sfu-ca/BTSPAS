@@ -2,9 +2,14 @@ Package: BTSPAS
 Version: 2024.11.1
 Date: 2024-11-01
 Title: Bayesian Time-Stratified Population Analysis
-Author: Carl J Schwarz <cschwarz.stat.sfu.ca@gmail.com> and
-	Simon J Bonner <sbonner6@uwo.ca>
-Maintainer: Carl J Schwarz <cschwarz.stat.sfu.ca@gmail.com>
+Authors@R: c(person(given = c("Carl", "J"),
+                      family = "Schwarz",
+                      role = c("aut", "cre"),
+                      email = "cschwarz.stat.sfu.ca@gmail.com"),
+               person(given = c("Simon", "J"),
+                      family = "Bonner",
+                      role = "aut",
+                      email = "sbonner6@uwo.ca"))
 Imports: 
     actuar,
     coda, 
