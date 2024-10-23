@@ -128,7 +128,7 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
 #
-   version <- packageDate("BTSPAS")
+   version <- as.character(packageDate("BTSPAS"))
    options(width=200)
 
 # Input parameters are

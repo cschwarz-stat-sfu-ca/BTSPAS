@@ -4,7 +4,7 @@
 * None. Bug fix to deal with single release group.
 
 ## Test environments
-* local OS X install, R 4.4.0
+* local OS X install, R 4.4.1
 * devtools::check_win_release()
 * devtools::check_win_devel()
 * rhub::rhub_check() (Version 2)

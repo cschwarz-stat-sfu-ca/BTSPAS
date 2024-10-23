@@ -126,7 +126,7 @@ TimeStratPetersenNonDiagErrorNP_fit<- function( title="TSPNDENP", prefix="TSPNDE
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- packageDate("BTSPAS")
+  version <- as.character(packageDate("BTSPAS"))
   options(width=200)
 
   ## Input parameters are

@@ -119,7 +119,7 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit<- function( title="TSPNDENP-avail",
   ## strata later. Transisions of marked fish are modelled non-parametrically.
   ##
   
-  version <- packageDate("BTSPAS")
+  version <- as.character(packageDate("BTSPAS"))
   options(width=200)
   
   ## Input parameters are

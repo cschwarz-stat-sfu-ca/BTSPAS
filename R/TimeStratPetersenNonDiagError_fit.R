@@ -119,7 +119,7 @@ TimeStratPetersenNonDiagError_fit <-
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
 #
-    version <- packageDate("BTSPAS")
+    version <- as.character(packageDate("BTSPAS"))
     options(width=200)
 
 # Input parameters are
