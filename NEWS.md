@@ -1,4 +1,9 @@
 
+# BTSPAS 2026-03-01
+
+* Minor change to move maximum error in log(spline) from hard coding to argument in calling function
+
+
 # BTSPAS 2024-11-01
 
 * Added code to deal with bug in R2Jags::jags() where pD not placed in BUGSoutput if pD=0

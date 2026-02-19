@@ -1,5 +1,6 @@
+# 2026-03-01 CJS moved max.logU.error to argument rather than hard coding
 # 2024-05-09 CJS TestIfPool only if at least 2 valid release groups
-# 2021-10-23 CJS Added trunc.logitP to fix plotting problems with extreme logitP
+# 2021-10-23 CJS Added trunc.logitP.plot to fix plotting problems with extreme logitP
 # 2020-12-15 CJS Removed all references to sampfrac in the code
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2018-12-19 CJS deprecation of sampling fraction
@@ -36,11 +37,12 @@ TimeStratPetersenDiagErrorWHChinook2_fit<-
                  prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
                  prior.beta.logitP.sd   = c(stats::sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
                  tauP.alpha=.001, tauP.beta=.001,
+                 max.logU.error=20,max.logitP=10,
                  run.prob=seq(0,1,.1),  # what percentiles of run timing are wanted 
                  debug=FALSE, debug2=FALSE, 
                  InitialSeed=ceiling(stats::runif(1,min=0,1000000)),
                  save.output.to.files=TRUE,
-                 trunc.logitP=15) {
+                 trunc.logitP.plot=15) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the YoY and Age1 wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
@@ -194,9 +196,13 @@ if(length(prior.beta.logitP.mean) != ncol(logitP.cov) | length(prior.beta.logitP
 
 # Deprication of sampling fraction.
 if(any(sampfrac != 1)){
-  cat("***** ERROR ***** Sampling fraction is depricated for any values other than 1. DO NOT USE ANYMORE. ")
+  cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
   return()
 }
+
+checkmate::assert_number(max.logU.error,   finite=TRUE, lower=0,  upper=20)
+checkmate::assert_number(max.logitP,       finite=TRUE, lower=10, upper=20)
+checkmate::assert_number(trunc.logitP.plot,finite=TRUE, lower=10, upper=20)
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
@@ -563,6 +569,7 @@ if (debug)
             prior.beta.logitP.mean=prior.beta.logitP.mean, 
             prior.beta.logitP.sd  =prior.beta.logitP.sd,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+            max.logU.error=max.logU.error, max.logitP=max.logitP,
             debug=debug, InitialSeed=InitialSeed,
             save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
@@ -576,6 +583,7 @@ if (debug)
             prior.beta.logitP.mean=prior.beta.logitP.mean, 
             prior.beta.logitP.sd  =prior.beta.logitP.sd,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta, 
+            max.logU.error=max.logU.error, max.logitP=max.logitP,
 	          InitialSeed=InitialSeed,
             save.output.to.files=save.output.to.files)
    }
@@ -675,7 +683,7 @@ results$plots$fit.plot <- fit.plot
 # plot logit P vs time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, 
              	    u2=u2.A.YoY+u2.N.YoY+u2.A.1+u2.N.1,   logitP.cov=new.logitP.cov, results=results,
-             	    trunc.logitP=trunc.logitP)
+             	    trunc.logitP.plot=trunc.logitP.plot)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
 results$plots$logitP.plot <- logitP.plot
 

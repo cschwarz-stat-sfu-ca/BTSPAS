@@ -1,5 +1,6 @@
+# 2026-03-01 CJS max.logU.error moved from hard coding to argument
 # 2024-05-09 CJS TestIfPool only if at least 2 valid release groups
-# 2021-10-23 CJS Added trunc.logitP to deal with extreme values of logitP during plotting
+# 2021-10-23 CJS Added trunc.logitP.plot to deal with extreme values of logitP during plotting
 # 2020-12-15 CJS Removed sampfrac from code
 # 2020-12-14 CJS All bad.n1 or bad.m2 are set to 0. No NA allows for n1 or m2
 #                Fixed problem with some u2=NA in the GOF computations and plots
@@ -82,7 +83,9 @@
 #' @template debug
 #' @template InitialSeed
 #' @template save.output.to.files
-#' @template trunc.logitP
+#' @template trunc.logitP.plot
+#' @template max.logU.error
+#' @template max.logitP
 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
@@ -110,11 +113,12 @@ TimeStratPetersenNonDiagError_fit <-
            prior.beta.logitP.sd   = c(2,                                           rep(10, ncol(as.matrix(logitP.cov))-1)), 
            tauP.alpha=.001,
            tauP.beta=.001,
+           max.logU.error=20, max.logitP=10,
            run.prob=seq(0,1,.1), # what percentiles of run timing are wanted
            debug=FALSE, debug2=FALSE,
            InitialSeed=ceiling(stats::runif(1,min=0,1000000)),
            save.output.to.files=TRUE,
-           trunc.logitP=15) {
+           trunc.logitP.plot=15) {
 # Fit a Time Stratified Petersen model with NON-diagonal entries and with smoothing on U allowing for random error
 # This is the classical stratified Petersen model where the recoveries can take place for this and multiple
 # strata later
@@ -254,6 +258,12 @@ if(any(sampfrac != 1)){
   cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
   return()
 }
+
+checkmate::assert_number(max.logU.error,   finite=TRUE, lower=0,  upper=20)
+checkmate::assert_number(max.logitP,       finite=TRUE, lower=10, upper=20)
+checkmate::assert_number(trunc.logitP.plot,finite=TRUE, lower=10, upper=20)
+
+
 
 results.filename <- paste(prefix,"-results.txt",sep="")
 
@@ -418,6 +428,7 @@ if (debug)
         prior.beta.logitP.mean=prior.beta.logitP.mean, 
         prior.beta.logitP.sd  =prior.beta.logitP.sd,
         tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+        max.logU.error=max.logU.error, max.logitP=max.logitP,
         debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
  }
 else #notice R syntax requires { before the else
@@ -430,6 +441,7 @@ else #notice R syntax requires { before the else
         prior.beta.logitP.mean=prior.beta.logitP.mean, 
         prior.beta.logitP.sd  =prior.beta.logitP.sd,
         tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+        max.logU.error=max.logU.error, max.logitP=max.logitP,
         debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
  }
 
@@ -490,7 +502,7 @@ results$plots$fit.plot <- fit.plot
 # plot of the logit(p) over time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=expanded.m2, u2=new.u2, 
                            logitP.cov=new.logitP.cov, results=results,
-                           trunc.logitP=trunc.logitP)
+                           trunc.logitP.plot=trunc.logitP.plot)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
 results$plots$logitP.plot <- logitP.plot
 

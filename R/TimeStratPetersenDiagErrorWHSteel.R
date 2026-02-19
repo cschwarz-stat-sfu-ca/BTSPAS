@@ -1,4 +1,5 @@
-## 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
+# 2026-03-01 CJS moved max.logU.error to argument rather than hard coding
+# 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
 # 2018-12-06 CJS created initial plot
 # 2018-11-27 CJS removed openBugs
 # 2014-09-01 CJS conversion to JAGS
@@ -35,6 +36,7 @@ TimeStratPetersenDiagErrorWHSteel <-
            prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
            prior.beta.logitP.sd   = c(stats::sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
            tauP.alpha=.001, tauP.beta=.001,
+           max.logU.error=20, max.logitP=10,
            debug=FALSE, debug2=FALSE,
            InitialSeed,
            save.output.to.files=TRUE){
@@ -141,19 +143,19 @@ model {
    ##### Fit the spline for W.YoY - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.YoY[i] <- inprod(SplineDesign.W.YoY[i,1:n.bU.W.YoY],bU.W.YoY[1:n.bU.W.YoY])  # spline design matrix * spline coeff
-        etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)T(,20)          # add random error
+        etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)T(,max.logU.error)          # add random error
         eU.W.YoY[i] <- etaU.W.YoY[i] - logUne.W.YoY[i]
    }
    ##### Fit the spline for W.1 -   this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.1[i] <- inprod(SplineDesign.W.1[i,1:n.bU.W.1],bU.W.1[1:n.bU.W.1])  # spline design matrix * spline coeff
-        etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)T(,20)              # add random error
+        etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)T(,max.logU.error)              # add random error
         eU.W.1[i] <- etaU.W.1[i] - logUne.W.1[i]
    }
    ##### Fit the spline for hatchery fish - these fish only enter AFTER hatch.after ######
    for(i in (hatch.after+1):Nstrata){
         logUne.H.1[i] <- inprod(SplineDesign.H.1[i,1:n.bU.H.1],bU.H.1[1:n.bU.H.1])  # spline design matrix * spline coeff
-        etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,20)              # add random error
+        etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,max.logU.error)              # add random error
         eU.H.1[i] <- etaU.H.1[i] - logUne.H.1[i]
    }
 
@@ -226,7 +228,7 @@ model {
    ##### Likelihood contributions #####
    ## Number of marked fish recovered ##
    for(i in 1:Nstrata){
-      logit(p[i]) <- logitP[i]       # convert from logit scale
+      logit(p[i]) <- max(-max.logitP, min(max.logitP, logitP[i]))       # convert from logit scale
       m2[i] ~ dbin(p[i],n1[i])     # recovery of marked fish
    }
 
@@ -296,7 +298,8 @@ datalist <- list("Nstrata", "n1", "m2",
      "b.flat.H.1", "n.b.flat.H.1", "b.notflat.H.1", "n.b.notflat.H.1", "n.bU.H.1",
      "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
      "prior.beta.logitP.mean", "prior.beta.logitP.sd", 
-     "tauP.alpha", "tauP.beta")
+     "tauP.alpha", "tauP.beta",
+		 "max.logU.error", "max.logitP")
 
 parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                 "bU.W.YoY", "bU.W.1", "bU.H.1", "tauU", "sigmaU",
@@ -396,62 +399,6 @@ SplineDesign.H.1 <- rbind(matrix(0,nrow=hatch.after, ncol=ncol(SplineDesign.H.1)
 logitP.cov <- as.matrix(logitP.cov)
 NlogitP.cov <- ncol(as.matrix(logitP.cov))
 
-
-#  initial values for the parameters of the model
-
-## init.vals <- function(){
-##    # Initial values for the probability of capture
-##    init.logitP <- pmax(-10,pmin(10,logit((m2+1)/(n1+2))))  # initial capture rates based on observed recaptures
-##    init.logitP[is.na(init.logitP)] <- -2         # those cases where initial probability is unknown
-##    init.beta.logitP <- as.vector(stats::lm( init.logitP ~ logitP.cov-1)$coefficients)
-##    init.beta.logitP[init.beta.logitP=NA] <- 0
-##    init.beta.logitP <- c(init.beta.logitP, 0)   # add one extra element so that single beta is still written as a
-##                                              # vector in the init files etc.
-##    init.tauP <- 1/stats::var(init.logitP, na.rm=TRUE)     # 1/variance of logit(p)'s (ignoring the covariates for now)
-
-##    # inital values for the spline coefficients
-##    init.bU.W.YoY   <- stats::lm(log(Uguess.W.YoY+1) ~ SplineDesign.W.YoY-1)$coefficients  # initial values for spline coefficients
-##    init.bU.W.1     <- stats::lm(log(Uguess.W.1  +1) ~ SplineDesign.W.1  -1)$coefficients  # initial values for spline coefficients
-##    init.bU.H.1     <- stats::lm(log(Uguess.H.1[(hatch.after+1):Nstrata]+1) ~ SplineDesign.H.1[(hatch.after+1):Nstrata,]-1)$coefficients  # initial values for spline coefficients
-
-##    init.eU.W.YoY   <- as.vector(log(Uguess.W.YoY+1)-SplineDesign.W.YoY%*%init.bU.W.YoY)  # error terms set as differ between obs and pred
-##    init.eU.W.1     <- as.vector(log(Uguess.W.1  +1)-SplineDesign.W.1  %*%init.bU.W.1)  # error terms set as differ between obs and pred
-##    init.eU.H.1     <- as.vector(log(Uguess.H.1  +1)-SplineDesign.H.1  %*%init.bU.H.1)  # error terms set as differ between obs and pred
-
-##    init.etaU.W.YoY <- log(Uguess.W.YoY+1)
-##    init.etaU.W.1   <- log(Uguess.W.1  +1)
-##    init.etaU.H.1   <- log(Uguess.H.1  +1)
-##    init.etaU.H.1[1:hatch.after] <- NA  # these are never used.
-
-##    # variance of spline difference (use only the wild fish to initialize)
-##    sigmaU <- stats::sd( init.bU.W.YoY[b.notflat.W.YoY]-2*init.bU.W.YoY[b.notflat.W.YoY-1]+init.bU.W.YoY[b.notflat.W.YoY-2], na.rm=TRUE)
-##    init.tauU <- 1/sigmaU^2
-
-##    # variance of error in the U' over and above the spline fit (use only the wild fish to initialize)
-##    sigmaeU <- stats::sd(init.eU.W.YoY, na.rm=TRUE)
-##    init.taueU <- 1/sigmaeU^2
-
-##    # initialize the u2.* where missing
-##    init.u2.W.YoY    <- u2.W.YoY
-##    init.u2.W.YoY[ is.na(u2.W.YoY)] <- 100
-##    init.u2.W.YoY[!is.na(u2.W.YoY)] <- NA
-
-##    init.u2.W.1      <- u2.W.1
-##    init.u2.W.1  [ is.na(u2.W.1)] <- 100
-##    init.u2.W.1  [!is.na(u2.W.1)] <- NA
-
-##    init.u2.H.1      <- u2.H.1
-##    init.u2.H.1  [ is.na(u2.H.1)] <- 100
-##    init.u2.H.1  [!is.na(u2.H.1)] <- NA
-
-##    list(logitP=init.logitP, beta.logitP=init.beta.logitP, tauP=init.tauP,
-##         bU.W.YoY=init.bU.W.YoY,
-##         bU.W.1  =init.bU.W.1,
-##         bU.H.1  =init.bU.H.1,
-##         tauU=init.tauU, taueU=init.taueU,
-##         etaU.W.YoY=init.etaU.W.YoY, etaU.W.1=init.etaU.W.1, etaU.H.1=init.etaU.H.1)
-## }
-## #browser()
 
 ##  initial values for the parameters of the model
 init.vals <- genInitVals(model="TSPDE-WHsteel",

@@ -1,4 +1,5 @@
-## 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
+# 2026-03-01 CJS specify max.logU.error as argument rather than hard coding
+# 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
 # 2018-12-06 CJS saved initial plot to ggplots format
 # 2018-11-26 CJS Removed all references to OpenBugs
 # 2014-09-01 CJS conversion to JAGS
@@ -43,6 +44,8 @@ TimeStratPetersenNonDiagError <- function(title,
                                           prior.beta.logitP.sd   = c(2,                                           rep(10, ncol(as.matrix(logitP.cov))-1)), 
                                           tauP.alpha=.001,
                                           tauP.beta=.001,
+                                          max.logU.error=20,
+                                          max.logitP=10,
                                           debug=FALSE,
                                           debug2=FALSE,
                                           InitialSeed,
@@ -146,7 +149,7 @@ model {
    ##### Fit the spline for the U's and specify hierarchial model for the logit(P)'s ######
    for(i in 1:Nstrata.cap){
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff
-        etaU[i] ~ dnorm(logUne[i], taueU)T(,20)              # add random error
+        etaU[i] ~ dnorm(logUne[i], taueU)T(,max.logU.error)              # add random error
         eU[i] <- etaU[i] - logUne[i]
    }
    for(i in 1:Nfree.logitP){   # model the free capture rates using covariates
@@ -239,7 +242,7 @@ model {
    }
    ## Capture probabilities and run size
    for(j in 1:Nstrata.cap){
-      logit(p[j]) <- max(-10,min(10,logitP[j]))    # convert from logit scale; use limits to avoid over/underflow
+      logit(p[j]) <- max(-max.logitP,min(max.logitP,logitP[j]))    # convert from logit scale; use limits to avoid over/underflow
       U[j]   <- round(exp(etaU[j]))       # convert from log scale
       u2[j] ~ dbin(p[j],U[j])      # capture of newly unmarked fish
    }
@@ -327,7 +330,8 @@ datalist <- list("Nstrata.rel", "Nstrata.cap", "n1", "m2", "u2", "u2copy",
                  "b.flat", "n.b.flat", "b.notflat", "n.b.notflat", "n.bU",
                  "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
                  "prior.beta.logitP.mean", "prior.beta.logitP.sd", 
-                 "tauP.alpha", "tauP.beta")
+                 "tauP.alpha", "tauP.beta",
+                 "max.logU.error", "max.logitP")
 
 
 ## Generate best guess initial values

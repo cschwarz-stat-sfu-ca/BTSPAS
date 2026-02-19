@@ -1,9 +1,7 @@
 
 ## Major change
 
-* None. Bug fix to deal with issue in Petersen package which was traced to 
-an bug in the R2jags::jags() function when pD=TRUE but pD=0, it is not included
-in the BUGSoutput object.
+* None. Move hard coded upper limit on error term to an argument in calling function.
 
 ## Test environments
 * local OS X install, R 4.4.1

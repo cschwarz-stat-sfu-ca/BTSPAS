@@ -1,3 +1,4 @@
+## 2026-02-18 CJS Maximum value for spline error now set as a parameter that can be changed rather than hard coding T(,20)
 ## 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
 ## 2018-11-26 CJS Removed all OpenBugs stuff
 ## 2014-09-01 CJS Converted to JAGS
@@ -38,6 +39,7 @@ TimeStratPetersenDiagError <- function(
     prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
     prior.beta.logitP.sd   = c(stats::sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
     tauP.alpha=.001, tauP.beta=.001,
+    max.logU.error=20, max.logitP=10,
     debug=FALSE,
     debug2=FALSE,
     InitialSeed,
@@ -131,7 +133,7 @@ model{
    ##### Fit the spline and specify hierarchial model for the logit(P)'s ######
    for(i in 1:Nstrata){
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff
-        etaU[i] ~ dnorm(logUne[i], taueU)T(,20)    # add random error
+        etaU[i] ~ dnorm(logUne[i], taueU)T(,max.logU.error)    # add random error
         eU[i] <- etaU[i] - logUne[i]
    }
 
@@ -140,7 +142,7 @@ model{
         ## Matt's fix to improve mixing. Use u2copy to break the cycle (this doesn't work??)
         mu.epsilon[free.logitP.index[i]] <- mu.logitP[free.logitP.index[i]] - log(u2copy[free.logitP.index[i]] + 1) + etaU[free.logitP.index[i]]
         epsilon[free.logitP.index[i]] ~ dnorm(mu.epsilon[free.logitP.index[i]],tauP)
-        logitP[free.logitP.index[i]] <- max(-10, min(10,log(u2copy[free.logitP.index[i]] + 1) - etaU[free.logitP.index[i]] + epsilon[free.logitP.index[i]]))
+        logitP[free.logitP.index[i]] <- max(-max.logitP, min(max.logitP,log(u2copy[free.logitP.index[i]] + 1) - etaU[free.logitP.index[i]] + epsilon[free.logitP.index[i]]))
    }
 
    for(i in 1:Nfixed.logitP){  # logit P parameters are fixed so we need to force epsilon to be defined.
@@ -180,7 +182,7 @@ model{
 
    ##### Derived Parameters #####
    Utot <- sum( U[1:Nstrata])          # Total number of unmarked fish
-   Ntot <- sum(n1[1:Nstrata]) + Utot  # Total population size including those fish marked and released
+   Ntot <- sum(n1[1:Nstrata]) + Utot   # Total population size including those fish marked and released
 } # end of model
 
 ", fill=TRUE)
@@ -238,7 +240,6 @@ fixed.logitP.value <- logitP.fixed[ fixed.logitP.index]
 Nfixed.logitP      <- length(fixed.logitP.index)
 
 
-
 # create a copy of the u2 to improve mixing in the MCMC model
 u2copy <- exp(stats::spline(x = 1:Nstrata, y = log(u2+1), xout = 1:Nstrata)$y)-1 # on log scale to avoid negative values
 u2copy <- pmax(0,round(u2copy))  # round to integers and avoid negative values
@@ -251,7 +252,8 @@ datalist <- list("Nstrata", "n1", "m2", "u2", "u2copy",
                  "b.flat", "n.b.flat", "b.notflat", "n.b.notflat", "n.bU",
                  "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
                  "prior.beta.logitP.mean", "prior.beta.logitP.sd", 
-                 "tauP.alpha", "tauP.beta")
+                 "tauP.alpha", "tauP.beta",
+                 "max.logU.error", "max.logitP")
 
 
 ## Generate best guess initial values
@@ -268,7 +270,7 @@ if(debug2) {
    browser()  # Stop here to examine the spline design matrix function
 }
 
-logitPguess <- pmax(-10, pmin(10, logit( (m2+1)/(n1+1))))
+logitPguess <- pmax(-max.logitP, pmin(max.logitP, logit( (m2+1)/(n1+1))))
 init.beta.logitP <- as.vector(stats::lm( logitPguess ~ logitP.cov-1)$coefficients)
 if(debug2) {
    cat(" obtained initial values of beta.logitP\n")
@@ -297,35 +299,6 @@ parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
 if( any(is.na(m2))) {parameters <- c(parameters,"m2")} # monitor in case some bad data where missing values present
 if( any(is.na(u2))) {parameters <- c(parameters,"u2")}
 
-## init.vals <- function(){
-##    init.logitP <- logit((m2+1)/(n1+2))         # initial capture rates based on observed recaptures
-##    init.logitP[is.na(init.logitP)] <- -2         # those cases where initial probability is unknown
-##    init.beta.logitP <- as.vector(stats::lm( init.logitP ~ logitP.cov-1)$coefficients)
-##    init.beta.logitP[is.na(init.beta.logitP)] <- 0
-##    init.beta.logitP <- c(init.beta.logitP, 0)   # add one extra element so that single beta is still written as a
-##                                              # vector in the init files etc.
-##    init.tauP <- 1/stats::var(init.logitP, na.rm=TRUE)     # 1/variance of logit(p)'s (ignoring the covariates for now)
-
-##    init.bU   <- stats::lm(log(Uguess+1) ~ SplineDesign-1)$coefficients  # initial values for spline coefficients
-##    init.eU   <- as.vector(log(Uguess)-SplineDesign%*%init.bU)  # error terms set as differ between obs and pred
-##    init.etaU <- log(Uguess)
-
-##    # variance of spline difference
-##    sigmaU <- sd( init.bU[b.notflat]-2*init.bU[b.notflat-1]+init.bU[b.notflat-2], na.rm=TRUE)
-##    init.tauU <- 1/sigmaU^2
-
-##    # variance of error in the U' over and above the spline fit
-##    sigmaeU <- sd(init.eU, na.rm=TRUE)
-##    init.taueU <- 1/sigmaeU^2
-
-##    # initialize the u2 where missing
-##    init.u2    <- u2
-##    init.u2[ is.na(u2)] <- 100
-##    init.u2[!is.na(u2)] <- NA
-
-##    list(logitP=init.logitP, beta.logitP=init.beta.logitP, tauP=init.tauP,
-##         bU=init.bU,  tauU=init.tauU, taueU=init.taueU, etaU=init.etaU)
-## }
 
 ## Generate initial values
 init.vals <- genInitVals(model="TSPDE",

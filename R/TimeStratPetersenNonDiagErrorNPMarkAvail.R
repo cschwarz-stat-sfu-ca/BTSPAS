@@ -1,4 +1,5 @@
-## 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
+# 2026-03-01 CJS moved max.logU.error to argument rather than hard coding
+# 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
 # 2018-12-23 CJS added movep to BUGS code
 # 2018-11-28 CJS removed referece to OpenBugs
 # 2014-09-01 CJS conversion to JAGS
@@ -38,6 +39,8 @@ TimeStratPetersenNonDiagErrorNPMarkAvail <- function(title,
                                                      prior.beta.logitP.sd   = c(2,                                           rep(10, ncol(as.matrix(logitP.cov))-1)), 
                                                      tauP.alpha=.001,
                                                      tauP.beta=.001, 
+                                                     max.logU.error=20,
+                                                     max.logitP=10,
                                                      debug=FALSE,
                                                      debug2=FALSE,
                                                      InitialSeed,
@@ -153,7 +156,7 @@ model {
    for(i in 1:(Nstrata.cap)){
         ## Model for U's
         logUne[i] <- inprod(SplineDesign[i,1:n.bU],bU[1:n.bU])  # spline design matrix * spline coeff 
-        etaU[i] ~ dnorm(logUne[i], taueU)T(,20)              # add random error
+        etaU[i] ~ dnorm(logUne[i], taueU)T(,max.logU.error)              # add random error
         eU[i] <- etaU[i] - logUne[i]
    }
 
@@ -239,7 +242,7 @@ model {
 
    ## Capture probabilities and run size
    for(j in 1:(Nstrata.cap + Extra.strata.cap)){
-      logit(p[j]) <- logitP[j]       # convert from logit scale
+      logit(p[j]) <- max(-max.logitP, min(max.logitP, logitP[j] ))      # convert from logit scale
    }
    for(j in 1:Nstrata.cap){
       U[j]   <- round(exp(etaU[j]))       # convert from log scale
@@ -325,7 +328,8 @@ datalist <- list("Nstrata.rel", "Nstrata.cap","Extra.strata.cap",
                  "tauTT.alpha","tauTT.beta",
                  "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
                  "prior.beta.logitP.mean", "prior.beta.logitP.sd", 
-                 "tauP.alpha", "tauP.beta")
+                 "tauP.alpha", "tauP.beta",
+                 "max.logU.error", "max.logitP")
 
 
 ## Generate the initial values for the parameters of the model

@@ -1,4 +1,5 @@
-## 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
+# 2026-03-01 CJS moved max.logU.error to argument rather than hard coded
+# 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
 # 2018-12-06 CJS converted initial plot to ggplot2 format
 # 2014-09-01 CJS Converted to JAGS
 #                - no model name
@@ -29,6 +30,7 @@ TimeStratPetersenDiagErrorWHChinook <-
              prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
              prior.beta.logitP.sd   = c(stats::sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
              tauP.alpha=.001, tauP.beta=.001,
+             max.logU.error=20,max.logitP=10,
              debug=FALSE, debug2=FALSE, 
              InitialSeed,
              save.output.to.files=TRUE){
@@ -132,13 +134,13 @@ model {
    ##### Fit the spline for wildfish - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W[i] <- inprod(SplineDesign.W[i,1:n.bU.W],bU.W[1:n.bU.W])  # spline design matrix * spline coeff
-        etaU.W[i] ~ dnorm(logUne.W[i], taueU)T(,20)              # add random error
+        etaU.W[i] ~ dnorm(logUne.W[i], taueU)T(,max.logU.error)              # add random error
         eU.W[i] <- etaU.W[i] - logUne.W[i]
    }
    ##### Fit the spline for hatchery fish - these fish only enter AFTER hatch.after ######
    for(i in (hatch.after+1):Nstrata){
         logUne.H[i] <- inprod(SplineDesign.H[i,1:n.bU.H],bU.H[1:n.bU.H])  # spline design matrix * spline coeff
-        etaU.H[i] ~ dnorm(logUne.H[i], taueU)T(,20)              # add random error
+        etaU.H[i] ~ dnorm(logUne.H[i], taueU)T(,max.logU.error)              # add random error
         eU.H[i] <- etaU.H[i] - logUne.H[i]
    }
 
@@ -199,7 +201,7 @@ model {
    ##### Likelihood contributions #####
    ## Number of marked fish recovered ##
    for(i in 1:Nstrata){
-      logit(p[i]) <- logitP[i]       # convert from logit scale
+      logit(p[i]) <- max(-max.logitP, min(max.logitP, logitP[i]))       # convert from logit scale
       m2[i] ~ dbin(p[i],n1[i])     # recovery of marked fish
    }
 
@@ -266,7 +268,8 @@ model {
                    "b.flat.H", "n.b.flat.H", "b.notflat.H", "n.b.notflat.H", "n.bU.H",
                    "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
                    "prior.beta.logitP.mean", "prior.beta.logitP.sd", 
-                   "tauP.alpha", "tauP.beta")
+                   "tauP.alpha", "tauP.beta",
+                   "max.logU.error","max.logitP")
 
   parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                   "bU.W", "bU.H", "tauU", "sigmaU",

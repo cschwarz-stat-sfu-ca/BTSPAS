@@ -1,5 +1,6 @@
+# 2026-03-01 CJS moved max.logU.error to argument rather than hard coding
 # 2024-05-09 CJS Check that test for pooling only occurs if at least two release groups
-# 2021-10-23 CJS Added trunc.logitP parameter to avoid plotting problems
+# 2021-10-23 CJS Added trunc.logitP.plot parameter to avoid plotting problems
 # 2020-12-15 CJS Removed all uses of sampfrac in the code
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2018-12-19 CSJ deprecated use of sampling fraction
@@ -94,7 +95,9 @@
 #' @template debug 
 #' @template InitialSeed
 #' @template save.output.to.files
-#' @template trunc.logitP
+#' @template trunc.logitP.plot
+#' @template max.logU.error
+#' @template max.logitP
 
 #' @return An MCMC object with samples from the posterior distribution. A
 #' series of graphs and text file are also created in the working directory.
@@ -123,7 +126,8 @@ TimeStratPetersenDiagErrorWHChinook_fit<-
                  debug=FALSE, debug2=FALSE,
                  InitialSeed=ceiling(stats::runif(1,min=0, max=1000000)),
                  save.output.to.files=TRUE,
-                 trunc.logitP=15) {
+                 trunc.logitP.plot=15,
+                 max.logU.error=20, max.logitP=10) {
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error,
 # covariates for the the capture probabilities, and separating the wild vs hatchery fish
 # The "diagonal entries" implies that no marked fish are recaptured outside the (time) stratum of release
@@ -247,6 +251,11 @@ if(any(sampfrac != 1)){
   cat("***** ERROR ***** Sampling fraction is deprecated for any values other than 1. DO NOT USE ANYMORE. ")
   return()
 }
+
+checkmate::assert_number(max.logU.error,    finite=TRUE, lower=0,  upper=20)
+checkmate::assert_number(max.logitP,        finite=TRUE, lower=10, upper=20)
+checkmate::assert_number(trunc.logitP.plot, finite=TRUE, lower=10, upper=20)
+
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
@@ -609,7 +618,8 @@ if (debug)
             prior.beta.logitP.sd  =prior.beta.logitP.sd,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
             debug=debug,InitialSeed=InitialSeed,
-            save.output.to.files=save.output.to.files)
+            save.output.to.files=save.output.to.files,
+            max.logU.error=max.logU.error, max.logitP=max.logitP)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagErrorWHChinook(title=title, prefix=prefix, 
             time=new.time, n1=new.n1, m2=new.m2, u2.A=new.u2.A, u2.N=new.u2.N, 
@@ -620,7 +630,8 @@ if (debug)
             prior.beta.logitP.sd  =prior.beta.logitP.sd,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
             InitialSeed=InitialSeed,
-            save.output.to.files=save.output.to.files)
+            save.output.to.files=save.output.to.files,
+            max.logU.error=max.logU.error, max.logitP=max.logitP)
    }
 
 # Now to create the various summary tables of the results
@@ -721,7 +732,7 @@ results$plots$fit.plot <- fit.plot
 # Plot the logitP over time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, u2=new.u2.A+new.u2.N,  
                            logitP.cov=new.logitP.cov, results=results,
-                           trunc.logitP=trunc.logitP)
+                           trunc.logitP.plot=trunc.logitP.plot)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in", dpi=300)
 results$plots$logitP.plot <- logitP.plot
 

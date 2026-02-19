@@ -7,7 +7,7 @@
 #' @import ggplot2 plyr
 
 
-plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results, trunc.logitP=15){
+plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results, trunc.logitP.plot=15){
   #  Plot the observed and fitted logit(p) values along with posterior limits 
   #  n1, m2, u2 are the raw data
   #  logitP.cov is the covariate matrix for modelling the logit(P)'s
@@ -47,9 +47,9 @@ plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results, trunc.logi
   logitP.res$ucl <- logitP.res[,"97.5%"]
   
   # apply limits to the points for plotting purposes
-  logitP.res$lcl  <- pmax(-trunc.logitP, pmin(trunc.logitP, logitP.res$lcl))
-  logitP.res$ucl  <- pmax(-trunc.logitP, pmin(trunc.logitP, logitP.res$ucl))
-  logitP.res$mean <- pmax(-trunc.logitP, pmin(trunc.logitP, logitP.res$mean))
+  logitP.res$lcl  <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot, logitP.res$lcl))
+  logitP.res$ucl  <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot, logitP.res$ucl))
+  logitP.res$mean <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot, logitP.res$mean))
   #browser()
   myplot <- ggplot(data=logitP.res, aes(x=time, y=mean))+
     ggtitle( paste(title,"\nPlot of logit(p[i]) with 95% credible intervals"))+
@@ -62,7 +62,7 @@ plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results, trunc.logi
 
   # If this is a non-diagonal case, also plot the raw logits
   if(!is.matrix(m2)){
-    raw_logitP <- pmax(-trunc.logitP, pmin(trunc.logitP,logit((m2+1)/(n1+2))))
+    raw_logitP <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot,logit((m2+1)/(n1+2))))
     myplot <- myplot + annotate("point", x=time, y=raw_logitP, shape=1) 
   }        # based on raw data
   
@@ -72,9 +72,9 @@ plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results, trunc.logi
     #      the intercept in most models with covariates along with 95% credible interval
     intercept.row.index    <- grep("beta.logitP[1]", results.row.names, fixed=TRUE)
     intercept <- results$summary[intercept.row.index,]
-    mean<- pmax(-trunc.logitP, pmin(trunc.logitP, intercept["mean"] ))
-    lcl <- pmax(-trunc.logitP, pmin(trunc.logitP, intercept["2.5%"] ))
-    ucl <- pmax(-trunc.logitP, pmin(trunc.logitP, intercept["97.5%"]))
+    mean<- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot, intercept["mean"] ))
+    lcl <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot, intercept["2.5%"] ))
+    ucl <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot, intercept["97.5%"]))
     
     myplot <- myplot +
         geom_hline(yintercept=mean)+
@@ -84,8 +84,8 @@ plot_logitP <- function(title, time, n1, m2, u2, logitP.cov, results, trunc.logi
     # plot the posterior "95% range" for the logit(P)'s based on N(xip, sigmaP^2)
     sigmaP.row.index <- grep("sigmaP", results.row.names)
     sigmaP <- results$summary[sigmaP.row.index,]
-    lcl <- pmax(-trunc.logitP, pmin(trunc.logitP,intercept["mean"]-2*sigmaP["mean"]))
-    ucl <- pmax(-trunc.logitP, pmin(trunc.logitP,intercept["mean"]+2*sigmaP["mean"]))
+    lcl <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot,intercept["mean"]-2*sigmaP["mean"]))
+    ucl <- pmax(-trunc.logitP.plot, pmin(trunc.logitP.plot,intercept["mean"]+2*sigmaP["mean"]))
     myplot <- myplot +
       geom_hline(yintercept=lcl, linetype=3)+
       geom_hline(yintercept=ucl, linetype=3)

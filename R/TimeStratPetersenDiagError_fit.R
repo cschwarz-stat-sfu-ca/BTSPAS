@@ -1,5 +1,6 @@
+# 2026-02-18 CJS Set max.logU.error as a parameter that can be changed
 # 2024-05-09 CJS TestIfPool only if at least 2 valid release groups
-# 2021-10-24 CJS added trunc.logitP to avoid problems with plotting
+# 2021-10-24 CJS added trunc.logitP.plot to avoid problems with plotting
 # 2020-12-15 CJS removed sampfrac from code but left argument with warning message
 # 2020-11-07 CJS Allowed user to specify prior for beta coefficient for logitP
 # 2018-12-19 CJS Deprecated use of sampling.fraction
@@ -66,8 +67,10 @@
 #' @template debug
 #' @template InitialSeed
 #' @template save.output.to.files
-#' @template trunc.logitP
+#' @template trunc.logitP.plot
 #' @template set.browser
+#' @template max.logU.error
+#' @template max.logitP
 
 #' 
 #' @return An MCMC object with samples from the posterior distribution. A
@@ -96,7 +99,8 @@ TimeStratPetersenDiagError_fit <-
            debug=FALSE, debug2=FALSE,
            InitialSeed=ceiling(stats::runif(1,min=0, max=1000000)),
            save.output.to.files=TRUE,
-           trunc.logitP=15,
+           trunc.logitP.plot=15,
+           max.logU.error=20, max.logitP=10,
            set.browser=FALSE) {
     
 # Fit a Time Stratified Petersen model with diagonal entries and with smoothing on U allowing for random error
@@ -116,7 +120,7 @@ TimeStratPetersenDiagError_fit <-
 #             e.g. time=10 not present, this indicates sampling did not take place this
 #             week. The data are expanded and interpolation for the missing week takes place
 #    n1, m2, u2 - the input data consisting of fish marked and released, recapture, and unmarked captured
-#    sampfrac - sampling fraction - depricated because never did work properly
+#    sampfrac - sampling fraction - deprecated because never did work properly
 #    jump.after - in some cases, a single spline is still not flexible enough to cope with rapid
 #                 changes in the run curve. For example, in the Trinity River project, a larger
 #                 hatchery release occurs around stratum 14. This is a vector indicating the
@@ -221,6 +225,8 @@ if(any(sampfrac != 1)){
    return()
 }
 
+checkmate::assert_number(max.logU.error, finite=TRUE, lower=0,  upper=20)
+checkmate::assert_number(max.logitP,     finite=TRUE, lower=10, upper=20)
 
 results.filename <- paste(prefix,"-results.txt",sep="")   
 
@@ -424,6 +430,7 @@ if (debug)
             prior.beta.logitP.mean=prior.beta.logitP.mean, 
             prior.beta.logitP.sd  =prior.beta.logitP.sd,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+            max.logU.error=max.logU.error, max.logitP=max.logitP,
             debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    } else #notice R syntax requires { before the else
    {results <- TimeStratPetersenDiagError(title=title, prefix=prefix, 
@@ -434,6 +441,7 @@ if (debug)
             prior.beta.logitP.mean=prior.beta.logitP.mean, 
             prior.beta.logitP.sd  =prior.beta.logitP.sd,
             tauU.alpha=tauU.alpha, tauU.beta=tauU.beta, taueU.alpha=taueU.alpha, taueU.beta=taueU.beta,
+            max.logU.error=max.logU.error, max.logitP=max.logitP,
             debug=debug, debug2=debug2, InitialSeed=InitialSeed, save.output.to.files=save.output.to.files)
    }
 
@@ -494,7 +502,7 @@ results$plots$fit.plot <- fit.plot
 # plot logit(P) over time
 logitP.plot <- plot_logitP(title=title, time=new.time, n1=new.n1, m2=new.m2, u2=new.u2, 
                            logitP.cov=new.logitP.cov, results=results, 
-                           trunc.logitP=trunc.logitP)
+                           trunc.logitP.plot=trunc.logitP.plot)
 if(save.output.to.files)ggsave(plot=logitP.plot, filename=paste(prefix,"-logitP.pdf",sep=""), height=6, width=10, units="in")
 results$plots$logitP.plot <- logitP.plot
 

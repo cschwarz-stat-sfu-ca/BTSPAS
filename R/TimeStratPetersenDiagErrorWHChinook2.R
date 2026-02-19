@@ -1,4 +1,5 @@
-## 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
+# 2026-03-01 CJS moved max.logU.error to argument rather than hard coding
+# 2020-11-07 CJS Allow user to specify prior for beta parameters for covariates on logitP
 # 2018-12-06 CJS converted initial plot to ggplot2
 # 2018-11-25 CJS removed all openbugs references
 # 2013-12-31 CJS conversion to JAGS
@@ -38,6 +39,7 @@ TimeStratPetersenDiagErrorWHChinook2 <-
                 prior.beta.logitP.mean = c(logit(sum(m2,na.rm=TRUE)/sum(n1,na.rm=TRUE)),rep(0,  ncol(as.matrix(logitP.cov))-1)),
                 prior.beta.logitP.sd   = c(stats::sd(logit((m2+.5)/(n1+1)),na.rm=TRUE),        rep(10, ncol(as.matrix(logitP.cov))-1)), 
                 tauP.alpha=.001, tauP.beta=.001, 
+                max.logU.error=20, max.logitP=10,
                 debug=FALSE, debug2=FALSE,
                 InitialSeed,
                 save.output.to.files=TRUE){
@@ -169,25 +171,25 @@ model {
    ##### Fit the spline for YoY wildfish - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.YoY[i] <- inprod(SplineDesign.W.YoY[i,1:n.bU.W.YoY],bU.W.YoY[1:n.bU.W.YoY])  # spline design matrix * spline coeff 
-        etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)T(,20)              # add random error
+        etaU.W.YoY[i] ~ dnorm(logUne.W.YoY[i], taueU)T(,max.logU.error)              # add random error
         eU.W.YoY  [i] <- etaU.W.YoY[i] - logUne.W.YoY[i]
    }
    ##### Fit the spline for YoY hatchery fish - these fish only enter AFTER hatch.after.YoY ######
    for(i in (hatch.after.YoY+1):Nstrata){
         logUne.H.YoY[i] <- inprod(SplineDesign.H.YoY[i,1:n.bU.H.YoY],bU.H.YoY[1:n.bU.H.YoY])  # spline design matrix * spline coeff 
-        etaU.H.YoY[i] ~ dnorm(logUne.H.YoY[i], taueU)T(,20)              # add random error
+        etaU.H.YoY[i] ~ dnorm(logUne.H.YoY[i], taueU)T(,max.logU.error)              # add random error
         eU.H.YoY  [i] <- etaU.H.YoY[i] - logUne.H.YoY[i]
    }
    ##### Fit the spline for Age1 wildfish - this covers the entire experiment ######
    for(i in 1:Nstrata){
         logUne.W.1[i] <- inprod(SplineDesign.W.1[i,1:n.bU.W.1],bU.W.1[1:n.bU.W.1])  # spline design matrix * spline coeff 
-        etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)T(,20)              # add random error
+        etaU.W.1[i] ~ dnorm(logUne.W.1[i], taueU)T(,max.logU.error)              # add random error
         eU.W.1  [i] <- etaU.W.1[i] - logUne.W.1[i]
    }
    ##### Fit the spline for Age1 hatchery fish - this covers the entire experiment because the have residualized from last year
    for(i in 1:Nstrata){
         logUne.H.1[i] <- inprod(SplineDesign.H.1[i,1:n.bU.H.1],bU.H.1[1:n.bU.H.1])  # spline design matrix * spline coeff 
-        etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,20)              # add random error
+        etaU.H.1[i] ~ dnorm(logUne.H.1[i], taueU)T(,max.logU.error)              # add random error
         eU.H.1  [i] <- etaU.H.1[i] - logUne.H.1[i]
    }
 
@@ -250,7 +252,7 @@ model {
    ##### Likelihood contributions #####
    ## Number of marked fish recovered ##
    for(i in 1:Nstrata){
-      logit(p[i]) <- logitP[i]       # convert from logit scale
+      logit(p[i]) <- max(-max.logitP, min(max.logitP, logitP[i]))       # convert from logit scale
       m2[i] ~ dbin(p[i],n1[i])     # recovery of marked fish
    }
 
@@ -333,7 +335,8 @@ datalist <- list("Nstrata", "n1", "m2",
                  "b.flat.H.1", "n.b.flat.H.1", "b.notflat.H.1", "n.b.notflat.H.1", "n.bU.H.1",
                  "tauU.alpha", "tauU.beta", "taueU.alpha", "taueU.beta",
                  "prior.beta.logitP.mean", "prior.beta.logitP.sd", 
-                 "tauP.alpha", "tauP.beta")
+                 "tauP.alpha", "tauP.beta",
+                 "max.logU.error","max.logitP")
 
 parameters <- c("logitP", "beta.logitP", "tauP", "sigmaP",
                 "bU.W.YoY", "bU.H.YoY", "tauU", "sigmaU", 

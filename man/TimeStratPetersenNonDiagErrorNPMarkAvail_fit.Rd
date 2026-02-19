@@ -38,12 +38,14 @@ TimeStratPetersenNonDiagErrorNPMarkAvail_fit(
   Delta.max = NULL,
   tauTT.alpha = 0.1,
   tauTT.beta = 0.1,
+  max.logU.error = 20,
+  max.logitP = 10,
   run.prob = seq(0, 1, 0.1),
   debug = FALSE,
   debug2 = FALSE,
   InitialSeed = ceiling(stats::runif(1, min = 0, max = 1e+06)),
   save.output.to.files = TRUE,
-  trunc.logitP = 15
+  trunc.logitP.plot = 15
 )
 }
 \arguments{
@@ -164,6 +166,10 @@ the prior on 1/var of logit continuation ratio for travel times}
 \item{tauTT.beta}{One of the parameters along with \code{tauTT.alpha} for
 the prior on 1/var of logit continuation ratio for travel times}
 
+\item{max.logU.error}{Maximum positive error on log(spline)}
+
+\item{max.logitP}{Restrain logitP between (-max.logitP, max.logitP) during modelling}
+
 \item{run.prob}{Numeric vector indicating percentiles of run timing should
 be computed.}
 
@@ -182,7 +188,7 @@ in the MCMC iterations.}
 \item{save.output.to.files}{Should the plots and text output be save to the files
 in addition to being stored in the MCMC object?}
 
-\item{trunc.logitP}{Truncate logit(P) between c(=trunc.logitP, trunc.logitP) when plotting the
+\item{trunc.logitP.plot}{Truncate logit(P) between c(-trunc.logitP.plot, trunc.logitP.plot) when plotting the
 logitP over time. Actual values of logit(P) are not affected.}
 }
 \value{
